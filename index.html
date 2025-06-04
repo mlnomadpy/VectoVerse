@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>The Vectoverse - Interactive Vector Visualization</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌌 Welcome to the Vectoverse</h1>
+      <p>An Interactive Atomic-Inspired Framework for Understanding Vector Interactions & Resonance Forces</p>
+      <div class="header-info">
+        <span>🔍 Click vectors to explore similarities</span>
+        <span>⚡ Visualize resonance forces</span>
+        <span>🎛️ Edit input vectors in real-time</span>
+      </div>
+    </header>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label>Number of Dimensions:</label>
+        <input type="range" id="dimensions" min="2" max="20" value="4">
+        <span id="dim-value">4</span>
+      </div>
+      <div class="control-group">
+        <label>Number of Vectors:</label>
+        <input type="range" id="vectors" min="2" max="12" value="6">
+        <span id="vec-value">6</span>
+      </div>
+      <button id="regenerate">Generate New Vectors</button>
+      <button id="toggle-forces">Toggle Resonance Forces</button>
+      <div class="file-upload">
+        <input type="file" id="vector-file" accept=".txt" />
+        <label for="vector-file">Upload Vector File</label>
+      </div>
+      <button id="add-input-vector">Add Test Input Vector</button>
+    </div>
+    
+    <div class="visualization">
+      <svg id="main-viz"></svg>
+    </div>
+    
+    <div class="info-panel">
+      <div class="legend">
+        <h3>🧩 Information Atom Legend</h3>
+        <div class="legend-item">
+          <div class="color-box positive"></div>
+          <span>Positive Charge (Excitatory)</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-box negative"></div>
+          <span>Negative Charge (Inhibitory)</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-box neutral"></div>
+          <span>Neutral State</span>
+        </div>
+      </div>
+      
+      <div class="vector-details">
+        <h3>⚛️ Vector Details</h3>
+        <div id="selected-vector">Click on a vector to see its properties</div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module" src="script.js"></script>
+</body>
+</html>
