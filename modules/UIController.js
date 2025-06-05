@@ -207,19 +207,19 @@ export class UIController {
                 
                 <div class="property-group">
                     <h5>🧮 Mathematical Properties</h5>
-                    <div class="property-row">
+                    <div class="property-row" title="The length or strength of the vector - like measuring the mass of an atomic nucleus">
                         <span class="property-label">Magnitude (Nuclear Mass):</span>
                         <span class="property-value">${magnitude.toFixed(4)}</span>
                     </div>
-                    <div class="property-row">
+                    <div class="property-row" title="Measures information randomness - higher values mean more diverse/uniform component distribution">
                         <span class="property-label">Information Entropy:</span>
                         <span class="property-value">${entropy.toFixed(4)} bits</span>
                     </div>
-                    <div class="property-row">
+                    <div class="property-row" title="Magnitude normalized by dimension count - indicates how concentrated the information is">
                         <span class="property-label">Nuclear Stability:</span>
                         <span class="property-value">${stability.toFixed(4)}</span>
                     </div>
-                    <div class="property-row">
+                    <div class="property-row" title="The dimensional space this vector exists in - higher dimensions can represent more complex information">
                         <span class="property-label">Dimensions:</span>
                         <span class="property-value">${config.dimensions}D space</span>
                     </div>
@@ -227,18 +227,21 @@ export class UIController {
 
                 <div class="property-group">
                     <h5>⚛️ Information Quantum Distribution</h5>
+                    <p style="font-size: 0.8em; opacity: 0.8; margin-bottom: 10px; font-style: italic;">
+                        Like particles in an atom: positive (excitatory), negative (inhibitory), and neutral components
+                    </p>
                     <div class="quantum-grid">
-                        <div class="quantum-item excitatory">
+                        <div class="quantum-item excitatory" title="Positive components > 0.1 - like positive charges or excitatory neurons">
                             <span class="quantum-count">${quantums.excitatory}</span>
                             <span class="quantum-label">Excitatory</span>
                             <span class="quantum-energy">${quantums.averageExcitation.toFixed(3)}</span>
                         </div>
-                        <div class="quantum-item inhibitory">
+                        <div class="quantum-item inhibitory" title="Negative components < -0.1 - like negative charges or inhibitory neurons">
                             <span class="quantum-count">${quantums.inhibitory}</span>
                             <span class="quantum-label">Inhibitory</span>
                             <span class="quantum-energy">${quantums.averageInhibition.toFixed(3)}</span>
                         </div>
-                        <div class="quantum-item neutral">
+                        <div class="quantum-item neutral" title="Components near zero - like neutral particles with minimal influence">
                             <span class="quantum-count">${quantums.neutral}</span>
                             <span class="quantum-label">Neutral</span>
                             <span class="quantum-energy">0.000</span>
@@ -248,20 +251,23 @@ export class UIController {
 
                 <div class="property-group">
                     <h5>📊 Statistical Analysis</h5>
+                    <p style="font-size: 0.8em; opacity: 0.8; margin-bottom: 10px; font-style: italic;">
+                        Statistical properties reveal the internal structure and distribution patterns
+                    </p>
                     <div class="stats-grid">
-                        <div class="stat-item">
+                        <div class="stat-item" title="Average value of all components">
                             <span class="stat-label">Mean:</span>
                             <span class="stat-value">${stats.mean.toFixed(4)}</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" title="Measure of how spread out the components are">
                             <span class="stat-label">Std Dev:</span>
                             <span class="stat-value">${stats.standardDeviation.toFixed(4)}</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" title="Difference between largest and smallest components">
                             <span class="stat-label">Range:</span>
                             <span class="stat-value">${stats.range.toFixed(4)}</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" title="Asymmetry measure: >0 means right-skewed, <0 means left-skewed">
                             <span class="stat-label">Skewness:</span>
                             <span class="stat-value">${stats.skewness.toFixed(4)}</span>
                         </div>
@@ -269,19 +275,25 @@ export class UIController {
                 </div>
         `;
         
-        // Show component dimensions
+        // Show component dimensions with enhanced explanations
         const showDims = Math.min(config.dimensions, Constants.MAX_DISPLAYED_DIMENSIONS);
         html += `<div class="property-group">
-            <h5>🔬 Component Analysis</h5>`;
+            <h5>🔬 Component Analysis</h5>
+            <p style="font-size: 0.8em; opacity: 0.8; margin-bottom: 10px; font-style: italic;">
+                Each dimension represents a feature or attribute. Bar length shows component strength.
+            </p>`;
         
         for (let i = 0; i < showDims; i++) {
             const component = selectedVector.components[i];
             const absValue = Math.abs(component);
             const percentage = (absValue / 2) * 100; // Normalized to -2 to 2 range
             const polarity = component > 0.1 ? 'positive' : component < -0.1 ? 'negative' : 'neutral';
+            const polarityExplanation = component > 0.1 ? 'Strong positive influence' : 
+                                      component < -0.1 ? 'Strong negative influence' : 
+                                      'Minimal influence';
             
             html += `
-                <div class="dimension-analysis">
+                <div class="dimension-analysis" title="Dimension ${i+1}: ${polarityExplanation}">
                     <div class="dimension-header">
                         <span class="dimension-name">D${i + 1}</span>
                         <span class="dimension-polarity ${polarity}">${polarity.toUpperCase()}</span>
@@ -299,10 +311,13 @@ export class UIController {
         }
         html += '</div>';
         
-        // Enhanced similarity rankings with quantum properties
+        // Enhanced similarity rankings with detailed explanations
         html += `<div class="property-group">
             <h5>🌌 Quantum Resonance Analysis</h5>
-            <p class="analysis-description">Interaction forces with other vector atoms:</p>
+            <p class="analysis-description">
+                Force interactions with other vectors, ranked by resonance strength. Higher values indicate stronger 
+                mathematical relationships and information pattern alignment.
+            </p>
         `;
         
         const similarities = vectors
@@ -322,29 +337,30 @@ export class UIController {
         
         similarities.slice(0, Constants.MAX_DISPLAYED_SIMILARITIES).forEach((item, index) => {
             html += `
-                <div class="resonance-analysis" onclick="framework.selectVector(${item.vector.id})">
+                <div class="resonance-analysis" onclick="framework.selectVector(${item.vector.id})" 
+                     title="Click to analyze this vector. Resonance combines alignment strength with proximity.">
                     <div class="resonance-header">
                         <strong class="vector-name">${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}</strong>
                         <span class="rank-badge">#${index + 1}</span>
                     </div>
                     <div class="force-metrics">
-                        <div class="metric-row">
+                        <div class="metric-row" title="Custom measure: (dot product)² / distance² - higher = stronger resonance">
                             <span class="metric-label">Resonance Force:</span>
                             <span class="metric-value primary">${item.resonanceForce.toFixed(6)}</span>
                         </div>
-                        <div class="metric-row">
+                        <div class="metric-row" title="Absolute correlation: 0-1 scale measuring linear relationship strength">
                             <span class="metric-label">Quantum Entanglement:</span>
                             <span class="metric-value">${item.entanglement.toFixed(4)}</span>
                         </div>
-                        <div class="metric-row">
+                        <div class="metric-row" title="Alternative resonance measure without epsilon smoothing">
                             <span class="metric-label">Harmonic Alignment:</span>
                             <span class="metric-value">${item.harmonicAlignment.toFixed(4)}</span>
                         </div>
-                        <div class="metric-row">
+                        <div class="metric-row" title="Like electric force: positive = attraction, negative = repulsion">
                             <span class="metric-label">Electromagnetic:</span>
                             <span class="metric-value">${item.electromagneticForce.toFixed(4)}</span>
                         </div>
-                        <div class="metric-row">
+                        <div class="metric-row" title="Like gravity: always attractive, proportional to magnitudes">
                             <span class="metric-label">Gravitational:</span>
                             <span class="metric-value">${item.gravitationalForce.toFixed(4)}</span>
                         </div>

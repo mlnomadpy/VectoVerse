@@ -628,75 +628,53 @@ button:hover {
   margin-top: 10px;
 }
 
+/* Enhanced tooltips and educational styling */
+.property-row, .quantum-item, .stat-item, .dimension-analysis, .resonance-analysis {
+    cursor: help;
+}
+
+.property-row:hover, .quantum-item:hover, .stat-item:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
 .analysis-description {
-  font-size: 0.85em;
-  opacity: 0.8;
-  margin-bottom: 10px;
-  font-style: italic;
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin-bottom: 10px;
+    font-style: italic;
+    line-height: 1.4;
+    padding: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    border-left: 3px solid #4ecdc4;
 }
 
-.resonance-analysis {
-  background: rgba(255,255,255,0.05);
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 5px;
-  border-left: 3px solid #ff6b6b;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.educational-note {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 5px;
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 0.8em;
+    font-style: italic;
+    color: #ffd700;
 }
 
-.resonance-analysis:hover {
-  background: rgba(255,255,255,0.1);
-  transform: translateX(5px);
+.formula-display {
+    font-family: 'Courier New', monospace;
+    background: rgba(0,0,0,0.3);
+    padding: 5px 8px;
+    border-radius: 3px;
+    margin: 3px 0;
+    font-size: 0.85em;
+    border-left: 2px solid #4ecdc4;
 }
 
-.resonance-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+.metric-explanation {
+    font-size: 0.7em;
+    opacity: 0.7;
+    margin-top: 2px;
+    font-style: italic;
 }
-
-.vector-name {
-  color: #ffd700;
-  font-size: 1em;
-}
-
-.rank-badge {
-  background: #ff6b6b;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 0.7em;
-  font-weight: bold;
-}
-
-.force-metrics {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3px;
-}
-
-.metric-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.metric-label {
-  font-size: 0.75em;
-  opacity: 0.8;
-}
-
-.metric-value {
-  font-family: monospace;
-  font-size: 0.75em;
-  color: #4ecdc4;
-}
-
-.metric-value.primary {
-  color: #ffd700;
-  font-weight: bold;
-}
-
-/* ...existing code... */
