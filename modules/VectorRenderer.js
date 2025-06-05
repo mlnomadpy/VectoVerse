@@ -1,4 +1,3 @@
-
 import { Constants } from './Constants.js';
 
 export class VectorRenderer {
