@@ -13,13 +13,16 @@ VectoVerse introduces a revolutionary paradigm for understanding high-dimensiona
 
 ### 🧪 The Atomic-Vector Analogy
 
-| Atomic Property | Vector Analogy | Mathematical Foundation |
-|----------------|----------------|------------------------|
-| **Electron Charge** | Component Polarity | `sign(vᵢ)` where vᵢ is the i-th component |
-| **Nuclear Stability** | Vector Magnitude | `‖v‖ = √(Σᵢ vᵢ²)` |
-| **Electromagnetic Force** | Cosine Similarity | `cos(θ) = (u·v)/(‖u‖‖v‖)` |
-| **Resonance Frequency** | Harmonic Alignment | `R(u,v) = (u·v)²/‖u-v‖²` |
-| **Quantum Entanglement** | Vector Correlation | `ρ(u,v) = cov(u,v)/(σᵤσᵥ)` |
+| Atomic Property | Vector Analogy | Mathematical Foundation | Implementation Method |
+|----------------|----------------|------------------------|----------------------|
+| **Electron Charge** | Component Polarity | `sign(vᵢ)` where vᵢ is the i-th component | `getInformationQuantums()` |
+| **Nuclear Stability** | Vector Magnitude | `‖v‖ = √(Σᵢ vᵢ²)` | `magnitude()` |
+| **Electromagnetic Force** | Cosine Similarity | `cos(θ) = (u·v)/(‖u‖‖v‖)` | `cosineSimilarity()` |
+| **Resonance Frequency** | Harmonic Alignment | `R(u,v) = (u·v)²/‖u-v‖²` | `harmonicAlignment()` |
+| **Quantum Entanglement** | Vector Correlation | `ρ(u,v) = cov(u,v)/(σᵤσᵥ)` | `quantumEntanglement()` |
+| **Information Entropy** | Component Distribution | `H(v) = -Σᵢ p(vᵢ)log₂(p(vᵢ))` | `informationEntropy()` |
+| **Nuclear Forces** | Electromagnetic/Gravitational | `F = k(u·v)/‖u-v‖²` | `electromagneticForce()`, `gravitationalAttraction()` |
+| **Statistical Properties** | Vector Statistics | `μ, σ, skewness, kurtosis` | `getVectorStatistics()` |
 
 ## 📊 Project Statistics
 

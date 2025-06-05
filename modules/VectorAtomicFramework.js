@@ -116,4 +116,53 @@ export class VectorAtomicFramework {
     getModules() { 
         return this.modules; 
     }
+
+    // Convenience methods for accessing calculations
+    calculateMagnitude(vector) {
+        return this.modules.forceCalculator.magnitude(vector);
+    }
+
+    calculateEntropy(vector) {
+        return this.modules.forceCalculator.informationEntropy(vector);
+    }
+
+    classifyQuantumCharge(vector) {
+        const quantums = this.modules.forceCalculator.getInformationQuantums(vector);
+        if (quantums.excitatory > quantums.inhibitory) return "Positive (Excitatory)";
+        if (quantums.inhibitory > quantums.excitatory) return "Negative (Inhibitory)";
+        return "Neutral (Balanced)";
+    }
+
+    calculateSimilarities(vector) {
+        return this.state.vectors
+            .filter(other => other.id !== vector.id)
+            .map(other => ({
+                index: other.id,
+                similarity: this.modules.forceCalculator.cosineSimilarity(vector, other),
+                resonanceForce: this.modules.forceCalculator.resonanceForce(vector, other),
+                correlation: this.modules.forceCalculator.correlation(vector, other),
+                entanglement: this.modules.forceCalculator.quantumEntanglement(vector, other)
+            }))
+            .sort((a, b) => b.resonanceForce - a.resonanceForce);
+    }
+
+    getQuantumProperties(vector) {
+        return this.modules.forceCalculator.getInformationQuantums(vector);
+    }
+
+    getStatisticalProperties(vector) {
+        return this.modules.forceCalculator.getVectorStatistics(vector);
+    }
+
+    calculateAllForces(v1, v2) {
+        return {
+            resonance: this.modules.forceCalculator.resonanceForce(v1, v2),
+            cosine: this.modules.forceCalculator.cosineSimilarity(v1, v2),
+            electromagnetic: this.modules.forceCalculator.electromagneticForce(v1, v2),
+            gravitational: this.modules.forceCalculator.gravitationalAttraction(v1, v2),
+            correlation: this.modules.forceCalculator.correlation(v1, v2),
+            entanglement: this.modules.forceCalculator.quantumEntanglement(v1, v2),
+            harmonicAlignment: this.modules.forceCalculator.harmonicAlignment(v1, v2)
+        };
+    }
 }

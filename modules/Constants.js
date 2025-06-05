@@ -43,5 +43,20 @@ export const Constants = {
     // Force calculation constants
     ELECTROMAGNETIC_CONSTANT: 1.0,
     GRAVITATIONAL_CONSTANT: 1.0,
-    RESONANCE_DAMPING: 0.01
+    RESONANCE_DAMPING: 0.01,
+    
+    // Quantum classification ranges
+    QUANTUM_ENERGY: {
+        HIGH: 1.5,
+        MEDIUM: 0.75,
+        LOW: 0.25
+    },
+    
+    // Force strength classifications
+    FORCE_STRENGTH: {
+        VERY_STRONG: 0.1,
+        STRONG: 0.05,
+        MODERATE: 0.01,
+        WEAK: 0.001
+    }
 };
