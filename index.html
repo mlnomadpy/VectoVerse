@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,25 +44,72 @@
     </div>
     
     <div class="info-panel">
-      <div class="legend">
-        <h3>🧩 Information Atom Legend</h3>
-        <div class="legend-item">
-          <div class="color-box positive"></div>
-          <span>Positive Charge (Excitatory)</span>
+      <div class="concept-explanations">
+        <h3>🎓 Mathematical Concepts</h3>
+        
+        <div class="concept-section">
+          <h4>🧮 Vector Fundamentals</h4>
+          <div class="concept-explanation">
+            A vector is a list of numbers representing direction and magnitude in n-dimensional space.
+          </div>
+          <div class="formula-display">Magnitude: ||v|| = √(v₁² + v₂² + ... + vₙ²)</div>
+          <div class="range-explanation">Always positive - represents vector "strength"</div>
         </div>
-        <div class="legend-item">
-          <div class="color-box negative"></div>
-          <span>Negative Charge (Inhibitory)</span>
+
+        <div class="concept-section">
+          <h4>⚛️ Information Atoms</h4>
+          <div class="legend-item">
+            <div class="color-box positive"></div>
+            <span>Positive Charge (Excitatory Components > 0.1)</span>
+          </div>
+          <div class="legend-item">
+            <div class="color-box negative"></div>
+            <span>Negative Charge (Inhibitory Components < -0.1)</span>
+          </div>
+          <div class="legend-item">
+            <div class="color-box neutral"></div>
+            <span>Neutral State (Components ≈ 0)</span>
+          </div>
         </div>
-        <div class="legend-item">
-          <div class="color-box neutral"></div>
-          <span>Neutral State</span>
+
+        <div class="concept-section">
+          <h4>🔗 Similarity Measures</h4>
+          <div class="concept-explanation">
+            <strong>Cosine Similarity:</strong> Measures directional alignment (-1 to +1)
+          </div>
+          <div class="formula-display">cos(θ) = (u·v)/(||u|| × ||v||)</div>
+          <div class="concept-explanation">
+            <strong>Resonance Force:</strong> Combines alignment with proximity
+          </div>
+          <div class="formula-display">R(u,v) = (u·v)² / (||u-v||² + ε)</div>
+        </div>
+
+        <div class="concept-section">
+          <h4>📊 Information Theory</h4>
+          <div class="concept-explanation">
+            <strong>Entropy:</strong> Measures randomness/diversity of components
+          </div>
+          <div class="formula-display">H(v) = -Σ p(vᵢ) × log₂(p(vᵢ))</div>
+          <div class="range-explanation">Higher = more uniform distribution</div>
+        </div>
+
+        <div class="concept-section">
+          <h4>⚡ Force Analogies</h4>
+          <div class="concept-explanation">
+            <strong>Electromagnetic:</strong> Attraction/repulsion based on dot product
+          </div>
+          <div class="concept-explanation">
+            <strong>Gravitational:</strong> Always attractive, proportional to magnitudes
+          </div>
+          <div class="concept-explanation">
+            <strong>Quantum Entanglement:</strong> Absolute correlation strength (0-1)
+          </div>
         </div>
       </div>
       
       <div class="vector-details">
-        <h3>⚛️ Vector Details</h3>
-        <div id="selected-vector">Click on a vector to see its properties</div>
+        <h3>⚛️ Vector Analysis</h3>
+        <div id="selected-vector">Click on a vector to see its detailed properties and relationships</div>
       </div>
     </div>
   </div>
