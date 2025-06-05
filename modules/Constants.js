@@ -1,4 +1,3 @@
-
 export const Constants = {
     // Colors
     COLORS: {
@@ -6,7 +5,9 @@ export const Constants = {
         NEGATIVE: "#3742fa", 
         NEUTRAL: "#747d8c",
         INPUT: "#ffd700",
-        UPLOADED: "#ffd700"
+        UPLOADED: "#ffd700",
+        PROPERTY_ACCENT: "#4ecdc4",
+        QUANTUM_GOLD: "#ffd700"
     },
     
     // Animation settings
@@ -28,5 +29,19 @@ export const Constants = {
     MAX_DISPLAYED_SIMILARITIES: 5,
     
     // Physics
-    EPSILON: 0.01
+    EPSILON: 0.01,
+    
+    // Mathematical properties
+    ENTROPY_THRESHOLD: 0.1,
+    CORRELATION_STRONG: 0.7,
+    CORRELATION_MODERATE: 0.3,
+    
+    // Information quantum classification
+    EXCITATORY_THRESHOLD: 0.1,
+    INHIBITORY_THRESHOLD: -0.1,
+    
+    // Force calculation constants
+    ELECTROMAGNETIC_CONSTANT: 1.0,
+    GRAVITATIONAL_CONSTANT: 1.0,
+    RESONANCE_DAMPING: 0.01
 };

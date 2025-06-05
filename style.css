@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -434,17 +433,270 @@ button:hover {
   transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .controls {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .info-panel {
-    grid-template-columns: 1fr;
-  }
-  
-  header h1 {
-    font-size: 2em;
-  }
+.property-group {
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  border-left: 3px solid #ffd700;
 }
+
+.property-group h5 {
+  margin: 0 0 10px 0;
+  color: #ffd700;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.property-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.property-label {
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.property-value {
+  font-weight: bold;
+  color: #4ecdc4;
+  font-family: monospace;
+}
+
+.quantum-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.quantum-item {
+  background: rgba(255,255,255,0.1);
+  padding: 8px;
+  border-radius: 5px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.quantum-item.excitatory {
+  border-color: #ff4757;
+  background: rgba(255,71,87,0.1);
+}
+
+.quantum-item.inhibitory {
+  border-color: #3742fa;
+  background: rgba(55,66,250,0.1);
+}
+
+.quantum-item.neutral {
+  border-color: #747d8c;
+  background: rgba(116,125,140,0.1);
+}
+
+.quantum-count {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.quantum-label {
+  display: block;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  margin: 2px 0;
+  opacity: 0.8;
+}
+
+.quantum-energy {
+  display: block;
+  font-size: 0.8em;
+  font-family: monospace;
+  color: #4ecdc4;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.05);
+  padding: 5px 8px;
+  border-radius: 3px;
+}
+
+.stat-label {
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-family: monospace;
+  color: #4ecdc4;
+  font-size: 0.8em;
+}
+
+.dimension-analysis {
+  margin: 8px 0;
+  background: rgba(255,255,255,0.05);
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.dimension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.dimension-name {
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 0.9em;
+}
+
+.dimension-polarity {
+  font-size: 0.7em;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.dimension-polarity.positive {
+  background: #ff4757;
+  color: white;
+}
+
+.dimension-polarity.negative {
+  background: #3742fa;
+  color: white;
+}
+
+.dimension-polarity.neutral {
+  background: #747d8c;
+  color: white;
+}
+
+.dimension-magnitude {
+  font-family: monospace;
+  color: #4ecdc4;
+  font-size: 0.85em;
+}
+
+.dimension-bar-container {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dimension-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.dimension-bar-fill.positive {
+  background: linear-gradient(90deg, #ff4757, #ff6b6b);
+}
+
+.dimension-bar-fill.negative {
+  background: linear-gradient(90deg, #3742fa, #5352ed);
+}
+
+.dimension-bar-fill.neutral {
+  background: linear-gradient(90deg, #747d8c, #a4b0be);
+}
+
+.more-dimensions {
+  font-style: italic;
+  opacity: 0.7;
+  font-size: 0.8em;
+  margin-top: 10px;
+}
+
+.analysis-description {
+  font-size: 0.85em;
+  opacity: 0.8;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.resonance-analysis {
+  background: rgba(255,255,255,0.05);
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border-left: 3px solid #ff6b6b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.resonance-analysis:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+.resonance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.vector-name {
+  color: #ffd700;
+  font-size: 1em;
+}
+
+.rank-badge {
+  background: #ff6b6b;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: bold;
+}
+
+.force-metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-label {
+  font-size: 0.75em;
+  opacity: 0.8;
+}
+
+.metric-value {
+  font-family: monospace;
+  font-size: 0.75em;
+  color: #4ecdc4;
+}
+
+.metric-value.primary {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* ...existing code... */

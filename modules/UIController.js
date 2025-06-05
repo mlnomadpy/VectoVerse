@@ -1,4 +1,3 @@
-
 import { Constants } from './Constants.js';
 
 export class UIController {
@@ -197,63 +196,158 @@ export class UIController {
     generateSelectedVectorHTML(selectedVector, vectors, config) {
         const forceCalculator = this.framework.getModules().forceCalculator;
         const magnitude = forceCalculator.magnitude(selectedVector);
+        const entropy = forceCalculator.informationEntropy(selectedVector);
+        const stability = forceCalculator.nuclearStability(selectedVector);
+        const quantums = forceCalculator.getInformationQuantums(selectedVector);
+        const stats = forceCalculator.getVectorStatistics(selectedVector);
         
         let html = `
             <div class="vector-info">
-                <h4>${selectedVector.isUploaded ? 'Neuron' : 'Vector'} ${selectedVector.id + 1} Properties</h4>
-                <p><strong>Magnitude:</strong> ${magnitude.toFixed(3)}</p>
-                <p><strong>Dimensions:</strong> ${config.dimensions}</p>
+                <h4>${selectedVector.isUploaded ? 'Information Neuron' : 'Vector Atom'} ${selectedVector.id + 1}</h4>
+                
+                <div class="property-group">
+                    <h5>🧮 Mathematical Properties</h5>
+                    <div class="property-row">
+                        <span class="property-label">Magnitude (Nuclear Mass):</span>
+                        <span class="property-value">${magnitude.toFixed(4)}</span>
+                    </div>
+                    <div class="property-row">
+                        <span class="property-label">Information Entropy:</span>
+                        <span class="property-value">${entropy.toFixed(4)} bits</span>
+                    </div>
+                    <div class="property-row">
+                        <span class="property-label">Nuclear Stability:</span>
+                        <span class="property-value">${stability.toFixed(4)}</span>
+                    </div>
+                    <div class="property-row">
+                        <span class="property-label">Dimensions:</span>
+                        <span class="property-value">${config.dimensions}D space</span>
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <h5>⚛️ Information Quantum Distribution</h5>
+                    <div class="quantum-grid">
+                        <div class="quantum-item excitatory">
+                            <span class="quantum-count">${quantums.excitatory}</span>
+                            <span class="quantum-label">Excitatory</span>
+                            <span class="quantum-energy">${quantums.averageExcitation.toFixed(3)}</span>
+                        </div>
+                        <div class="quantum-item inhibitory">
+                            <span class="quantum-count">${quantums.inhibitory}</span>
+                            <span class="quantum-label">Inhibitory</span>
+                            <span class="quantum-energy">${quantums.averageInhibition.toFixed(3)}</span>
+                        </div>
+                        <div class="quantum-item neutral">
+                            <span class="quantum-count">${quantums.neutral}</span>
+                            <span class="quantum-label">Neutral</span>
+                            <span class="quantum-energy">0.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <h5>📊 Statistical Analysis</h5>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Mean:</span>
+                            <span class="stat-value">${stats.mean.toFixed(4)}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Std Dev:</span>
+                            <span class="stat-value">${stats.standardDeviation.toFixed(4)}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Range:</span>
+                            <span class="stat-value">${stats.range.toFixed(4)}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Skewness:</span>
+                            <span class="stat-value">${stats.skewness.toFixed(4)}</span>
+                        </div>
+                    </div>
+                </div>
         `;
         
-        // Show dimensions
+        // Show component dimensions
         const showDims = Math.min(config.dimensions, Constants.MAX_DISPLAYED_DIMENSIONS);
+        html += `<div class="property-group">
+            <h5>🔬 Component Analysis</h5>`;
+        
         for (let i = 0; i < showDims; i++) {
             const component = selectedVector.components[i];
             const absValue = Math.abs(component);
-            const percentage = (absValue / 1) * 100;
+            const percentage = (absValue / 2) * 100; // Normalized to -2 to 2 range
+            const polarity = component > 0.1 ? 'positive' : component < -0.1 ? 'negative' : 'neutral';
             
             html += `
-                <div style="margin: 5px 0; display: flex; align-items: center; gap: 10px;">
-                    <span style="min-width: 30px;">D${i + 1}:</span>
-                    <div style="flex: 1; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; position: relative;">
-                        <div style="width: ${percentage}%; height: 100%; background-color: ${this.getComponentColor(component)}; border-radius: 5px;"></div>
+                <div class="dimension-analysis">
+                    <div class="dimension-header">
+                        <span class="dimension-name">D${i + 1}</span>
+                        <span class="dimension-polarity ${polarity}">${polarity.toUpperCase()}</span>
+                        <span class="dimension-magnitude">${component.toFixed(4)}</span>
                     </div>
-                    <span style="min-width: 60px; text-align: right;">${component.toFixed(3)}</span>
+                    <div class="dimension-bar-container">
+                        <div class="dimension-bar-fill ${polarity}" style="width: ${percentage}%"></div>
+                    </div>
                 </div>
             `;
         }
         
         if (config.dimensions > Constants.MAX_DISPLAYED_DIMENSIONS) {
-            html += `<p><em>... and ${config.dimensions - Constants.MAX_DISPLAYED_DIMENSIONS} more dimensions</em></p>`;
+            html += `<p class="more-dimensions">... and ${config.dimensions - Constants.MAX_DISPLAYED_DIMENSIONS} more dimensions</p>`;
         }
+        html += '</div>';
         
-        // Add similarity rankings
-        html += `<div style="margin-top: 20px;">
-            <h4>🔍 Similarity Rankings</h4>
-            <p><em>Resonance forces with other vectors:</em></p>
+        // Enhanced similarity rankings with quantum properties
+        html += `<div class="property-group">
+            <h5>🌌 Quantum Resonance Analysis</h5>
+            <p class="analysis-description">Interaction forces with other vector atoms:</p>
         `;
         
         const similarities = vectors
             .filter(other => other.id !== selectedVector.id)
             .map(other => ({
                 vector: other,
-                force: forceCalculator.resonanceForce(selectedVector, other),
+                resonanceForce: forceCalculator.resonanceForce(selectedVector, other),
                 cosineSimilarity: forceCalculator.cosineSimilarity(selectedVector, other),
+                correlation: forceCalculator.correlation(selectedVector, other),
+                entanglement: forceCalculator.quantumEntanglement(selectedVector, other),
+                harmonicAlignment: forceCalculator.harmonicAlignment(selectedVector, other),
+                electromagneticForce: forceCalculator.electromagneticForce(selectedVector, other),
+                gravitationalForce: forceCalculator.gravitationalAttraction(selectedVector, other),
                 distance: Math.sqrt(forceCalculator.distanceSquared(selectedVector, other))
             }))
-            .sort((a, b) => b.force - a.force);
+            .sort((a, b) => b.resonanceForce - a.resonanceForce);
         
         similarities.slice(0, Constants.MAX_DISPLAYED_SIMILARITIES).forEach((item, index) => {
             html += `
-                <div style="cursor: pointer; margin: 5px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 5px;" onclick="framework.selectVector(${item.vector.id})">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <strong>${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}</strong>
-                        <span style="background: #ff4757; padding: 2px 8px; border-radius: 10px; font-size: 0.8em;">#${index + 1}</span>
+                <div class="resonance-analysis" onclick="framework.selectVector(${item.vector.id})">
+                    <div class="resonance-header">
+                        <strong class="vector-name">${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}</strong>
+                        <span class="rank-badge">#${index + 1}</span>
                     </div>
-                    <div style="font-size: 0.8em; margin-top: 5px; display: flex; gap: 15px;">
-                        <span title="Resonance Force">⚡ ${item.force.toFixed(4)}</span>
-                        <span title="Cosine Similarity">📐 ${item.cosineSimilarity.toFixed(3)}</span>
-                        <span title="Distance">📏 ${item.distance.toFixed(3)}</span>
+                    <div class="force-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Resonance Force:</span>
+                            <span class="metric-value primary">${item.resonanceForce.toFixed(6)}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Quantum Entanglement:</span>
+                            <span class="metric-value">${item.entanglement.toFixed(4)}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Harmonic Alignment:</span>
+                            <span class="metric-value">${item.harmonicAlignment.toFixed(4)}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Electromagnetic:</span>
+                            <span class="metric-value">${item.electromagneticForce.toFixed(4)}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Gravitational:</span>
+                            <span class="metric-value">${item.gravitationalForce.toFixed(4)}</span>
+                        </div>
                     </div>
                 </div>
             `;
