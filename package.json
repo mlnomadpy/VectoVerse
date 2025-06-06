@@ -1,0 +1,39 @@
+{
+  "name": "vectorverse",
+  "version": "1.0.0",
+  "description": "Advanced vector visualization and analysis platform with mathematical rendering capabilities",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview --port 3000"
+  },
+  "keywords": [
+    "vector",
+    "visualization",
+    "mathematics",
+    "katex",
+    "analysis",
+    "canvas"
+  ],
+  "author": "VectoVerse Team",
+  "license": "MIT",
+  "dependencies": {
+    "katex": "^0.16.9",
+    "d3": "^7.8.5",
+    "three": "^0.159.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.12",
+    "@vitejs/plugin-legacy": "^5.3.0",
+    "terser": "^5.26.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

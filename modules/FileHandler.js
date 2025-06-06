@@ -1,6 +1,7 @@
 export class FileHandler {
     constructor(framework) {
         this.framework = framework;
+        this.ui = null;
     }
 
     handleFileUpload(file) {
@@ -50,5 +51,32 @@ export class FileHandler {
             }
         };
         reader.readAsText(file);
+    }
+
+    exportStateToJson() {
+        const state = this.framework.getState();
+        const data = {
+            config: this.framework.getConfig(),
+            vectors: state.vectors.map(v => ({
+                id: v.id,
+                components: v.components,
+                isUploaded: v.isUploaded,
+                isInput: v.isInput
+            })),
+            inputVector: state.inputVector ? {
+                id: state.inputVector.id,
+                components: state.inputVector.components,
+                isInput: true
+            } : null
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "vectoverse_state.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        this.ui.showToast('State exported successfully!');
     }
 }

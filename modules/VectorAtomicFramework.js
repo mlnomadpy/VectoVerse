@@ -3,69 +3,58 @@ import { ForceCalculator } from './ForceCalculator.js';
 import { UIController } from './UIController.js';
 import { FileHandler } from './FileHandler.js';
 import { AnimationEngine } from './AnimationEngine.js';
-import { Constants } from './Constants.js';
+import { StateManager } from './StateManager.js';
+import { EventBus } from './EventBus.js';
+import { ConfigManager } from './ConfigManager.js';
+import { KeyboardShortcuts } from './KeyboardShortcuts.js';
+import { VectorOperations } from './VectorOperations.js';
+import { AnalysisEngine } from './AnalysisEngine.js';
+import { ThreeJSVisualization } from './ThreeJSVisualization.js';
 
 export class VectorAtomicFramework {
     constructor() {
-        this.state = {
-            vectors: [],
-            inputVector: null,
-            selectedVector: null
-        };
+        // Wait for D3 to be available globally
+        if (typeof window.d3 === 'undefined') {
+            throw new Error('D3.js is not loaded. Please ensure D3 is available globally before initializing VectorAtomicFramework.');
+        }
+        
+        this.eventBus = new EventBus();
+        this.configManager = new ConfigManager();
+        this.stateManager = new StateManager(this);
 
-        this.config = {
-            width: 800,
-            height: 600,
-            dimensions: 4,
-            numVectors: 6,
-            showForces: false
-        };
-
-        this.svg = d3.select("#main-viz")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
-            .attr("viewBox", `0 0 ${this.config.width} ${this.config.height}`);
-
-        // Initialize modules
+        const config = this.configManager.getConfig();
+        this.svg = window.d3.select("#main-viz")
+            .attr("width", config.width)
+            .attr("height", config.height)
+            .attr("viewBox", `0 0 ${config.width} ${config.height}`);        // Initialize modules
         this.modules = {
             forceCalculator: new ForceCalculator(),
             vectorRenderer: new VectorRenderer(this.svg, this),
             uiController: new UIController(this),
             fileHandler: new FileHandler(this),
-            animationEngine: new AnimationEngine(this.svg, this)
+            animationEngine: new AnimationEngine(this.svg, this),
+            keyboardShortcuts: new KeyboardShortcuts(this),
+            vectorOperations: VectorOperations,
+            analysisEngine: new AnalysisEngine(this),
+            threeJSVisualization: null  // Will be initialized when 3D panel is created
         };
+
+        // Pass the ui controller to the file handler
+        this.modules.fileHandler.ui = this.modules.uiController;
 
         this.initialize();
     }
 
     initialize() {
+        this.eventBus.on('stateChanged', () => this.render());
+        this.eventBus.on('configChanged', () => {
+            this.render();
+            this.modules.uiController.updateControls();
+        });
         this.modules.uiController.setupControls();
-        this.generateVectors();
-        this.render();
+        this.stateManager.generateVectors();
         this.modules.animationEngine.start();
-    }
-
-    generateVectors() {
-        this.state.vectors = [];
-        const margin = 80;
-
-        for (let i = 0; i < this.config.numVectors; i++) {
-            const vector = {
-                id: i,
-                components: [],
-                x: Math.random() * (this.config.width - 2 * margin) + margin,
-                y: Math.random() * (this.config.height - 2 * margin) + margin
-            };
-
-            for (let d = 0; d < this.config.dimensions; d++) {
-                vector.components.push((Math.random() - 0.5) * 2);
-            }
-
-            this.state.vectors.push(vector);
-        }
-
-        this.state.selectedVector = null;
-        this.state.inputVector = null;
+        this.modules.keyboardShortcuts.initialize();
     }
 
     render() {
@@ -74,95 +63,119 @@ export class VectorAtomicFramework {
     }
 
     updateConfig(key, value) {
-        this.config[key] = value;
+        this.configManager.updateConfig(key, value);
         if (key === 'dimensions' || key === 'numVectors') {
-            this.generateVectors();
+            this.stateManager.generateVectors();
         }
-        this.render();
+        this.eventBus.emit('configChanged');
+    }
+
+    // Utility method for rendering math formulas
+    renderMath(element = document.body) {
+        if (typeof window.renderMathInElement === 'function') {
+            try {
+                window.renderMathInElement(element, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false,
+                    errorColor: '#cc0000',
+                    strict: false,
+                    trust: true
+                });
+            } catch (error) {
+                console.warn('KaTeX rendering failed:', error);
+            }
+        }
     }
 
     selectVector(vectorId) {
-        this.state.selectedVector = this.state.vectors.find(v => v.id === vectorId);
-        this.modules.vectorRenderer.updateVectorSelection();
-        this.modules.uiController.updateVectorDetails();
+        this.stateManager.selectVector(vectorId);
     }
 
     addInputVector() {
-        const inputVector = {
-            id: 'input',
-            components: [],
-            x: Math.random() * (this.config.width - 100) + 50,
-            y: Math.random() * (this.config.height - 100) + 50,
-            isInput: true
-        };
-
-        for (let d = 0; d < this.config.dimensions; d++) {
-            inputVector.components.push((Math.random() - 0.5) * 2);
-        }
-
-        this.state.inputVector = inputVector;
-        this.render();
+        this.stateManager.addInputVector();
         this.modules.uiController.showInputEditor();
     }
 
-    getState() { 
-        return this.state; 
+    getState() {
+        return this.stateManager.state;
     }
 
-    getConfig() { 
-        return this.config; 
+    getConfig() {
+        return this.configManager.getConfig();
     }
 
-    getModules() { 
-        return this.modules; 
+    getModules() {
+        return this.modules;
     }
 
-    // Convenience methods for accessing calculations
-    calculateMagnitude(vector) {
-        return this.modules.forceCalculator.magnitude(vector);
+    notify(event, data) {
+        this.eventBus.emit(event, data);
     }
 
-    calculateEntropy(vector) {
-        return this.modules.forceCalculator.informationEntropy(vector);
+    // 3D visualization methods
+    initialize3DVisualization(container) {
+        if (this.modules.threeJSVisualization) {
+            this.modules.threeJSVisualization.dispose();
+        }
+        
+        this.modules.threeJSVisualization = new ThreeJSVisualization(container, this);
+        
+        // Subscribe to relevant events
+        this.eventBus.on('vectorsUpdated', () => {
+            if (this.modules.threeJSVisualization) {
+                this.modules.threeJSVisualization.onVectorsUpdated(this.stateManager.getVectors());
+            }
+        });
+        
+        this.eventBus.on('analysisCompleted', (data) => {
+            if (this.modules.threeJSVisualization) {
+                this.modules.threeJSVisualization.onAnalysisCompleted(data);
+            }
+        });
+        
+        this.eventBus.on('vectorSelected', (data) => {
+            if (this.modules.threeJSVisualization) {
+                this.modules.threeJSVisualization.onVectorSelected(data);
+            }
+        });
+        
+        // Initialize with current vectors
+        const vectors = this.stateManager.getVectors();
+        if (vectors.length > 0) {
+            this.modules.threeJSVisualization.onVectorsUpdated(vectors);
+        }
+        
+        return this.modules.threeJSVisualization;
     }
-
-    classifyQuantumCharge(vector) {
-        const quantums = this.modules.forceCalculator.getInformationQuantums(vector);
-        if (quantums.excitatory > quantums.inhibitory) return "Positive (Excitatory)";
-        if (quantums.inhibitory > quantums.excitatory) return "Negative (Inhibitory)";
-        return "Neutral (Balanced)";
+    
+    dispose3DVisualization() {
+        if (this.modules.threeJSVisualization) {
+            this.modules.threeJSVisualization.dispose();
+            this.modules.threeJSVisualization = null;
+        }
     }
-
-    calculateSimilarities(vector) {
-        return this.state.vectors
-            .filter(other => other.id !== vector.id)
-            .map(other => ({
-                index: other.id,
-                similarity: this.modules.forceCalculator.cosineSimilarity(vector, other),
-                resonanceForce: this.modules.forceCalculator.resonanceForce(vector, other),
-                correlation: this.modules.forceCalculator.correlation(vector, other),
-                entanglement: this.modules.forceCalculator.quantumEntanglement(vector, other)
-            }))
-            .sort((a, b) => b.resonanceForce - a.resonanceForce);
+    
+    update3DSettings(settings) {
+        if (this.modules.threeJSVisualization) {
+            this.modules.threeJSVisualization.updateSettings(settings);
+        }
     }
-
-    getQuantumProperties(vector) {
-        return this.modules.forceCalculator.getInformationQuantums(vector);
+    
+    export3DScene() {
+        if (this.modules.threeJSVisualization) {
+            return this.modules.threeJSVisualization.exportScene();
+        }
+        return null;
     }
-
-    getStatisticalProperties(vector) {
-        return this.modules.forceCalculator.getVectorStatistics(vector);
-    }
-
-    calculateAllForces(v1, v2) {
-        return {
-            resonance: this.modules.forceCalculator.resonanceForce(v1, v2),
-            cosine: this.modules.forceCalculator.cosineSimilarity(v1, v2),
-            electromagnetic: this.modules.forceCalculator.electromagneticForce(v1, v2),
-            gravitational: this.modules.forceCalculator.gravitationalAttraction(v1, v2),
-            correlation: this.modules.forceCalculator.correlation(v1, v2),
-            entanglement: this.modules.forceCalculator.quantumEntanglement(v1, v2),
-            harmonicAlignment: this.modules.forceCalculator.harmonicAlignment(v1, v2)
-        };
+    
+    import3DScene(sceneData) {
+        if (this.modules.threeJSVisualization) {
+            this.modules.threeJSVisualization.importScene(sceneData);
+        }
     }
 }

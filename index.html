@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Vectoverse - Interactive Vector Visualization</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css" />  <!-- Dependencies will be handled by Vite -->
 </head>
 <body>
+  <div class="theme-switcher">🌙</div>
+
   <div class="container">
-    <header>
+    <header class="app-header">
       <h1>🌌 Welcome to the Vectoverse</h1>
       <p>An Interactive Atomic-Inspired Framework for Understanding Vector Interactions & Resonance Forces</p>
       <div class="header-info">
@@ -18,102 +19,224 @@
         <span>🎛️ Edit input vectors in real-time</span>
       </div>
     </header>
-    
-    <div class="controls">
-      <div class="control-group">
-        <label>Number of Dimensions:</label>
-        <input type="range" id="dimensions" min="2" max="20" value="4">
-        <span id="dim-value">4</span>
-      </div>
-      <div class="control-group">
-        <label>Number of Vectors:</label>
-        <input type="range" id="vectors" min="2" max="12" value="6">
-        <span id="vec-value">6</span>
-      </div>
-      <button id="regenerate">Generate New Vectors</button>
-      <button id="toggle-forces">Toggle Resonance Forces</button>
-      <div class="file-upload">
-        <input type="file" id="vector-file" accept=".txt" />
-        <label for="vector-file">Upload Vector File</label>
-      </div>
-      <button id="add-input-vector">Add Test Input Vector</button>
-    </div>
-    
-    <div class="visualization">
-      <svg id="main-viz"></svg>
-    </div>
-    
-    <div class="info-panel">
-      <div class="concept-explanations">
-        <h3>🎓 Mathematical Concepts</h3>
+
+    <main class="app-main">
+      <div class="controls-toolbar">
+        <div class="control-group" data-group-name="Configuration">
+          <div class="control-compact" data-tooltip="Number of Dimensions (2-20)">
+            <span class="control-icon">📐</span>
+            <input type="range" id="dimensions" min="2" max="20" value="4">
+            <span class="control-value" id="dim-value">4D</span>
+          </div>
+          <div class="control-compact" data-tooltip="Number of Vectors (2-12)">
+            <span class="control-icon">🎯</span>
+            <input type="range" id="vectors" min="2" max="12" value="6">
+            <span class="control-value" id="vec-value">6</span>
+          </div>
+        </div>
+
+        <div class="control-group" data-group-name="Actions">
+          <button class="btn-compact btn-primary" id="regenerate" data-tooltip="Generate New Random Vectors">
+            <span class="btn-icon">🎲</span>
+            <span class="btn-text">Generate</span>
+          </button>
+          <button class="btn-compact btn-secondary" id="toggle-forces" data-tooltip="Toggle Force Visualization" data-state="off">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">Forces</span>
+            <span class="btn-state">OFF</span>
+          </button>
+          <button class="btn-compact btn-accent" id="add-input-vector" data-tooltip="Add Custom Input Vector">
+            <span class="btn-icon">➕</span>
+            <span class="btn-text">Add Vector</span>
+          </button>
+          <button class="btn-compact btn-secondary" id="run-analysis" data-tooltip="Run Advanced Analysis">
+            <span class="btn-icon">🔬</span>
+            <span class="btn-text">Analyze</span>
+          </button>
+        </div>
+
+        <div class="control-group" data-group-name="File I/O">
+            <div class="file-upload-compact">
+                <input type="file" id="vector-file" accept=".txt,.json,.csv">
+                <label for="vector-file" class="btn-compact btn-utility" data-tooltip="Upload Vector Data (.txt, .json, .csv)">
+                  <span class="btn-icon">📁</span>
+                  <span class="btn-text">Load</span>
+                </label>
+            </div>
+            <button class="btn-compact btn-utility" id="export-json" data-tooltip="Export Current Vectors to JSON">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">Save</span>
+            </button>
+        </div>
         
-        <div class="concept-section">
-          <h4>🧮 Vector Fundamentals</h4>
-          <div class="concept-explanation">
-            A vector is a list of numbers representing direction and magnitude in n-dimensional space.
-          </div>
-          <div class="formula-display">Magnitude: ||v|| = √(v₁² + v₂² + ... + vₙ²)</div>
-          <div class="range-explanation">Always positive - represents vector "strength"</div>
-        </div>
-
-        <div class="concept-section">
-          <h4>⚛️ Information Atoms</h4>
-          <div class="legend-item">
-            <div class="color-box positive"></div>
-            <span>Positive Charge (Excitatory Components > 0.1)</span>
-          </div>
-          <div class="legend-item">
-            <div class="color-box negative"></div>
-            <span>Negative Charge (Inhibitory Components < -0.1)</span>
-          </div>
-          <div class="legend-item">
-            <div class="color-box neutral"></div>
-            <span>Neutral State (Components ≈ 0)</span>
-          </div>
-        </div>
-
-        <div class="concept-section">
-          <h4>🔗 Similarity Measures</h4>
-          <div class="concept-explanation">
-            <strong>Cosine Similarity:</strong> Measures directional alignment (-1 to +1)
-          </div>
-          <div class="formula-display">cos(θ) = (u·v)/(||u|| × ||v||)</div>
-          <div class="concept-explanation">
-            <strong>Resonance Force:</strong> Combines alignment with proximity
-          </div>
-          <div class="formula-display">R(u,v) = (u·v)² / (||u-v||² + ε)</div>
-        </div>
-
-        <div class="concept-section">
-          <h4>📊 Information Theory</h4>
-          <div class="concept-explanation">
-            <strong>Entropy:</strong> Measures randomness/diversity of components
-          </div>
-          <div class="formula-display">H(v) = -Σ p(vᵢ) × log₂(p(vᵢ))</div>
-          <div class="range-explanation">Higher = more uniform distribution</div>
-        </div>
-
-        <div class="concept-section">
-          <h4>⚡ Force Analogies</h4>
-          <div class="concept-explanation">
-            <strong>Electromagnetic:</strong> Attraction/repulsion based on dot product
-          </div>
-          <div class="concept-explanation">
-            <strong>Gravitational:</strong> Always attractive, proportional to magnitudes
-          </div>
-          <div class="concept-explanation">
-            <strong>Quantum Entanglement:</strong> Absolute correlation strength (0-1)
-          </div>
+        <div class="control-group" data-group-name="Help">
+           <button class="btn-compact btn-help" id="show-help" data-tooltip="Show Interactive Tutorial">
+            <span class="btn-icon">❓</span>
+            <span class="btn-text">Help</span>
+          </button>
         </div>
       </div>
+
+      <div class="visualization-container">
+        <svg id="main-viz"></svg>
+      </div>
+    </main>
+
+    <aside class="info-sidebar">
+        <div class="sidebar-panel collapsible" id="concepts-panel">
+            <h3>🎓 Mathematical Concepts</h3>
+            <div class="panel-content">
+              <div class="concept-section">
+                <h4>🧮 Vector Fundamentals</h4>
+                <div class="concept-explanation">
+                  A vector is a list of numbers representing direction and magnitude in n-dimensional space.
+                </div>
+                <div class="formula-display">Magnitude: \( ||v|| = \sqrt{v_1^2 + v_2^2 + \dots + v_n^2} \)</div>
+                <div class="range-explanation">Always positive - represents vector "strength"</div>
+              </div>
       
-      <div class="vector-details">
+              <div class="concept-section">
+                <h4>⚛️ Information Atoms</h4>
+                <div class="legend-item">
+                  <div class="color-box positive"></div>
+                  <span>Positive Charge (Excitatory Components > 0.1)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="color-box negative"></div>
+                  <span>Negative Charge (Inhibitory Components &lt; -0.1)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="color-box neutral"></div>
+                  <span>Neutral State (Components &asymp; 0)</span>
+                </div>
+              </div>
+      
+              <div class="concept-section">
+                <h4>🔗 Similarity Measures</h4>
+                <div class="concept-explanation">
+                  <strong>Cosine Similarity:</strong> Measures directional alignment (-1 to +1)
+                </div>
+                <div class="formula-display">\( \cos(\theta) = \frac{u \cdot v}{||u|| \times ||v||} \)</div>
+                <div class="concept-explanation">
+                  <strong>Resonance Force:</strong> Combines alignment with proximity
+                </div>
+                <div class="formula-display">\( R(u,v) = \frac{(u \cdot v)^2}{||u-v||^2 + \epsilon} \)</div>
+              </div>
+      
+              <div class="concept-section">
+                <h4>📊 Information Theory</h4>
+                <div class="concept-explanation">
+                  <strong>Entropy:</strong> Measures randomness/diversity of components
+                </div>
+                <div class="formula-display">\( H(v) = -\sum p(v_i) \log_2(p(v_i)) \)</div>
+                <div class="range-explanation">Higher = more uniform distribution</div>
+              </div>
+      
+              <div class="concept-section">
+                <h4>⚡ Force Analogies</h4>
+                <div class="concept-explanation">
+                  <strong>Electromagnetic:</strong> Attraction/repulsion based on dot product
+                </div>
+                <div class="concept-explanation">
+                  <strong>Gravitational:</strong> Always attractive, proportional to magnitudes
+                </div>
+                <div class="concept-explanation">
+                  <strong>Quantum Entanglement:</strong> Absolute correlation strength (0-1)
+                </div>
+              </div>
+            </div>
+          </div>
+
+      <div class="sidebar-panel" id="analysis-panel">
         <h3>⚛️ Vector Analysis</h3>
-        <div id="selected-vector">Click on a vector to see its detailed properties and relationships</div>
+        <div id="vector-details-content">
+          <div class="placeholder">Click on a vector to see its detailed properties and relationships.</div>
+        </div>
       </div>
+    </aside>
+  </div>
+
+  <div id="analysis-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-button">&times;</button>
+        <h2>🔬 Advanced Analysis</h2>
+        <div class="analysis-controls">
+            <div class="control-group">
+                <label for="analysis-type">Analysis Type:</label>
+                <select id="analysis-type">
+                    <option value="pca">PCA</option>
+                    <option value="tsne">t-SNE</option>
+                    <option value="kmeans">K-Means Clustering</option>
+                </select>
+            </div>
+            <div id="kmeans-options" class="analysis-options">
+                <label for="kmeans-k">Clusters (K):</label>
+                <input type="number" id="kmeans-k" value="3" min="2">
+            </div>
+            <button id="run-selected-analysis" class="btn-compact btn-primary">Run</button>
+        </div>
+        <div id="analysis-results" class="analysis-results-container">
+            <p>Select an analysis type and click "Run" to see the results.</p>
+        </div>
     </div>
   </div>
-  
+
+  <div id="tutorial-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-button">&times;</button>
+        <h2>Welcome to the Vectoverse!</h2>
+        <p>This is an interactive environment for visualizing n-dimensional vectors as "information atoms".</p>
+        <p><strong>Getting Started:</strong></p>
+        <ul>
+            <li>Use the sliders to set the number of vectors and dimensions.</li>
+            <li>Click <strong>Generate</strong> to start.</li>
+            <li>Click on any vector "atom" to see its detailed analysis.</li>
+            <li>Use the <strong>Forces</strong> button to see how vectors interact.</li>
+            <li>Upload your own data with the <strong>Load</strong> button.</li>
+        </ul>
+    </div>
+  </div>
+
+  <template id="vector-details-template">
+    <div class="vector-info">
+      <div class="vector-header">
+        <h4 id="template-vector-id" class="vector-name">Vector</h4>
+        <div id="template-vector-charge" class="charge-indicator"></div>
+      </div>
+      <div class="vector-stats-grid" id="template-stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Magnitude</span>
+          <span class="stat-value" id="template-magnitude"></span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Entropy</span>
+          <span class="stat-value" id="template-entropy"></span>
+        </div>
+      </div>
+      <div class="vector-components">
+        <h5>Components Visualization (<span id="template-dimensions"></span>D):</h5>
+        <div id="template-components-chart" class="components-chart"></div>
+      </div>
+      <div class="vector-stats-detailed">
+        <h5>Statistical Properties:</h5>
+        <div id="template-stats-list" class="stats-list"></div>
+      </div>
+      <div class="vector-relationships">
+        <div class="relationship-controls">
+          <h5>Rank by:</h5>
+          <select id="relationship-sort-metric" class="control-select">
+            <option value="resonance" selected>Resonance Force</option>
+            <option value="similarity">Cosine Similarity</option>
+            <option value="correlation">Correlation</option>
+            <option value="distance">Euclidean Distance</option>
+          </select>
+        </div>
+        <div id="template-relationships-list" class="relationships-list"></div>
+      </div>
+    </div>
+  </template>
+
+  <!-- KaTeX initialization will be handled by the module system -->
   <script type="module" src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+/* styles/main.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "main sidebar"
+    "main sidebar";
+  grid-template-columns: 1fr 400px;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+.app-header {
+  grid-area: header;
+}
+
+.app-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+} 

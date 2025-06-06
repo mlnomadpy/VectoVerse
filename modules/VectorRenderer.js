@@ -4,8 +4,43 @@ export class VectorRenderer {
     constructor(svg, framework) {
         this.svg = svg;
         this.framework = framework;
+        this.d3 = window.d3; // Get D3 from global scope
+
+        this.framework.eventBus.on('analysisCompleted', (result) => {
+            this.handleAnalysisResults(result);
+        });
     }
     
+    handleAnalysisResults(result) {
+        if (result.type === 'kmeans') {
+            const colors = this.d3.scaleOrdinal(this.d3.schemeCategory10);
+            this.svg.selectAll(".vector-atom")
+                .each(function(d, i) {
+                    const clusterId = result.data.assignments[i];
+                    d3.select(this).select('circle').style('fill', colors(clusterId));
+                });
+        } else if (result.type === 'pca' || result.type === 'tsne') {
+            const projectedData = result.data;
+            const state = this.framework.getState();
+            const config = this.framework.getConfig();
+
+            const xExtent = this.d3.extent(projectedData, d => d[0]);
+            const yExtent = this.d3.extent(projectedData, d => d[1]);
+
+            const xScale = this.d3.scaleLinear().domain(xExtent).range([50, config.width - 50]);
+            const yScale = this.d3.scaleLinear().domain(yExtent).range([50, config.height - 50]);
+
+            this.svg.selectAll(".vector-atom")
+                .each(function(d, i) {
+                    d.x = xScale(projectedData[i][0]);
+                    d.y = yScale(projectedData[i][1]);
+                })
+                .transition()
+                .duration(750)
+                .attr("transform", d => `translate(${d.x}, ${d.y})`);
+        }
+    }
+
     render() {
         this.svg.selectAll("*").remove();
         
@@ -26,7 +61,7 @@ export class VectorRenderer {
     
     renderBackgroundParticles() {
         const config = this.framework.getConfig();
-        const particles = d3.range(30).map(() => ({
+        const particles = this.d3.range(30).map(() => ({
             x: Math.random() * config.width,
             y: Math.random() * config.height,
             r: Math.random() * 2 + 1
@@ -120,7 +155,7 @@ export class VectorRenderer {
         // Main circle with glow effect
         vectorGroups.append("circle")
             .attr("r", d => this.getVectorRadius(d))
-            .attr("fill", d => d.isUploaded ? "rgba(255,215,0,0.2)" : "rgba(255,255,255,0.1)")
+            .attr("fill", d => d.customColor ? d.customColor : (d.isUploaded ? "rgba(255,215,0,0.2)" : "rgba(255,255,255,0.1)"))
             .attr("stroke", d => d.isUploaded ? Constants.COLORS.UPLOADED : "rgba(255,255,255,0.5)")
             .attr("stroke-width", 2)
             .attr("filter", "url(#glow)");
@@ -234,20 +269,16 @@ export class VectorRenderer {
     }
     
     updateVectorSelection() {
-        const state = this.framework.getState();
+        const { selectedVectorId } = this.framework.getState();
         this.svg.selectAll(".vector-atom")
-            .classed("selected", d => d === state.selectedVector);
+            .classed("selected", d => d.id === selectedVectorId);
     }
     
     getVectorRadius(vector) {
-        const forceCalculator = this.framework.getModules().forceCalculator;
-        const magnitude = forceCalculator.magnitude(vector);
+        const magnitude = this.framework.getModules().forceCalculator.magnitude(vector);
         const radius = Math.max(Constants.MIN_VECTOR_RADIUS, Math.min(Constants.MAX_VECTOR_RADIUS, magnitude * 25));
-        
-        if (isNaN(radius) || radius <= 0) {
-            return Constants.MIN_VECTOR_RADIUS;
-        }
-        return radius;
+        const scale = vector.scale || 1.0;
+        return radius * scale;
     }
     
     getComponentColor(value) {

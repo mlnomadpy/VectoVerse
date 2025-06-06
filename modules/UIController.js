@@ -1,390 +1,336 @@
 import { Constants } from './Constants.js';
+// import { ButtonManager } from './ButtonManager.js';
+// import { TabManager } from './TabManager.js';
+// import { ExportManager } from './ExportManager.js';
+// import { MathRenderer } from './MathRenderer.js';
+// import { ControlManager } from './ControlManager.js';
 
 export class UIController {
     constructor(framework) {
         this.framework = framework;
+        this.d3 = window.d3; // Get D3 from global scope
+        // this.buttonManager = new ButtonManager(framework);
+        // this.tabManager = new TabManager(framework);
+        // this.exportManager = new ExportManager(framework);
+        // this.mathRenderer = new MathRenderer(framework);
+        // this.controlManager = new ControlManager(framework);
     }
-    
+
     setupControls() {
         this.setupDimensionsControl();
         this.setupVectorsControl();
         this.setupButtons();
+        this.setupThemeSwitcher();
+        this.setupHelpModal();
+        this.setupAnalysisModal();
+        
+        this.framework.eventBus.on('stateChanged', () => {
+            this.updateVectorDetails();
+            this.updateControls();
+        });
+        
+        this.updateControls();
     }
-    
+
     setupDimensionsControl() {
-        d3.select("#dimensions").on("input", (event) => {
-            const value = +event.target.value;
-            d3.select("#dim-value").text(value);
-            this.framework.updateConfig('dimensions', value);
-        });
+        const dimensionsSlider = document.getElementById('dimensions');
+        const dimValue = document.getElementById('dim-value');
+
+        if (dimensionsSlider) {
+            dimensionsSlider.addEventListener('input', (e) => {
+                const dims = parseInt(e.target.value, 10);
+                dimValue.textContent = `${dims}D`;
+                this.framework.updateConfig('dimensions', dims);
+            });
+        }
     }
-    
+
     setupVectorsControl() {
-        d3.select("#vectors").on("input", (event) => {
-            const value = +event.target.value;
-            d3.select("#vec-value").text(value);
-            this.framework.updateConfig('numVectors', value);
-        });
+        const vectorsSlider = document.getElementById('vectors');
+        const vecValue = document.getElementById('vec-value');
+
+        if (vectorsSlider) {
+            vectorsSlider.addEventListener('input', (e) => {
+                const numVectors = parseInt(e.target.value, 10);
+                vecValue.textContent = numVectors;
+                this.framework.updateConfig('numVectors', numVectors);
+            });
+        }
     }
-    
+
     setupButtons() {
-        d3.select("#regenerate").on("click", () => {
-            this.framework.generateVectors();
-            this.framework.render();
-        });
+        document.getElementById('regenerate')?.addEventListener('click', () => this.framework.stateManager.generateVectors());
         
-        d3.select("#toggle-forces").on("click", () => {
-            const config = this.framework.getConfig();
-            config.showForces = !config.showForces;
-            d3.select("#toggle-forces").text(
-                config.showForces ? "Hide Resonance Forces" : "Show Resonance Forces"
-            );
-            this.framework.render();
-        });
+        const toggleForcesButton = document.getElementById('toggle-forces');
+        if (toggleForcesButton) {
+            toggleForcesButton.addEventListener('click', (e) => {
+                const state = e.currentTarget.dataset.state === 'on' ? 'off' : 'on';
+                e.currentTarget.dataset.state = state;
+                const stateSpan = e.currentTarget.querySelector('.btn-state');
+                if (stateSpan) {
+                    stateSpan.textContent = state.toUpperCase();
+                }
+                this.framework.updateConfig('showForces', state === 'on');
+            });
+        }
         
-        d3.select("#vector-file").on("change", (event) => {
-            this.framework.getModules().fileHandler.handleFileUpload(event.target.files[0]);
-        });
+        document.getElementById('add-input-vector')?.addEventListener('click', () => this.framework.addInputVector());
+        document.getElementById('export-json')?.addEventListener('click', () => this.framework.modules.fileHandler.exportJSON());
         
-        d3.select("#add-input-vector").on("click", () => {
-            this.framework.addInputVector();
+        const vectorFileInput = document.getElementById('vector-file');
+        if (vectorFileInput) {
+            vectorFileInput.addEventListener('change', (e) => this.framework.modules.fileHandler.handleFileUpload(e));
+        }
+    }
+
+    setupThemeSwitcher() {
+        const themeSwitcher = document.querySelector('.theme-switcher');
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener('click', () => {
+                const isLight = document.body.classList.toggle('light-theme');
+                themeSwitcher.textContent = isLight ? '🌑' : '🌙';
+            });
+        }
+    }
+
+    setupHelpModal() {
+        const modal = document.getElementById('tutorial-modal');
+        const showButton = document.getElementById('show-help');
+        const closeButton = modal?.querySelector('.close-button');
+
+        showButton?.addEventListener('click', () => modal?.classList.add('active'));
+        closeButton?.addEventListener('click', () => modal?.classList.remove('active'));
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal?.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
         });
     }
-    
-    showInputEditor() {
-        const state = this.framework.getState();
-        const config = this.framework.getConfig();
+
+    setupAnalysisModal() {
+        const modal = document.getElementById('analysis-modal');
+        const showButton = document.getElementById('run-analysis');
+        const closeButton = modal?.querySelector('.close-button');
+        const analysisTypeSelect = document.getElementById('analysis-type');
+        const kmeansOptions = document.getElementById('kmeans-options');
+        const runButton = document.getElementById('run-selected-analysis');
+
+        showButton?.addEventListener('click', () => modal?.classList.add('active'));
+        closeButton?.addEventListener('click', () => modal?.classList.remove('active'));
         
-        if (!state.inputVector) return;
-        
-        // Remove existing modal if any
-        d3.select(".input-editor-modal").remove();
-        
-        // Create input editor modal
-        const modal = d3.select("body").append("div")
-            .attr("class", "input-editor-modal")
-            .style("position", "fixed")
-            .style("top", "0")
-            .style("left", "0")
-            .style("width", "100%")
-            .style("height", "100%")
-            .style("background", "rgba(0,0,0,0.8)")
-            .style("display", "flex")
-            .style("justify-content", "center")
-            .style("align-items", "center")
-            .style("z-index", "1000");
-        
-        const content = modal.append("div")
-            .attr("class", "input-editor-content")
-            .style("background", "white")
-            .style("padding", "20px")
-            .style("border-radius", "10px")
-            .style("color", "black")
-            .style("max-width", "500px")
-            .style("width", "90%");
-        
-        content.append("h3").text("🎛️ Edit Input Vector Components");
-        
-        const form = content.append("div").attr("class", "input-editor-form");
-        
-        state.inputVector.components.forEach((component, index) => {
-            const row = form.append("div")
-                .style("margin-bottom", "10px")
-                .style("display", "flex")
-                .style("align-items", "center")
-                .style("gap", "10px");
-            
-            row.append("label")
-                .style("min-width", "30px")
-                .text(`D${index + 1}:`);
-            
-            row.append("input")
-                .attr("type", "range")
-                .attr("min", "-2")
-                .attr("max", "2")
-                .attr("step", "0.01")
-                .attr("value", component)
-                .attr("id", `input-dim-${index}`)
-                .style("flex", "1")
-                .on("input", (event) => {
-                    state.inputVector.components[index] = parseFloat(event.target.value);
-                    d3.select(`#input-value-${index}`).text(parseFloat(event.target.value).toFixed(3));
-                    this.framework.render();
-                });
-            
-            row.append("span")
-                .attr("id", `input-value-${index}`)
-                .style("min-width", "60px")
-                .style("text-align", "right")
-                .text(component.toFixed(3));
+        analysisTypeSelect?.addEventListener('change', (e) => {
+            if (e.target.value === 'kmeans') {
+                kmeansOptions.style.display = 'flex';
+            } else {
+                kmeansOptions.style.display = 'none';
+            }
         });
-        
-        const buttons = content.append("div")
-            .style("margin-top", "20px")
-            .style("display", "flex")
-            .style("gap", "10px")
-            .style("justify-content", "center");
-        
-        buttons.append("button")
-            .text("🎲 Randomize")
-            .style("padding", "10px 15px")
-            .style("border", "none")
-            .style("border-radius", "5px")
-            .style("background", "#3742fa")
-            .style("color", "white")
-            .style("cursor", "pointer")
-            .on("click", () => {
-                state.inputVector.components.forEach((_, index) => {
-                    const newValue = (Math.random() - 0.5) * 2;
-                    state.inputVector.components[index] = newValue;
-                    d3.select(`#input-dim-${index}`).property("value", newValue);
-                    d3.select(`#input-value-${index}`).text(newValue.toFixed(3));
-                });
-                this.framework.render();
-            });
-        
-        buttons.append("button")
-            .text("✅ Done")
-            .style("padding", "10px 15px")
-            .style("border", "none")
-            .style("border-radius", "5px")
-            .style("background", "#2ed573")
-            .style("color", "white")
-            .style("cursor", "pointer")
-            .on("click", () => {
-                modal.remove();
-            });
-        
-        buttons.append("button")
-            .text("❌ Remove Vector")
-            .style("padding", "10px 15px")
-            .style("border", "none")
-            .style("border-radius", "5px")
-            .style("background", "#ff4757")
-            .style("color", "white")
-            .style("cursor", "pointer")
-            .on("click", () => {
-                this.framework.getState().inputVector = null;
-                modal.remove();
-                this.framework.render();
-            });
+
+        runButton?.addEventListener('click', () => {
+            const type = analysisTypeSelect.value;
+            this.runAnalysis(type);
+        });
     }
-    
+
+    async runAnalysis(type) {
+        const resultsContainer = document.getElementById('analysis-results');
+        const vectors = this.framework.getState().vectors;
+        resultsContainer.innerHTML = `<p>Running ${type.toUpperCase()}... a feature that is coming soon!</p>`;
+        
+        let result;
+        try {
+            switch (type) {
+                case 'pca':
+                    result = await this.framework.modules.analysisEngine.performPCA(vectors);
+                    break;
+                case 'tsne':
+                    result = await this.framework.modules.analysisEngine.performTSNE(vectors);
+                    break;
+                case 'kmeans':
+                    const k = parseInt(document.getElementById('kmeans-k').value, 10);
+                    result = await this.framework.modules.analysisEngine.performKMeans(vectors, k);
+                    break;
+                default:
+                    throw new Error(`Unknown analysis type: ${type}`);
+            }
+            this.displayAnalysisResults(result);
+        } catch (error) {
+            resultsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        }
+    }
+
+    displayAnalysisResults(result) {
+        const resultsContainer = document.getElementById('analysis-results');
+        let html = `<h4>${result.type.toUpperCase()} Results</h4>`;
+
+        if (result.type === 'pca' || result.type === 'tsne') {
+            html += '<p>Projected data (first 5 points):</p>';
+            html += '<ul>';
+            result.data.slice(0, 5).forEach(point => {
+                html += `<li>[${point.map(p => p.toFixed(4)).join(', ')}]</li>`;
+            });
+            html += '</ul>';
+        } else if (result.type === 'kmeans') {
+            html += '<p>Cluster Assignments:</p>';
+            result.data.clusters.forEach((cluster, i) => {
+                html += `<h5>Cluster ${i + 1} (${cluster.points.length} points)</h5>`;
+            });
+        }
+
+        resultsContainer.innerHTML = html;
+
+        // Optionally, emit an event to update the main visualization
+        this.framework.notify('analysisCompleted', result);
+    }
+
     updateVectorDetails() {
-        const detailsDiv = d3.select("#selected-vector");
-        const state = this.framework.getState();
-        const config = this.framework.getConfig();
+        const selectedVector = this.framework.stateManager.getSelectedVector();
+        const detailsContainer = document.getElementById('vector-details-content');
         
-        if (!state.selectedVector && !state.inputVector) {
-            detailsDiv.html("Click on a vector to see its properties, or add an input vector to see resonance forces");
+        if (!detailsContainer) return;
+
+        if (selectedVector === null) {
+            detailsContainer.innerHTML = `<div class="placeholder">Click on a vector to see its detailed properties and relationships.</div>`;
             return;
         }
+
+        const template = document.getElementById('vector-details-template');
+        if (!template) return;
+
+        const clone = template.content.cloneNode(true);
         
-        let html = '';
-        
-        if (state.selectedVector) {
-            html += this.generateSelectedVectorHTML(state.selectedVector, state.vectors, config);
-        }
-        
-        if (state.inputVector) {
-            html += this.generateInputVectorHTML(state.inputVector, state.vectors);
-        }
-        
-        detailsDiv.html(html);
-    }
-    
-    generateSelectedVectorHTML(selectedVector, vectors, config) {
         const forceCalculator = this.framework.getModules().forceCalculator;
-        const magnitude = forceCalculator.magnitude(selectedVector);
-        const entropy = forceCalculator.informationEntropy(selectedVector);
-        const stability = forceCalculator.nuclearStability(selectedVector);
         const quantums = forceCalculator.getInformationQuantums(selectedVector);
-        const stats = forceCalculator.getVectorStatistics(selectedVector);
-        
-        let html = `
-            <div class="vector-info">
-                <h4>${selectedVector.isUploaded ? 'Information Neuron' : 'Vector Atom'} ${selectedVector.id + 1}</h4>
-                
-                <div class="property-group">
-                    <h5>🧮 Core Properties</h5>
-                    <div class="property-row" data-tooltip="The length/strength of the vector - like atomic nucleus mass">
-                        <span class="property-label">Magnitude:</span>
-                        <span class="property-value">${magnitude.toFixed(4)}</span>
-                    </div>
-                    <div class="property-row" data-tooltip="Information randomness (0 = ordered, high = diverse)">
-                        <span class="property-label">Entropy:</span>
-                        <span class="property-value">${entropy.toFixed(4)} bits</span>
-                    </div>
-                    <div class="property-row" data-tooltip="Magnitude normalized by dimension count">
-                        <span class="property-label">Stability:</span>
-                        <span class="property-value">${stability.toFixed(4)}</span>
-                    </div>
-                    <div class="property-row" data-tooltip="Dimensional space this vector exists in">
-                        <span class="property-label">Dimensions:</span>
-                        <span class="property-value">${config.dimensions}D</span>
-                    </div>
-                </div>
+        let charge = "Neutral (Balanced)";
+        if (quantums.excitatory > quantums.inhibitory) charge = "Positive (Excitatory)";
+        else if (quantums.inhibitory > quantums.excitatory) charge = "Negative (Inhibitory)";
 
-                <div class="property-group">
-                    <h5>⚛️ Quantum Distribution</h5>
-                    <div class="quantum-grid">
-                        <div class="quantum-item excitatory" data-tooltip="Positive components > 0.1 - excitatory influence">
-                            <span class="quantum-count">${quantums.excitatory}</span>
-                            <span class="quantum-label">Excitatory</span>
-                            <span class="quantum-energy">${quantums.averageExcitation.toFixed(3)}</span>
-                        </div>
-                        <div class="quantum-item inhibitory" data-tooltip="Negative components < -0.1 - inhibitory influence">
-                            <span class="quantum-count">${quantums.inhibitory}</span>
-                            <span class="quantum-label">Inhibitory</span>
-                            <span class="quantum-energy">${quantums.averageInhibition.toFixed(3)}</span>
-                        </div>
-                        <div class="quantum-item neutral" data-tooltip="Components near zero - minimal influence">
-                            <span class="quantum-count">${quantums.neutral}</span>
-                            <span class="quantum-label">Neutral</span>
-                            <span class="quantum-energy">0.000</span>
-                        </div>
-                    </div>
-                </div>
+        const chargeIndicator = clone.querySelector('.charge-indicator');
+        if (chargeIndicator) {
+            if (charge.includes('Positive')) chargeIndicator.style.background = '#4ecdc4';
+            else if (charge.includes('Negative')) chargeIndicator.style.background = '#f06292';
+            else chargeIndicator.style.background = '#6c757d';
+        }
 
-                <div class="property-group">
-                    <h5>📊 Statistics</h5>
-                    <div class="stats-grid">
-                        <div class="stat-item" data-tooltip="Average value of all components">
-                            <span class="stat-label">Mean:</span>
-                            <span class="stat-value">${stats.mean.toFixed(4)}</span>
-                        </div>
-                        <div class="stat-item" data-tooltip="Spread measure - how diverse the components are">
-                            <span class="stat-label">Std Dev:</span>
-                            <span class="stat-value">${stats.standardDeviation.toFixed(4)}</span>
-                        </div>
-                        <div class="stat-item" data-tooltip="Difference between largest and smallest components">
-                            <span class="stat-label">Range:</span>
-                            <span class="stat-value">${stats.range.toFixed(4)}</span>
-                        </div>
-                        <div class="stat-item" data-tooltip="Asymmetry: >0 right-skewed, <0 left-skewed">
-                            <span class="stat-label">Skewness:</span>
-                            <span class="stat-value">${stats.skewness.toFixed(4)}</span>
-                        </div>
-                    </div>
-                </div>
-        `;
-        
-        // Compact component display
-        const showDims = Math.min(config.dimensions, Constants.MAX_DISPLAYED_DIMENSIONS);
-        html += `<div class="property-group ${config.dimensions > 6 ? 'scrollable' : ''}">
-            <h5>🔬 Components</h5>`;
-        
-        for (let i = 0; i < showDims; i++) {
-            const component = selectedVector.components[i];
-            const absValue = Math.abs(component);
-            const percentage = (absValue / 2) * 100;
-            const polarity = component > 0.1 ? 'positive' : component < -0.1 ? 'negative' : 'neutral';
-            const polarityDesc = component > 0.1 ? 'Strong positive influence' : 
-                               component < -0.1 ? 'Strong negative influence' : 'Minimal influence';
+        clone.querySelector('.vector-name').textContent = `Vector ${selectedVector.id}`;
+        clone.querySelector('#template-magnitude').textContent = forceCalculator.magnitude(selectedVector).toFixed(4);
+        clone.querySelector('#template-entropy').textContent = forceCalculator.informationEntropy(selectedVector).toFixed(4);
+        clone.querySelector('#template-dimensions').textContent = selectedVector.components.length;
+
+        this.renderComponentChart(clone.querySelector('#template-components-chart'), selectedVector.components);
+        this.renderStatsList(clone.querySelector('#template-stats-list'), forceCalculator.getVectorStatistics(selectedVector));
+
+        const relationshipsList = clone.querySelector('#template-relationships-list');
+        const sortMetricSelect = clone.querySelector('#relationship-sort-metric');
+
+        if (relationshipsList && sortMetricSelect) {
+            const similarities = this.calculateSimilarities(selectedVector);
             
-            html += `
-                <div class="dimension-analysis" data-tooltip="D${i+1}: ${polarityDesc} (${component.toFixed(4)})">
-                    <div class="dimension-header">
-                        <span class="dimension-name">D${i + 1}</span>
-                        <span class="dimension-polarity ${polarity}">${polarity.charAt(0).toUpperCase()}</span>
-                        <span class="dimension-magnitude">${component.toFixed(3)}</span>
+            const renderRelationships = () => {
+                const metric = sortMetricSelect.value;
+                
+                // For distance, smaller is better, so we reverse the sort order.
+                if (metric === 'distance') {
+                    similarities.sort((a, b) => a[metric] - b[metric]);
+                } else {
+                    similarities.sort((a, b) => b[metric] - a[metric]);
+                }
+
+                relationshipsList.innerHTML = similarities.slice(0, 5).map(s => `
+                    <div class="relationship-item">
+                        <div class="relationship-target">vs V${s.index}</div>
+                        <div class="relationship-scores">
+                            <div>Resonance: <span class="score-value">${s.resonance.toFixed(3)}</span></div>
+                            <div>Similarity: <span class="score-value">${s.similarity.toFixed(3)}</span></div>
+                            <div>Correlation: <span class="score-value">${s.correlation.toFixed(3)}</span></div>
+                            <div>Distance: <span class="score-value">${s.distance.toFixed(3)}</span></div>
+                        </div>
                     </div>
-                    <div class="dimension-bar-container">
-                        <div class="dimension-bar-fill ${polarity}" style="width: ${percentage}%"></div>
-                    </div>
-                </div>
-            `;
+                `).join('');
+            };
+
+            sortMetricSelect.addEventListener('change', renderRelationships);
+            renderRelationships(); // Initial render
         }
         
-        if (config.dimensions > Constants.MAX_DISPLAYED_DIMENSIONS) {
-            html += `<p class="more-dimensions">... ${config.dimensions - Constants.MAX_DISPLAYED_DIMENSIONS} more dimensions</p>`;
-        }
-        html += '</div>';
-        
-        // Compact similarity rankings
-        html += `<div class="property-group scrollable">
-            <h5>🌌 Resonance Rankings</h5>
-        `;
-        
-        const similarities = vectors
-            .filter(other => other.id !== selectedVector.id)
-            .map(other => ({
-                vector: other,
-                resonanceForce: forceCalculator.resonanceForce(selectedVector, other),
-                cosineSimilarity: forceCalculator.cosineSimilarity(selectedVector, other),
-                correlation: forceCalculator.correlation(selectedVector, other),
-                entanglement: forceCalculator.quantumEntanglement(selectedVector, other),
-                harmonicAlignment: forceCalculator.harmonicAlignment(selectedVector, other),
-                electromagneticForce: forceCalculator.electromagneticForce(selectedVector, other),
-                gravitationalForce: forceCalculator.gravitationalAttraction(selectedVector, other)
-            }))
-            .sort((a, b) => b.resonanceForce - a.resonanceForce);
-        
-        similarities.slice(0, Constants.MAX_DISPLAYED_SIMILARITIES).forEach((item, index) => {
-            html += `
-                <div class="resonance-analysis" onclick="framework.selectVector(${item.vector.id})" 
-                     data-tooltip="Click to analyze ${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}. Resonance: ${item.resonanceForce.toFixed(6)}">
-                    <div class="resonance-header">
-                        <strong class="vector-name">${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}</strong>
-                        <span class="rank-badge">#${index + 1}</span>
-                    </div>
-                    <div class="force-metrics">
-                        <div class="metric-row">
-                            <span class="metric-label">Resonance:</span>
-                            <span class="metric-value primary">${item.resonanceForce.toFixed(6)}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Entanglement:</span>
-                            <span class="metric-value">${item.entanglement.toFixed(4)}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">EM Force:</span>
-                            <span class="metric-value">${item.electromagneticForce.toFixed(4)}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += '</div></div>';
-        return html;
+        detailsContainer.innerHTML = '';
+        detailsContainer.appendChild(clone);
     }
-    
-    generateInputVectorHTML(inputVector, vectors) {
+
+    renderComponentChart(container, components) {
+        if (!container) return;
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = container.clientWidth - margin.left - margin.right;
+        const height = container.clientHeight - margin.top - margin.bottom;
+
+        const svg = this.d3.select(container).append('svg')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('viewBox', `0 0 ${container.clientWidth} ${container.clientHeight}`)
+            .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+
+        const xScale = this.d3.scaleBand().range([0, width]).padding(0.1).domain(components.map((d, i) => i));
+        const yScale = this.d3.scaleLinear().range([height, 0]).domain(this.d3.extent(components));
+
+        svg.selectAll('.bar')
+            .data(components)
+            .enter().append('rect')
+            .attr('class', 'bar')
+            .attr('x', (d, i) => xScale(i))
+            .attr('width', xScale.bandwidth())
+            .attr('y', d => yScale(Math.max(0, d)))
+            .attr('height', d => Math.abs(yScale(d) - yScale(0)))
+            .attr('fill', d => d >= 0 ? '#4ecdc4' : '#f06292');
+    }
+
+    renderStatsList(container, stats) {
+        if (!container) return;
+        let html = '';
+        for (const [key, value] of Object.entries(stats)) {
+            html += `
+                <div class="stat-item-detailed">
+                    <div class="stat-label-detailed">${key}</div>
+                    <div class="stat-value-detailed">${value.toFixed(4)}</div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    calculateSimilarities(vector) {
         const forceCalculator = this.framework.getModules().forceCalculator;
-        const magnitude = forceCalculator.magnitude(inputVector);
-        
-        let html = `
-            <div class="vector-info" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4>🌟 Input Vector Analysis</h4>
-                    <button onclick="framework.getModules().uiController.showInputEditor()" style="padding: 5px 10px; background: #ffd700; color: black; border: none; border-radius: 3px; cursor: pointer;">✏️ Edit</button>
-                </div>
-                <p><strong>Magnitude:</strong> ${magnitude.toFixed(3)}</p>
-                <p><strong>Resonance Forces with Neurons:</strong></p>
-        `;
-        
-        const forceData = vectors.map(v => ({
-            vector: v,
-            force: forceCalculator.resonanceForce(inputVector, v)
-        })).sort((a, b) => b.force - a.force);
-        
-        forceData.slice(0, Constants.MAX_DISPLAYED_SIMILARITIES).forEach((item, index) => {
-            html += `
-                <div style="font-size: 0.9em; margin: 2px 0; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 3px;">
-                    <strong>${item.vector.isUploaded ? 'N' : 'V'}${item.vector.id + 1}:</strong> 
-                    <span style="color: #ffd700">${item.force.toFixed(4)}</span>
-                    ${index === 0 ? '<span style="color: #ff4757"> (Strongest)</span>' : ''}
-                </div>
-            `;
-        });
-        
-        html += '</div>';
-        return html;
+        return this.framework.getState().vectors
+            .filter(other => other.id !== vector.id)
+            .map(other => ({
+                index: other.id,
+                similarity: forceCalculator.cosineSimilarity(vector, other),
+                resonance: forceCalculator.resonanceForce(vector, other),
+                correlation: forceCalculator.correlation(vector, other),
+                distance: forceCalculator.euclideanDistance(vector, other)
+            }));
     }
     
-    getComponentColor(value) {
-        if (Math.abs(value) < 0.1) return Constants.COLORS.NEUTRAL;
-        return value > 0 ? Constants.COLORS.POSITIVE : Constants.COLORS.NEGATIVE;
+    updateControls() {
+        const config = this.framework.getConfig();
+        
+        const dimensionsSlider = document.getElementById('dimensions');
+        const dimValue = document.getElementById('dim-value');
+        if (dimensionsSlider && dimValue) {
+            dimensionsSlider.value = config.dimensions;
+            dimValue.textContent = `${config.dimensions}D`;
+        }
+
+        const vectorsSlider = document.getElementById('vectors');
+        const vecValue = document.getElementById('vec-value');
+        if (vectorsSlider && vecValue) {
+            vectorsSlider.value = config.numVectors;
+            vecValue.textContent = config.numVectors;
+        }
     }
 }
