@@ -1,5 +1,6 @@
 import { VectorRenderer } from './VectorRenderer.js';
 import { ForceCalculator } from './ForceCalculator.js';
+import { EnhancedForceCalculator } from './EnhancedForceCalculator.js';
 import { UIController } from './UIController.js';
 import { FileHandler } from './FileHandler.js';
 import { AnimationEngine } from './AnimationEngine.js';
@@ -10,6 +11,9 @@ import { KeyboardShortcuts } from './KeyboardShortcuts.js';
 import { VectorOperations } from './VectorOperations.js';
 import { AnalysisEngine } from './AnalysisEngine.js';
 import { ThreeJSVisualization } from './ThreeJSVisualization.js';
+import { PeriodicTableVisualization } from './PeriodicTableVisualization.js';
+import { NeuralNetworkMode } from './NeuralNetworkMode.js';
+import { VectorAnalysisStudio } from './VectorAnalysisStudio.js';
 
 export class VectorAtomicFramework {
     constructor() {
@@ -28,7 +32,7 @@ export class VectorAtomicFramework {
             .attr("height", config.height)
             .attr("viewBox", `0 0 ${config.width} ${config.height}`);        // Initialize modules
         this.modules = {
-            forceCalculator: new ForceCalculator(),
+            forceCalculator: new EnhancedForceCalculator(), // Use enhanced calculator
             vectorRenderer: new VectorRenderer(this.svg, this),
             uiController: new UIController(this),
             fileHandler: new FileHandler(this),
@@ -36,19 +40,29 @@ export class VectorAtomicFramework {
             keyboardShortcuts: new KeyboardShortcuts(this),
             vectorOperations: VectorOperations,
             analysisEngine: new AnalysisEngine(this),
-            threeJSVisualization: null  // Will be initialized when 3D panel is created
+            threeJSVisualization: null,  // Will be initialized when 3D panel is created
+            periodicTableVisualization: null, // Will be initialized with container
+            neuralNetworkMode: new NeuralNetworkMode(this),
+            vectorAnalysisStudio: null  // Will be initialized after setup
         };
 
         // Pass the ui controller to the file handler
         this.modules.fileHandler.ui = this.modules.uiController;
 
+        // Initialize the Vector Analysis Studio after all modules are set up
+        this.modules.vectorAnalysisStudio = new VectorAnalysisStudio(this);
+
         this.initialize();
     }
 
     initialize() {
-        this.eventBus.on('stateChanged', () => this.render());
+        this.eventBus.on('stateChanged', (eventData) => {
+            // Determine if we need a full re-render based on the event type
+            const needsFullRender = eventData && eventData.fullRender;
+            this.render(needsFullRender);
+        });
         this.eventBus.on('configChanged', () => {
-            this.render();
+            this.render(true); // Config changes always need full re-render
             this.modules.uiController.updateControls();
         });
         this.modules.uiController.setupControls();
@@ -57,8 +71,8 @@ export class VectorAtomicFramework {
         this.modules.keyboardShortcuts.initialize();
     }
 
-    render() {
-        this.modules.vectorRenderer.render();
+    render(forceFullRender = false) {
+        this.modules.vectorRenderer.render(forceFullRender);
         this.modules.uiController.updateVectorDetails();
     }
 
@@ -97,8 +111,7 @@ export class VectorAtomicFramework {
     }
 
     addInputVector() {
-        this.stateManager.addInputVector();
-        this.modules.uiController.showInputEditor();
+        this.modules.uiController.showAddVectorModal();
     }
 
     getState() {
@@ -177,5 +190,96 @@ export class VectorAtomicFramework {
         if (this.modules.threeJSVisualization) {
             this.modules.threeJSVisualization.importScene(sceneData);
         }
+    }
+
+    // Periodic Table methods
+    initializePeriodicTable(container) {
+        if (this.modules.periodicTableVisualization) {
+            // Remove existing periodic table
+            this.modules.periodicTableVisualization = null;
+        }
+        
+        this.modules.periodicTableVisualization = new PeriodicTableVisualization(container, this);
+        return this.modules.periodicTableVisualization;
+    }
+
+    // Neural Network Mode methods
+    activateNeuralNetworkMode(inputVectorId = null) {
+        this.modules.neuralNetworkMode.activate(inputVectorId);
+    }
+
+    deactivateNeuralNetworkMode() {
+        this.modules.neuralNetworkMode.deactivate();
+    }
+
+    isNeuralModeActive() {
+        return this.modules.neuralNetworkMode.isNeuralModeActive();
+    }
+
+    setActivationFunction(functionType) {
+        this.modules.forceCalculator.activationFunction = functionType;
+        // Update neural network if active
+        if (this.isNeuralModeActive()) {
+            this.modules.neuralNetworkMode.updateNeuralNetwork();
+        }
+        this.notify('activationFunctionChanged', { function: functionType });
+    }
+
+    getActivationFunction() {
+        return this.modules.forceCalculator.activationFunction;
+    }
+
+    setLearningRate(rate) {
+        this.modules.forceCalculator.learningRate = rate;
+        // Update neural network if active
+        if (this.isNeuralModeActive()) {
+            this.modules.neuralNetworkMode.updateNeuralNetwork();
+        }
+        this.notify('learningRateChanged', { rate: rate });
+    }
+
+    getLearningRate() {
+        return this.modules.forceCalculator.learningRate;
+    }
+
+    getAvailableActivationFunctions() {
+        return ['sigmoid', 'tanh', 'relu', 'leaky_relu', 'softplus', 'swish', 'softmax', 'softermax', 'soft_sigmoid'];
+    }
+
+    // Enhanced configuration methods
+    setForceType(forceType) {
+        this.updateConfig('forceType', forceType);
+    }
+
+    getAvailableForceTypes() {
+        return ['resonance', 'cosine', 'correlation', 'euclidean', 'manhattan', 'quantum'];
+    }
+
+    // Enhanced vector analysis
+    getEnhancedVectorAnalysis(vectorId) {
+        const vector = this.stateManager.state.vectors.find(v => v.id === vectorId);
+        if (!vector) return null;
+
+        const allVectors = this.stateManager.state.vectors;
+        return this.modules.forceCalculator.getEnhancedVectorStatistics(vector, allVectors);
+    }
+
+    // Export enhanced data
+    exportEnhancedData() {
+        const state = this.getState();
+        const config = this.getConfig();
+        
+        return {
+            vectors: state.vectors,
+            inputVector: state.inputVector,
+            selectedVectorId: state.selectedVectorId,
+            config: config,
+            periodicTableData: this.modules.periodicTableVisualization ? 
+                this.modules.periodicTableVisualization.exportPeriodicData() : null,
+            neuralNetworkData: this.modules.neuralNetworkMode.isNeuralModeActive() ? 
+                this.modules.neuralNetworkMode.exportNeuralNetworkData() : null,
+            timestamp: new Date().toISOString(),
+            version: '2.0.0'
+        };
     }
 }

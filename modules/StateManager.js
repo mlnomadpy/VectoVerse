@@ -43,7 +43,7 @@ export class StateManager {
 
         this.state.selectedVectorId = null;
         this.state.inputVector = null;
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: true, reason: 'vectorsGenerated' });
     }
 
     selectVector(vectorId) {
@@ -52,7 +52,7 @@ export class StateManager {
         } else {
             this.state.selectedVectorId = vectorId;
         }
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: false, reason: 'vectorSelected' });
     }
 
     addInputVector() {
@@ -70,12 +70,12 @@ export class StateManager {
         }
 
         this.state.inputVector = inputVector;
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: false, reason: 'inputVectorAdded' });
     }
 
     removeInputVector() {
         this.state.inputVector = null;
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: false, reason: 'inputVectorRemoved' });
     }
 
     randomizeInputVector(callback) {
@@ -83,7 +83,7 @@ export class StateManager {
         for (let i = 0; i < this.state.inputVector.components.length; i++) {
             this.state.inputVector.components[i] = (Math.random() - 0.5) * 2;
         }
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: false, reason: 'inputVectorRandomized' });
         if (callback) {
             callback(this.state.inputVector.components);
         }
@@ -92,7 +92,7 @@ export class StateManager {
     updateInputVectorComponent(index, value) {
         if (!this.state.inputVector) return;
         this.state.inputVector.components[index] = value;
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: false, reason: 'inputVectorComponentUpdated' });
     }
 
     removeVector(vectorId) {
@@ -100,14 +100,14 @@ export class StateManager {
         if (this.state.selectedVectorId === vectorId) {
             this.state.selectedVectorId = null;
         }
-        this.framework.notify('stateChanged');
+        this.framework.notify('stateChanged', { fullRender: true, reason: 'vectorRemoved' });
     }
 
     setVectorCustomColor(vectorId, color) {
         const vector = this.state.vectors.find(v => v.id === vectorId);
         if (vector) {
             vector.customColor = color;
-            this.framework.notify('stateChanged');
+            this.framework.notify('stateChanged', { fullRender: false, reason: 'vectorColorChanged' });
         }
     }
 
@@ -115,7 +115,22 @@ export class StateManager {
         const vector = this.state.vectors.find(v => v.id === vectorId);
         if (vector) {
             vector.scale = scale;
-            this.framework.notify('stateChanged');
+            this.framework.notify('stateChanged', { fullRender: false, reason: 'vectorScaleChanged' });
         }
+    }
+
+    addCustomVector(components) {
+        const config = this.framework.getConfig();
+        const margin = 80;
+        const vector = {
+            id: this.state.vectors.length,
+            components: components,
+            x: Math.random() * (config.width - 2 * margin) + margin,
+            y: Math.random() * (config.height - 2 * margin) + margin,
+            isCustom: true
+        };
+        this.state.vectors.push(vector);
+        this.framework.updateConfig('numVectors', this.state.vectors.length);
+        this.framework.notify('stateChanged', { fullRender: true, reason: 'customVectorAdded' });
     }
 } 

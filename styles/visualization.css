@@ -14,4 +14,102 @@
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* Vector hover and interaction improvements */
+.vector-atom {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: all;
+}
+
+.vector-atom:hover {
+  filter: brightness(1.2);
+}
+
+.vector-atom:hover circle {
+  stroke-width: 3 !important;
+  transition: stroke-width 0.2s ease;
+}
+
+.vector-atom.selected {
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+}
+
+.vector-atom.selected circle {
+  stroke-width: 4 !important;
+  stroke: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Force lines */
+.force-line {
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.force-line.strong {
+  opacity: 0.8 !important;
+}
+
+/* Input vector animations */
+.input-vector .input-pulse {
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+}
+
+/* Tooltip styles */
+.vector-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: monospace;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  white-space: nowrap;
+  max-width: 250px;
+  display: none;
+}
+
+.vector-tooltip strong {
+  color: #4ecdc4;
+}
+
+/* Background particles */
+.bg-particle {
+  pointer-events: none;
+  opacity: 0.3;
+  transition: opacity 1s ease;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .vector-atom,
+  .force-line,
+  .bg-particle {
+    transition: none;
+  }
+  
+  .input-pulse {
+    animation: none;
+  }
 } 

@@ -53,47 +53,60 @@ export class ExportManager {
         const state = this.framework.getState();
         const vectors = state.vectors;
         
-        if (vectors.length === 0) return;
+        if (vectors.length === 0) {
+            throw new Error('No vectors to export');
+        }
         
         const dimensions = vectors[0].components.length;
         
-        // Create header
-        const headers = ['id', 'x', 'y', 'magnitude', 'entropy'];
+        // Create header with metadata
+        const headers = [
+            'vector_id', 'type', 'x_position', 'y_position', 
+            'magnitude', 'entropy', 'custom_color'
+        ];
+        
+        // Add dimension headers
         for (let i = 0; i < dimensions; i++) {
-            headers.push(`dim_${i}`);
+            headers.push(`component_${i + 1}`);
         }
         
-        // Create rows
+        // Create rows with comprehensive data
         const rows = [headers.join(',')];
         
         vectors.forEach(vector => {
+            const forceCalculator = this.framework.getModules().forceCalculator;
             const row = [
                 vector.id,
+                vector.isUploaded ? 'uploaded' : vector.isCustom ? 'custom' : 'generated',
                 vector.x.toFixed(2),
                 vector.y.toFixed(2),
-                this.framework.calculateMagnitude(vector.components).toFixed(4),
-                this.framework.calculateEntropy(vector.components).toFixed(4),
-                ...vector.components.map(c => c.toFixed(4))
+                forceCalculator.magnitude(vector).toFixed(6),
+                forceCalculator.informationEntropy(vector).toFixed(6),
+                vector.customColor || 'default',
+                ...vector.components.map(c => c.toFixed(6))
             ];
             rows.push(row.join(','));
         });
         
         // Add input vector if exists
         if (state.inputVector) {
+            const forceCalculator = this.framework.getModules().forceCalculator;
             const inputRow = [
+                'input',
                 'input',
                 state.inputVector.x.toFixed(2),
                 state.inputVector.y.toFixed(2),
-                this.framework.calculateMagnitude(state.inputVector.components).toFixed(4),
-                this.framework.calculateEntropy(state.inputVector.components).toFixed(4),
-                ...state.inputVector.components.map(c => c.toFixed(4))
+                forceCalculator.magnitude(state.inputVector).toFixed(6),
+                forceCalculator.informationEntropy(state.inputVector).toFixed(6),
+                'input',
+                ...state.inputVector.components.map(c => c.toFixed(6))
             ];
             rows.push(inputRow.join(','));
         }
         
         this.downloadFile(
             rows.join('\n'),
-            'vectoverse-vectors.csv',
+            `vectoverse-data-${new Date().toISOString().slice(0, 10)}.csv`,
             'text/csv'
         );
     }
@@ -531,5 +544,159 @@ print(f"Average magnitude: {np.mean([calculate_magnitude(v) for v in vectors]):.
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Export analysis results in various formats
+     */
+    exportAnalysisResults(analysisResult, format = 'json') {
+        if (!analysisResult) {
+            throw new Error('No analysis results to export');
+        }
+
+        switch (format) {
+            case 'json':
+                this.downloadFile(
+                    JSON.stringify(analysisResult, null, 2),
+                    `vectoverse-analysis-${analysisResult.type}-${Date.now()}.json`,
+                    'application/json'
+                );
+                break;
+            case 'csv':
+                this.exportAnalysisCSV(analysisResult);
+                break;
+            case 'txt':
+                this.exportAnalysisText(analysisResult);
+                break;
+            default:
+                throw new Error(`Unsupported export format: ${format}`);
+        }
+    }
+
+    exportAnalysisCSV(result) {
+        let csvContent = '';
+        
+        if (result.type === 'pca') {
+            csvContent = 'Vector_ID,PC1,PC2\n';
+            result.data.forEach((coords, i) => {
+                csvContent += `${i},${coords[0]},${coords[1]}\n`;
+            });
+        } else if (result.type === 'tsne') {
+            csvContent = 'Vector_ID,Embedding_X,Embedding_Y\n';
+            result.data.forEach((coords, i) => {
+                csvContent += `${i},${coords[0]},${coords[1]}\n`;
+            });
+        } else if (result.type === 'kmeans') {
+            csvContent = 'Vector_ID,Cluster_ID\n';
+            result.data.assignments.forEach((clusterId, i) => {
+                csvContent += `${i},${clusterId}\n`;
+            });
+        }
+
+        this.downloadFile(
+            csvContent,
+            `vectoverse-analysis-${result.type}.csv`,
+            'text/csv'
+        );
+    }
+
+    exportAnalysisText(result) {
+        let textContent = `VectoVerse Analysis Report - ${result.type.toUpperCase()}\n`;
+        textContent += `Generated: ${new Date(result.timestamp).toLocaleString()}\n`;
+        textContent += '='.repeat(50) + '\n\n';
+
+        if (result.type === 'pca') {
+            textContent += `Principal Component Analysis Results:\n`;
+            textContent += `Explained Variance: ${result.explainedVariance.map(v => (v * 100).toFixed(2) + '%').join(', ')}\n`;
+            textContent += `Total Variance Explained: ${(result.explainedVariance.reduce((sum, v) => sum + v, 0) * 100).toFixed(2)}%\n\n`;
+        } else if (result.type === 'kmeans') {
+            textContent += `K-Means Clustering Results:\n`;
+            textContent += `Number of Clusters: ${result.data.k}\n`;
+            textContent += `Iterations: ${result.data.iterations}\n`;
+            textContent += `Converged: ${result.data.converged ? 'Yes' : 'No'}\n`;
+            textContent += `Silhouette Score: ${result.data.silhouetteScore.toFixed(4)}\n\n`;
+            
+            result.data.clusters.forEach((cluster, i) => {
+                textContent += `Cluster ${i + 1}: ${cluster.size} vectors\n`;
+            });
+        }
+
+        this.downloadFile(
+            textContent,
+            `vectoverse-analysis-${result.type}.txt`,
+            'text/plain'
+        );
+    }
+
+    /**
+     * Export configuration and session data
+     */
+    exportSession() {
+        const state = this.framework.getState();
+        const config = this.framework.getConfig();
+        
+        const sessionData = {
+            metadata: {
+                version: "1.2",
+                timestamp: new Date().toISOString(),
+                source: "VectoVerse Session Export"
+            },
+            config: {
+                dimensions: config.dimensions,
+                numVectors: config.numVectors,
+                showForces: config.showForces,
+                theme: localStorage.getItem('vectoverse-theme') || 'dark'
+            },
+            vectors: state.vectors.map(v => ({
+                id: v.id,
+                components: v.components,
+                position: { x: v.x, y: v.y },
+                type: v.isUploaded ? 'uploaded' : v.isCustom ? 'custom' : 'generated',
+                customColor: v.customColor,
+                scale: v.scale
+            })),
+            inputVector: state.inputVector ? {
+                components: state.inputVector.components,
+                position: { x: state.inputVector.x, y: state.inputVector.y }
+            } : null,
+            selectedVectorId: state.selectedVectorId
+        };
+
+        this.downloadFile(
+            JSON.stringify(sessionData, null, 2),
+            `vectoverse-session-${new Date().toISOString().slice(0, 10)}.json`,
+            'application/json'
+        );
+    }
+
+    /**
+     * Show export preview before download
+     */
+    showExportPreview(data, filename, format) {
+        const preview = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        const truncated = preview.length > 1000 ? preview.substring(0, 1000) + '\n...[truncated]' : preview;
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content export-preview">
+                <h3>Export Preview: ${filename}</h3>
+                <pre class="export-preview-content">${truncated}</pre>
+                <div class="export-actions">
+                    <button class="btn-compact btn-primary" id="confirm-export">Download</button>
+                    <button class="btn-compact btn-secondary" id="cancel-export">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.querySelector('#confirm-export').onclick = () => {
+            this.downloadFile(data, filename, format);
+            modal.remove();
+        };
+        
+        modal.querySelector('#cancel-export').onclick = () => modal.remove();
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
     }
 }

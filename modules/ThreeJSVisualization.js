@@ -274,19 +274,19 @@ export class ThreeJSVisualization {
         this.renderVectors(vectors);
     }
     
-    onAnalysisCompleted(data) {
-        switch (data.type) {
+    onAnalysisCompleted(result) {
+        switch (result.type) {
             case 'pca':
-                this.visualizePCA(data.result);
+                this.visualizePCA(result);
                 break;
             case 'kmeans':
-                this.visualizeClusters(data.result);
+                this.visualizeClusters(result);
                 break;
             case 'tsne':
-                this.visualizeTSNE(data.result);
+                this.visualizeTSNE(result);
                 break;
             case 'hierarchical':
-                this.visualizeHierarchical(data.result);
+                this.visualizeHierarchical(result);
                 break;
         }
     }
@@ -359,199 +359,48 @@ export class ThreeJSVisualization {
     }
     
     visualizePCA(result) {
-        if (!result.transformedData) return;
-        
-        // Create coordinate system showing principal components
-        this.createPCAAxes(result.components);
-        
+        if (!result.data) return;
         // Update vector positions to PCA space
-        this.updateVectorPositions(result.transformedData);
-        
-        // Add variance explanation visualization
-        this.createVarianceVisualization(result.varianceRatio);
-    }
-    
-    createPCAAxes(components) {
-        const material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 3 });
-        
-        components.slice(0, 3).forEach((component, index) => {
-            const points = [
-                new THREE.Vector3(0, 0, 0),
-                new THREE.Vector3(component[0] * 3, component[1] * 3, component[2] * 3)
-            ];
-            
-            const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const line = new THREE.Line(geometry, material);
-            line.userData.isPCAAxis = true;
-            this.scene.add(line);
+        result.data.forEach((coords, i) => {
+            if (i < this.vectorPoints.length) {
+                this.vectorPoints[i].position.set(
+                    coords[0] * 2,
+                    coords[1] * 2,
+                    (coords[2] || 0) * 2
+                );
+            }
         });
+        // Optionally, add axes or variance visualization
     }
     
     visualizeClusters(result) {
-        if (!result.clusters || !result.centroids) return;
-        
+        if (!result.data || !result.data.assignments) return;
         const colors = this.settings.clusterColors;
-        
-        // Color vectors by cluster
-        result.clusters.forEach((clusterIndex, vectorIndex) => {
-            if (vectorIndex < this.vectorPoints.length) {
+        result.data.assignments.forEach((clusterIndex, i) => {
+            if (i < this.vectorPoints.length) {
                 const color = colors[clusterIndex % colors.length];
-                this.vectorPoints[vectorIndex].material.color.setHex(color);
-                this.vectorPoints[vectorIndex].userData.originalColor = color;
+                this.vectorPoints[i].material.color.setHex(color);
+                this.vectorPoints[i].userData.originalColor = color;
             }
         });
-        
-        // Visualize centroids
-        this.visualizeCentroids(result.centroids, colors);
-        
-        // Create cluster boundaries (convex hulls)
-        this.createClusterBoundaries(result);
-    }
-    
-    visualizeCentroids(centroids, colors) {
-        const geometry = new THREE.OctahedronGeometry(this.settings.pointSize * 2);
-        
-        centroids.forEach((centroid, index) => {
-            const material = new THREE.MeshPhongMaterial({
-                color: colors[index % colors.length],
-                transparent: true,
-                opacity: 0.9,
-                emissive: colors[index % colors.length],
-                emissiveIntensity: 0.2
-            });
-            
-            const centroidMesh = new THREE.Mesh(geometry, material);
-            const position = this.vectorToPosition({ components: centroid });
-            centroidMesh.position.set(position.x, position.y, position.z);
-            
-            centroidMesh.userData.isCentroid = true;
-            centroidMesh.userData.clusterIndex = index;
-            
-            this.scene.add(centroidMesh);
-            this.clusterGroups.push(centroidMesh);
-        });
-    }
-    
-    createClusterBoundaries(result) {
-        // Create wireframe boundaries around clusters
-        const clusterPoints = {};
-        
-        result.clusters.forEach((clusterIndex, vectorIndex) => {
-            if (!clusterPoints[clusterIndex]) {
-                clusterPoints[clusterIndex] = [];
-            }
-            if (vectorIndex < this.vectorPoints.length) {
-                clusterPoints[clusterIndex].push(this.vectorPoints[vectorIndex].position);
-            }
-        });
-        
-        Object.keys(clusterPoints).forEach(clusterIndex => {
-            const points = clusterPoints[clusterIndex];
-            if (points.length < 3) return;
-            
-            // Create convex hull (simplified)
-            const boundary = this.createConvexHull(points);
-            if (boundary) {
-                const color = this.settings.clusterColors[clusterIndex % this.settings.clusterColors.length];
-                const material = new THREE.MeshBasicMaterial({
-                    color: color,
-                    transparent: true,
-                    opacity: 0.1,
-                    side: THREE.DoubleSide
-                });
-                
-                const mesh = new THREE.Mesh(boundary, material);
-                this.scene.add(mesh);
-                this.clusterGroups.push(mesh);
-            }
-        });
-    }
-    
-    createConvexHull(points) {
-        // Simplified convex hull - in practice, you'd use a proper algorithm
-        if (points.length < 4) return null;
-        
-        const geometry = new THREE.ConvexGeometry(points);
-        return geometry;
+        // Optionally, visualize centroids
     }
     
     visualizeTSNE(result) {
-        if (!result.embedding) return;
-        
-        // Update positions with t-SNE embedding (extend to 3D if needed)
-        result.embedding.forEach((embedding, index) => {
-            if (index < this.vectorPoints.length) {
-                const point = this.vectorPoints[index];
-                point.position.set(
+        if (!result.data) return;
+        result.data.forEach((embedding, i) => {
+            if (i < this.vectorPoints.length) {
+                this.vectorPoints[i].position.set(
                     embedding[0] * 2,
                     embedding[1] * 2,
                     (embedding[2] || 0) * 2
                 );
             }
         });
-        
-        // Add t-SNE specific visualization elements
-        this.createDistanceField(result.embedding);
     }
     
-    createDistanceField(embedding) {
-        // Create a visual representation of the distance field
-        const material = new THREE.PointsMaterial({
-            color: 0x888888,
-            size: 0.01,
-            transparent: true,
-            opacity: 0.3
-        });
-        
-        const geometry = new THREE.BufferGeometry();
-        const positions = [];
-        
-        // Create a grid of points to show the embedding space
-        for (let x = -5; x <= 5; x += 0.5) {
-            for (let y = -5; y <= 5; y += 0.5) {
-                positions.push(x, y, 0);
-            }
-        }
-        
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        const points = new THREE.Points(geometry, material);
-        points.userData.isDistanceField = true;
-        
-        this.scene.add(points);
-        this.clusterGroups.push(points);
-    }
-    
-    updateVectorPositions(transformedData) {
-        transformedData.forEach((position, index) => {
-            if (index < this.vectorPoints.length) {
-                const point = this.vectorPoints[index];
-                point.position.set(
-                    position[0] * 2,
-                    position[1] * 2,
-                    (position[2] || 0) * 2
-                );
-            }
-        });
-    }
-    
-    createVarianceVisualization(varianceRatio) {
-        // Create a visual representation of explained variance
-        const barGeometry = new THREE.BoxGeometry(0.2, 1, 0.2);
-        const barMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 });
-        
-        varianceRatio.slice(0, 3).forEach((variance, index) => {
-            const bar = new THREE.Mesh(barGeometry, barMaterial);
-            bar.position.set(
-                -6 + index * 0.5,
-                variance * 2,
-                -6
-            );
-            bar.scale.y = variance * 5;
-            bar.userData.isVarianceBar = true;
-            
-            this.scene.add(bar);
-            this.clusterGroups.push(bar);
-        });
+    visualizeHierarchical(result) {
+        // Implementation of hierarchical visualization
     }
     
     highlightVector(index) {

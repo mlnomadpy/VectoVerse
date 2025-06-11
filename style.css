@@ -61,4 +61,171 @@
     .btn-icon {
         font-size: 1.2em;
     }
+}
+
+/* Enhanced Features Styles */
+
+/* Neural mode button */
+.btn-neural {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid #667eea;
+}
+
+.btn-neural:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-neural.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-color: #f5576c;
+  box-shadow: 0 0 20px rgba(245, 87, 108, 0.4);
+}
+
+/* Control select styling */
+.control-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 100px;
+}
+
+.control-select:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+.control-select option {
+  background: #2c3e50;
+  color: white;
+}
+
+/* Periodic table styles */
+.periodic-table-container {
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.periodic-element {
+  transition: all 0.2s ease;
+}
+
+.periodic-element:hover {
+  transform: scale(1.05);
+}
+
+.periodic-element.selected rect {
+  stroke: #ffd700 !important;
+  stroke-width: 3 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+/* Neural network visualization styles */
+.neural-connection {
+  transition: opacity 0.3s ease;
+}
+
+.activation-ring {
+  animation: neuralPulse 2s ease-in-out infinite;
+}
+
+@keyframes neuralPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.neural-input-highlight {
+  animation: inputPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes inputPulse {
+  0%, 100% { 
+    stroke-dashoffset: 0;
+    opacity: 0.8;
+  }
+  50% { 
+    stroke-dashoffset: 15;
+    opacity: 1;
+  }
+}
+
+/* Enhanced force line styles */
+.force-line.force-cosine {
+  filter: drop-shadow(0 0 3px rgba(231, 76, 60, 0.5));
+}
+
+.force-line.force-correlation {
+  filter: drop-shadow(0 0 3px rgba(52, 152, 219, 0.5));
+}
+
+.force-line.force-euclidean {
+  filter: drop-shadow(0 0 3px rgba(155, 89, 182, 0.5));
+}
+
+.force-line.force-manhattan {
+  filter: drop-shadow(0 0 3px rgba(243, 156, 18, 0.5));
+}
+
+.force-line.force-quantum {
+  filter: drop-shadow(0 0 3px rgba(26, 188, 156, 0.5));
+}
+
+.force-line.force-resonance {
+  filter: drop-shadow(0 0 3px rgba(255, 107, 107, 0.5));
+}
+
+/* Tooltip enhancements */
+.force-tooltip, .periodic-tooltip {
+  font-family: 'Courier New', monospace;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Neural info panel */
+.neural-info-panel {
+  backdrop-filter: blur(15px);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* Enhanced accessibility */
+.btn-compact:focus-visible {
+  outline: 2px solid #4ecdc4;
+  outline-offset: 2px;
+}
+
+.control-select:focus-visible {
+  outline: 2px solid #4ecdc4;
+  outline-offset: 2px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .neural-connection,
+  .activation-ring,
+  .neural-input-highlight {
+    animation: none !important;
+  }
 } 
