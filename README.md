@@ -29,8 +29,8 @@ VectoVerse introduces a revolutionary paradigm for understanding high-dimensiona
 ```
 📂 Project Structure:
 ├── 🎨 Frontend: 650+ lines (HTML + CSS)
-├── ⚙️ Core Logic: 1200+ lines (JavaScript)
-├── 🧩 Modules: 7 specialized components
+├── ⚙️ Core Logic: 1400+ lines (JavaScript)
+├── 🧩 Modules: 11 specialized components
 ├── 📐 Mathematical Models: 5 force calculation algorithms
 └── 🎮 Interactive Features: 15+ user interactions
 
@@ -78,10 +78,10 @@ d(u,v) = √(Σᵢ(uᵢ-vᵢ)²)
 ### 🎯 **Vector Operations Suite**
 ```javascript
 // Vector arithmetic operations
-add(v1, v2)           // Component-wise addition
-subtract(v1, v2)      // Component-wise subtraction
-scale(v, scalar)      // Scalar multiplication
-normalize(v)          // Unit vector conversion
+add(v1, v2)           // ✅ Implemented
+subtract(v1, v2)      // ✅ Implemented
+scale(v, scalar)      // ✅ Implemented
+normalize(v)          // ✅ Implemented
 ```
 
 ### 🧠 **Machine Learning Integration**
@@ -223,7 +223,11 @@ VectoVerse interprets vector spaces through the lens of **information geometry**
 ### Module Structure
 ```
 VectoVerse/
-├── 🎯 VectorAtomicFramework.js    # Core framework and state management
+├── 🎯 VectorAtomicFramework.js    # Core framework and event coordinator
+├── 🧠 StateManager.js             # State management for vectors and UI
+├── ⚙️ ConfigManager.js             # Handles application configuration
+├── ⌨️ KeyboardShortcuts.js         # Handles keyboard shortcuts
+├── 🚌 EventBus.js                 # Handles communication between modules
 ├── 🎨 VectorRenderer.js           # Visualization and rendering engine  
 ├── ⚡ ForceCalculator.js          # Mathematical force computation
 ├── 🎬 AnimationEngine.js          # Real-time animation system
@@ -233,9 +237,10 @@ VectoVerse/
 ```
 
 ### Design Patterns
-- **Observer Pattern**: For state management and reactive updates
+- **Observer Pattern**: For state management and reactive updates (via EventBus)
 - **Strategy Pattern**: For interchangeable force calculation algorithms
 - **Module Pattern**: For clean separation of concerns
+- **Singleton Pattern**: For the core Framework, StateManager, EventBus, and ConfigManager
 - **Factory Pattern**: For dynamic vector generation
 
 ## 🎓 Educational Applications
@@ -290,6 +295,10 @@ We welcome contributions that enhance the atomic-inspired visualization paradigm
 - **Plugin Architecture**: Third-party extension support
 - **Advanced Analytics**: Statistical analysis tools
 - **Documentation**: API documentation, developer guides
+
+## 🧪 Testing
+
+To run the test suite, simply open the `SpecRunner.html` file in your web browser. The tests will run automatically and display the results.
 
 ## 🔄 Version Roadmap
 

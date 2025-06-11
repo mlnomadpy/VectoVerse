@@ -1,3 +1,5 @@
+import { VectorOperations } from './VectorOperations.js';
+
 export class ForceCalculator {
     constructor() {
         this.epsilon = 0.01; // Small value to prevent division by zero
@@ -10,7 +12,7 @@ export class ForceCalculator {
      * Range: -∞ to +∞ (positive = same direction, negative = opposite direction)
      */
     dotProduct(v1, v2) {
-        return v1.components.reduce((sum, val, i) => sum + val * v2.components[i], 0);
+        return VectorOperations.dotProduct(v1.components, v2.components);
     }
 
     /**
@@ -20,8 +22,16 @@ export class ForceCalculator {
      * Used squared form for computational efficiency (avoids expensive sqrt operation)
      */
     distanceSquared(v1, v2) {
-        return v1.components.reduce((sum, val, i) => 
-            sum + Math.pow(val - v2.components[i], 2), 0);
+        return VectorOperations.distanceSquared(v1.components, v2.components);
+    }
+
+    /**
+     * EUCLIDEAN DISTANCE: The straight-line distance between two vectors.
+     * Formula: d(u,v) = sqrt(Σ(ui - vi)²)
+     * Physical analogy: The actual spatial distance between two points.
+     */
+    euclideanDistance(v1, v2) {
+        return VectorOperations.distance(v1.components, v2.components);
     }
 
     /**
@@ -31,7 +41,7 @@ export class ForceCalculator {
      * Always positive, represents the vector's energy or intensity
      */
     magnitude(vector) {
-        return Math.sqrt(vector.components.reduce((sum, val) => sum + val * val, 0));
+        return VectorOperations.magnitude(vector.components);
     }
 
     /**
@@ -45,6 +55,7 @@ export class ForceCalculator {
         const dot = this.dotProduct(v1, v2);
         const mag1 = this.magnitude(v1);
         const mag2 = this.magnitude(v2);
+        if (mag1 === 0 || mag2 === 0) return 0;
         return dot / (mag1 * mag2);
     }
 

@@ -44,12 +44,15 @@ export class AnimationEngine {
     
     updateVectorPulse() {
         const state = this.framework.getState();
+        const pulseTime = this.pulseTime; // Capture pulseTime in local scope
         
         this.svg.selectAll(".vector-atom circle")
-            .attr("stroke-width", d => {
-                const baseWidth = d === state.selectedVector ? 4 : 2;
-                const pulse = Math.sin(this.pulseTime + (d.id || 0)) * 0.5 + 1;
-                return baseWidth + pulse;
+            .each(function(d) {
+                const element = window.d3.select(this);
+                
+                const baseWidth = d.id === state.selectedVectorId ? 4 : 2;
+                const pulse = Math.sin(pulseTime + (d.id || 0)) * 0.3 + 1; // Reduced pulse intensity
+                element.attr("stroke-width", baseWidth + pulse * 0.5); // Reduced pulse magnitude
             });
     }
     
@@ -69,7 +72,7 @@ export class AnimationEngine {
         const pulseTime = this.pulseTime;
         this.svg.selectAll(".force-line")
             .style("opacity", function(d) {
-                const element = d3.select(this);
+                const element = window.d3.select(this);
                 if (element.empty()) return 0.6;
                 
                 const baseOpacity = parseFloat(element.attr("data-base-opacity") || 0.6);
