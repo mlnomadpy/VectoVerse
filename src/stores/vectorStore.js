@@ -17,6 +17,10 @@ export const useVectorStore = defineStore('vector', () => {
     return vectors.value.filter(v => selectedVectorIds.value.has(v.id))
   })
 
+  const selectedVector = computed(() => {
+    return selectedVectors.value.length > 0 ? selectedVectors.value[0] : null
+  })
+
   const vectorCount = computed(() => vectors.value.length)
 
   const averageMagnitude = computed(() => {
@@ -176,6 +180,7 @@ export const useVectorStore = defineStore('vector', () => {
     learningRate,
     // Getters
     selectedVectors,
+    selectedVector,
     vectorCount,
     averageMagnitude,
     availableForceTypes,
