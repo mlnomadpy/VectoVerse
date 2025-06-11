@@ -333,6 +333,15 @@ export function useVectorOperations() {
     return null
   }
   
+  const redoLastOperation = () => {
+    if (operationHistory.value.length > 0) {
+      const lastOp = operationHistory.value[0]
+      operationHistory.value = operationHistory.value.slice(1)
+      return lastOp
+    }
+    return null
+  }
+  
   return {
     // Reactive state
     isCalculating,
@@ -370,6 +379,7 @@ export function useVectorOperations() {
     clearHistory,
     clearError,
     getOperationHistory,
-    undoLastOperation
+    undoLastOperation,
+    redoLastOperation
   }
 } 
