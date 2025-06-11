@@ -23,7 +23,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['katex', 'd3'],
-          math: ['katex']
         }
       }
     }
