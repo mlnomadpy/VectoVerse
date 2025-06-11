@@ -5,9 +5,6 @@
       <AppHeader class="app-header" />
 
       <main class="app-main">
-        <!-- Controls Toolbar -->
-        <ControlsToolbar />
-
         <!-- Main Visualization Container -->
         <VisualizationContainer />
 
@@ -21,9 +18,6 @@
 
     <!-- Modals -->
     <ModalContainer />
-
-    <!-- Floating Action Button -->
-    <FloatingActionButton />
   </div>
 </template>
 
@@ -43,13 +37,10 @@ import { useControls } from './composables/useControls'
 
 // Components
 import AppHeader from './components/AppHeader.vue'
-import ControlsToolbar from './components/ControlsToolbar.vue'
-import TabContainer from './components/TabContainer.vue'
 import VisualizationContainer from './components/VisualizationContainer.vue'
 import VectorAnalysisStudio from './components/VectorAnalysisStudio.vue'
 import InfoSidebar from './components/InfoSidebar.vue'
 import ModalContainer from './components/ModalContainer.vue'
-import FloatingActionButton from './components/FloatingActionButton.vue'
 
 // Stores
 const vectorStore = useVectorStore()

@@ -26,8 +26,8 @@
           </text>
         </g>
         <PeriodicElement 
-          v-for="element in periodicData" 
-          :key="element.id"
+          v-for="element in visibleElements" 
+          :key="`${element.id}-${element.isPlaceholder}`"
           :element="element"
           :config="config"
           @showTooltip="onShowTooltip"
@@ -49,8 +49,15 @@ import { usePeriodicTable } from '../../composables/usePeriodicTable';
 import PeriodicElement from './PeriodicElement.vue';
 import PeriodicElementTooltip from './PeriodicElementTooltip.vue';
 
-const { periodicData, config, tableDimensions } = usePeriodicTable();
+const { periodicData, config, tableDimensions, showPlaceholders } = usePeriodicTable();
 const tableContainerRef = ref(null);
+
+const visibleElements = computed(() => {
+  if (showPlaceholders.value) {
+    return periodicData.value;
+  }
+  return periodicData.value.filter(el => el.present);
+});
 
 const tableWidth = computed(() => {
   if (!periodicData.value.length) return '100%';

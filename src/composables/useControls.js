@@ -1,14 +1,20 @@
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import { useVectorStore } from '../stores/vectorStore'
+import { useConfigStore } from '../stores/configStore'
 
 export function useControls() {
   const vectorStore = useVectorStore()
+  const configStore = useConfigStore()
 
   const controls = reactive({
-    // Visualization
-    showForces: { label: 'Show Forces', value: true, type: 'checkbox', group: 'Visualization' },
-    showLabels: { label: 'Show Labels', value: false, type: 'checkbox', group: 'Visualization' },
-    showGrid: { label: 'Show Grid', value: true, type: 'checkbox', group: 'Visualization' },
+    // New controls for vector generation
+    numVectors: { label: 'Number of Vectors', value: configStore.numVectors, type: 'slider', min: 1, max: 100, group: 'Generation' },
+    dimensions: { label: 'Vector Dimensions', value: configStore.dimensions, type: 'slider', min: 2, max: 50, group: 'Generation' },
+
+    // Visualization (now with icons)
+    showForces: { label: 'Show Forces', value: true, type: 'checkbox', group: 'Visualization', icon: '💨' },
+    showLabels: { label: 'Show Labels', value: false, type: 'checkbox', group: 'Visualization', icon: '🏷️' },
+    showGrid: { label: 'Show Grid', value: true, type: 'checkbox', group: 'Visualization', icon: '🏁' },
 
     // Forces
     forceStrength: { label: 'Force Strength', value: 50, type: 'slider', min: 1, max: 200, group: 'Forces' },
@@ -17,10 +23,11 @@ export function useControls() {
 
     // Aesthetics
     particleSize: { label: 'Particle Size', value: 5, type: 'slider', min: 1, max: 20, group: 'Aesthetics' },
-    rainbowMode: { label: 'Rainbow Mode', value: false, type: 'checkbox', group: 'Aesthetics' },
+    rainbowMode: { label: 'Rainbow Mode', value: false, type: 'checkbox', group: 'Aesthetics', icon: '🌈' },
 
     // Neural Net Mode
-    nnMode: { label: 'Neural Net Mode', value: false, type: 'checkbox', group: 'Mode' },
+    neuronMode: { label: 'Neuron Mode (1st vector is input)', value: false, type: 'checkbox', group: 'Mode', icon: '🧠' },
+    activationFunction: { label: 'Activation Function', value: vectorStore.activationFunction, type: 'dropdown', options: vectorStore.availableActivationFunctions, group: 'Mode' },
   })
 
   // History for Undo/Redo
@@ -115,13 +122,33 @@ export function useControls() {
   
   onMounted(loadPresets)
 
-  // Watch for changes and update the framework
-  Object.keys(controls).forEach(key => {
+  // Watchers for individual controls
+  watch(() => controls.numVectors.value, (newValue) => {
+    configStore.updateConfig('numVectors', newValue)
+    vectorStore.generateVectors() // Regenerate vectors when number changes
+  })
+
+  watch(() => controls.dimensions.value, (newValue) => {
+    configStore.updateConfig('dimensions', newValue)
+    vectorStore.generateVectors() // Regenerate vectors when dimensions change
+  })
+
+  watch(() => controls.neuronMode.value, (newValue, oldValue) => {
+    recordHistory('neuronMode', oldValue, newValue)
+    configStore.updateConfig('neuronMode', newValue)
+  })
+
+  watch(() => controls.activationFunction.value, (newValue) => {
+    vectorStore.setActivationFunction(newValue)
+  })
+
+  // Generic watcher for other controls
+  const otherControlKeys = ['showForces', 'showLabels', 'showGrid', 'forceStrength', 'linkDistance', 'charge', 'particleSize', 'rainbowMode']
+  otherControlKeys.forEach(key => {
     watch(() => controls[key].value, (newValue, oldValue) => {
       recordHistory(key, oldValue, newValue)
-      if (vectorStore.framework) {
-        vectorStore.framework.updateConfig(key, newValue)
-      }
+      // Update the config store for visualization-related changes
+      configStore.updateConfig(key, newValue)
     })
   })
 

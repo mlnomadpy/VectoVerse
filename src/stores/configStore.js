@@ -6,7 +6,15 @@ export const useConfigStore = defineStore('config', {
     height: 600,
     dimensions: 4,
     numVectors: 6,
-    showForces: false,
+    showForces: true,
+    showLabels: false,
+    showGrid: true,
+    rainbowMode: false,
+    neuronMode: false,
+    forceStrength: 50,
+    linkDistance: 100,
+    charge: -30,
+    particleSize: 5,
   }),
   actions: {
     updateConfig(key, value) {

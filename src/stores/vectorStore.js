@@ -6,18 +6,15 @@ import { vectorOperations } from '../utils/vectorUtils'
 export const useVectorStore = defineStore('vector', () => {
   // State
   const vectors = ref([])
-  const selectedVectorId = ref(null)
+  const selectedVectorIds = ref(new Set());
   const inputVector = ref(null)
-  const forcesEnabled = ref(false)
   const forceType = ref('resonance')
-  const neuralModeActive = ref(false)
   const activationFunction = ref('sigmoid')
   const learningRate = ref(0.01)
 
   // Getters
-  const selectedVector = computed(() => {
-    if (selectedVectorId.value === null) return null
-    return vectors.value.find(v => v.id === selectedVectorId.value)
+  const selectedVectors = computed(() => {
+    return vectors.value.filter(v => selectedVectorIds.value.has(v.id))
   })
 
   const vectorCount = computed(() => vectors.value.length)
@@ -72,15 +69,24 @@ export const useVectorStore = defineStore('vector', () => {
       newVectors.push(vector)
     }
     vectors.value = newVectors
-    selectedVectorId.value = null
+    selectedVectorIds.value.clear();
     inputVector.value = null
   }
 
-  function selectVector(vectorId) {
-    if (selectedVectorId.value === vectorId) {
-      selectedVectorId.value = null // Toggle off
+  function selectVector(vectorId, isMultiSelect = false) {
+    if (!isMultiSelect) {
+      if (selectedVectorIds.value.has(vectorId) && selectedVectorIds.value.size === 1) {
+        selectedVectorIds.value.clear();
+      } else {
+        selectedVectorIds.value.clear();
+        selectedVectorIds.value.add(vectorId);
+      }
     } else {
-      selectedVectorId.value = vectorId
+      if (selectedVectorIds.value.has(vectorId)) {
+        selectedVectorIds.value.delete(vectorId);
+      } else {
+        selectedVectorIds.value.add(vectorId);
+      }
     }
   }
 
@@ -117,9 +123,7 @@ export const useVectorStore = defineStore('vector', () => {
 
   function removeVector(vectorId) {
     vectors.value = vectors.value.filter(v => v.id !== vectorId)
-    if (selectedVectorId.value === vectorId) {
-      selectedVectorId.value = null
-    }
+    selectedVectorIds.value.delete(vectorId);
   }
 
   function addCustomVector(components) {
@@ -150,16 +154,8 @@ export const useVectorStore = defineStore('vector', () => {
     }
   }
 
-  function toggleForces() {
-    forcesEnabled.value = !forcesEnabled.value
-  }
-
   function setForceType(type) {
     forceType.value = type
-  }
-
-  function toggleNeuralMode() {
-    neuralModeActive.value = !neuralModeActive.value
   }
 
   function setActivationFunction(func) {
@@ -173,15 +169,13 @@ export const useVectorStore = defineStore('vector', () => {
   return {
     // State
     vectors,
-    selectedVectorId,
+    selectedVectorIds,
     inputVector,
-    forcesEnabled,
     forceType,
-    neuralModeActive,
     activationFunction,
     learningRate,
     // Getters
-    selectedVector,
+    selectedVectors,
     vectorCount,
     averageMagnitude,
     availableForceTypes,
@@ -198,9 +192,7 @@ export const useVectorStore = defineStore('vector', () => {
     addCustomVector,
     setVectorCustomColor,
     setVectorScale,
-    toggleForces,
     setForceType,
-    toggleNeuralMode,
     setActivationFunction,
     setLearningRate
   }

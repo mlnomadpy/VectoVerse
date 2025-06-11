@@ -5,13 +5,18 @@
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
     class="periodic-element"
-    :class="{ 'is-selected': isSelected, 'is-placeholder': element.isPlaceholder, 'is-present': element.present }"
+    :class="{ 
+      'is-selected': isSelected, 
+      'is-placeholder': element.isPlaceholder, 
+      'is-present': element.present,
+      'is-highlighted': isHighlighted
+    }"
   >
     <rect 
       class="element-rect"
       :width="config.elementWidth"
       :height="config.elementHeight"
-      :fill="element.color"
+      :fill="fillColor"
     />
     <text 
       :x="config.elementWidth / 2" 
@@ -46,6 +51,8 @@
 <script setup>
 import { computed } from 'vue';
 import { useVectorStore } from '../../stores/vectorStore';
+import { usePeriodicTable } from '../../composables/usePeriodicTable';
+import { getHeatmapColor } from '../../utils/colors';
 
 const props = defineProps({
   element: {
@@ -59,9 +66,31 @@ const props = defineProps({
 });
 
 const vectorStore = useVectorStore();
+const { activeHeatmap, dataRanges, highlightedElementIds } = usePeriodicTable();
 
 const isSelected = computed(() => {
-  return vectorStore.selectedVectorId === props.element.id
+  return vectorStore.selectedVectorIds.has(props.element.id);
+});
+
+const isHighlighted = computed(() => {
+  return highlightedElementIds.value.has(props.element.id);
+});
+
+const fillColor = computed(() => {
+  if (props.element.isPlaceholder) return '#333';
+  if (activeHeatmap.value === 'none' || !props.element.present) {
+    return props.element.color;
+  }
+  
+  const property = activeHeatmap.value; // e.g., 'atomicMass'
+  const value = props.element[property];
+  const range = dataRanges.value[property === 'atomicMass' ? 'magnitude' : property];
+
+  if (range && value !== undefined) {
+    return getHeatmapColor(value, range.min, range.max);
+  }
+  
+  return props.element.color;
 });
 
 const dynamicFontSize = computed(() => {
@@ -76,8 +105,9 @@ const dynamicFontSize = computed(() => {
 
 const emit = defineEmits(['showTooltip', 'hideTooltip']);
 
-const onClick = () => {
-  vectorStore.selectVector(props.element.id);
+const onClick = (event) => {
+  const isMultiSelect = event.ctrlKey || event.metaKey;
+  vectorStore.selectVector(props.element.id, isMultiSelect);
 }
 
 const onMouseEnter = (event) => {
@@ -93,6 +123,18 @@ const onMouseLeave = () => {
 </script>
 
 <style scoped>
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 20px #f39c12;
+  }
+  50% {
+    box-shadow: 0 0 30px #f39c12;
+  }
+  100% {
+    box-shadow: 0 0 20px #f39c12;
+  }
+}
+
 .periodic-element {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -131,12 +173,18 @@ const onMouseLeave = () => {
   box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
 }
 
+.periodic-element.is-highlighted .element-rect {
+  stroke: #10b981;
+  stroke-width: 2.5px;
+}
+
 .periodic-element.is-selected .element-rect {
   stroke: #f39c12;
   stroke-width: 3px;
   transform: scale(1.05);
   transform-origin: center;
   box-shadow: 0 0 20px #f39c12;
+  animation: pulse 2s infinite;
 }
 
 .element-name {

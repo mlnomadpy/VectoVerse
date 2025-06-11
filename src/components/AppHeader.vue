@@ -1,78 +1,111 @@
 <template>
   <header class="app-header">
-    <h1>🌌 Welcome to the Vectoverse</h1>
-    <p>An Interactive Atomic-Inspired Framework for Understanding Vector Interactions & Resonance Forces</p>
-    <div class="header-info">
-      <span>🔍 Click vectors to explore similarities</span>
-      <span>⚡ Visualize resonance forces</span>
-      <span>🎛️ Edit input vectors in real-time</span>
+    <div class="header-branding">
+      <h1 class="app-title">VectoVerse</h1>
+    </div>
+
+    <div class="controls-toolbar">
+      <!-- Action Buttons -->
+      <div class="toolbar-section action-buttons">
+        <button @click="vectorStore.generateVectors()" title="Generate new vectors (G)">🎲</button>
+        <button @click="uiStore.showAddVectorModal()" title="Add a custom vector (A)">➕</button>
+        <button @click="uiStore.showAnalysisModal()" title="Run analysis (R)">📊</button>
+        <button @click="appActions.exportData()" title="Export data (E)">💾</button>
+        <button @click="appActions.toggleFullscreen()" title="Toggle fullscreen (F)">🔍</button>
+      </div>
+
+      <!-- Main Controls -->
+      <div class="toolbar-section main-controls">
+        <Control v-for="(config, key) in controls.controls" :key="key" :id="key" :config="config" v-model="config.value" />
+      </div>
+
+      <!-- History -->
+      <div class="toolbar-section history-controls">
+        <button @click="controls.undo()" :disabled="!controls.canUndo.value" title="Undo (Ctrl+Z)">↩️</button>
+        <button @click="controls.redo()" :disabled="!controls.canRedo.value" title="Redo (Ctrl+Y)">↪️</button>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-// Header component - primarily presentational
+import { useControls } from '../composables/useControls'
+import { useUIStore } from '../stores/uiStore'
+import { useVectorStore } from '../stores/vectorStore'
+import { useAppActions } from '../composables/useAppActions'
+import Control from './Control.vue'
+
+const controls = useControls()
+const uiStore = useUIStore()
+const vectorStore = useVectorStore()
+const appActions = useAppActions()
 </script>
 
 <style scoped>
 .app-header {
-  text-align: center;
-  padding: 2rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.app-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.app-header p {
-  font-size: 1.2rem;
-  margin: 0 0 1rem 0;
-  opacity: 0.9;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.header-info {
+  grid-area: header;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.75rem;
+  background-color: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border-color);
+  height: 50px;
+}
+
+.header-branding {
+  display: flex;
+  align-items: center;
+}
+
+.app-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.controls-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+}
+
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.main-controls {
+  flex-grow: 1;
+}
+
+.action-buttons button,
+.history-controls button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0 0.4rem;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  opacity: 0.8;
 }
 
-.header-info span {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.action-buttons button:hover,
+.history-controls button:hover:not(:disabled) {
+  color: var(--primary);
+  background-color: var(--bg-secondary);
 }
 
-@media (max-width: 768px) {
-  .app-header h1 {
-    font-size: 2rem;
-  }
-  
-  .app-header p {
-    font-size: 1rem;
-  }
-  
-  .header-info {
-    gap: 1rem;
-  }
-  
-  .header-info span {
-    font-size: 0.8rem;
-  }
+.history-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 </style> 

@@ -1,51 +1,67 @@
 <template>
-  <div class="control-wrapper" :class="`control-${config.type}`">
-    <label :for="controlId">{{ config.label }}</label>
-    <div class="control-input">
-      <template v-if="config.type === 'slider'">
-        <input
-          :id="controlId"
-          type="range"
-          :min="config.min"
-          :max="config.max"
-          :step="config.step || 1"
-          :value="modelValue"
-          @input="$emit('update:modelValue', parseFloat($event.target.value))"
-        />
-        <span class="slider-value">{{ modelValue }}</span>
-      </template>
+  <div class="control-wrapper" :class="[`control-${config.type}`, { 'has-icon': config.icon }]">
+    
+    <!-- Icon Toggle Button -->
+    <template v-if="config.type === 'checkbox' && config.icon">
+      <button 
+        class="icon-toggle"
+        :class="{ active: modelValue }"
+        :title="config.label"
+        @click="$emit('update:modelValue', !modelValue)"
+      >
+        {{ config.icon }}
+      </button>
+    </template>
 
-      <template v-if="config.type === 'checkbox'">
-        <label class="switch">
+    <!-- Standard Controls -->
+    <template v-else>
+      <label :for="controlId" v-if="config.label">{{ config.label }}</label>
+      <div class="control-input">
+        <template v-if="config.type === 'slider'">
           <input
             :id="controlId"
-            type="checkbox"
-            :checked="modelValue"
-            @change="$emit('update:modelValue', $event.target.checked)"
+            type="range"
+            :min="config.min"
+            :max="config.max"
+            :step="config.step || 1"
+            :value="modelValue"
+            @input="$emit('update:modelValue', parseFloat($event.target.value))"
           />
-          <span class="slider round"></span>
-        </label>
-      </template>
+          <span class="slider-value">{{ modelValue }}</span>
+        </template>
 
-      <template v-if="config.type === 'button'">
-        <button :id="controlId" @click="$emit('click')">
-          {{ config.label }}
-        </button>
-      </template>
-      
-      <template v-if="config.type === 'dropdown'">
-        <select 
-            :id="controlId" 
-            :value="modelValue" 
-            @change="$emit('update:modelValue', $event.target.value)"
-        >
-          <option v-for="option in config.options" :key="option.value" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>
-      </template>
+        <template v-if="config.type === 'checkbox' && !config.icon">
+          <label class="switch">
+            <input
+              :id="controlId"
+              type="checkbox"
+              :checked="modelValue"
+              @change="$emit('update:modelValue', $event.target.checked)"
+            />
+            <span class="slider round"></span>
+          </label>
+        </template>
+        
+        <template v-if="config.type === 'button'">
+          <button :id="controlId" @click="$emit('click')">
+            {{ config.label }}
+          </button>
+        </template>
+        
+        <template v-if="config.type === 'dropdown'">
+          <select 
+              :id="controlId" 
+              :value="modelValue" 
+              @change="$emit('update:modelValue', $event.target.value)"
+          >
+            <option v-for="option in config.options" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+        </template>
 
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -76,18 +92,18 @@ const controlId = computed(() => `control-${props.id}`)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  background-color: rgba(255,255,255,0.05);
 }
-.control-wrapper:hover {
-  background-color: rgba(255,255,255,0.1);
+.control-wrapper.has-icon {
+  padding: 0;
+  justify-content: center;
 }
 
 label {
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: var(--text-secondary);
+  margin-right: 0.5rem;
 }
 
 .control-input {
@@ -96,14 +112,35 @@ label {
   gap: 0.5rem;
 }
 
+/* Icon Toggle Button */
+.icon-toggle {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+.icon-toggle:hover {
+  border-color: var(--border-color-soft);
+  color: var(--text-primary);
+}
+.icon-toggle.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 0 10px 0 var(--primary-light);
+}
+
 /* Slider */
 .control-slider input[type="range"] {
-  width: 120px;
+  width: 100px;
 }
 .slider-value {
   font-weight: bold;
-  font-size: 0.9em;
-  width: 30px;
+  font-size: 0.85em;
+  width: 28px;
   text-align: right;
 }
 

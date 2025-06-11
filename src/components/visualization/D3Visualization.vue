@@ -12,8 +12,8 @@ import { useVectorStore } from '@/stores/vectorStore';
 import { useConfigStore } from '@/stores/configStore';
 import { vectorOperations } from '@/utils/vectorUtils';
 import { Constants } from '@/utils/Constants';
+import { useForceCalculator } from '@/composables/useForceCalculator';
 // Assuming composables exist, if not, they would need to be created or logic integrated.
-// import { useForceCalculator } from '@/composables/useForceCalculator'; 
 // import { useAnimationEngine } from '@/composables/useAnimationEngine';
 
 const props = defineProps({
@@ -25,6 +25,7 @@ const props = defineProps({
 
 const vectorStore = useVectorStore();
 const configStore = useConfigStore();
+const forceCalculator = useForceCalculator();
 // const forceCalculator = useForceCalculator(); // Assuming this provides calculation methods
 
 const container = ref(null);
@@ -268,27 +269,19 @@ function renderBackgroundParticles() {
 }
 
 function renderForces() {
-    const forces = forceCalculator.calculateForces(vectorStore.vectors, vectorStore.forceType);
-    if (!forces.length) return;
-
-    const maxForce = Math.max(...forces.map(f => f.force || 0));
-
-    svg.selectAll(".force-line")
-        .data(forces)
-        .join("line")
-        .attr("class", d => `force-line force-${d.forceType}`)
-        .attr("x1", d => d.x1).attr("y1", d => d.y1)
-        .attr("x2", d => d.x2).attr("y2", d => d.y2)
-        .style("stroke", d => getForceColor(d, maxForce))
-        .style("stroke-width", d => Math.max(1, (d.force / maxForce) * 5))
-        .attr("data-base-opacity", d => 0.2 + (d.force / maxForce) * 0.6)
-        .on("mouseenter", (event, d) => showForceTooltip(event, d))
-        .on("mouseleave", hideForceTooltip);
-}
-
-function getForceColor(forceData, maxForce) {
-    const colorScale = d3.scaleSequential(d3.interpolateInferno).domain([0, maxForce]);
-    return colorScale(forceData.force);
+  const forces = forceCalculator.calculateForces(vectorStore.vectors, vectorStore.forceType);
+  
+  const forceLines = svg.selectAll(".force-line")
+    .data(forces)
+    .join("line")
+    .attr("class", "force-line")
+    .attr("x1", d => d.x1)
+    .attr("y1", d => d.y1)
+    .attr("x2", d => d.x2)
+    .attr("y2", d => d.y2)
+    .attr("stroke", d => d.force > 0 ? Constants.COLORS.POSITIVE : Constants.COLORS.NEGATIVE)
+    .attr("stroke-width", d => Math.min(5, Math.abs(d.force) * 5))
+    .attr("opacity", d => Math.min(0.8, Math.abs(d.force) * 0.8));
 }
 
 function showVectorTooltip(event, data) {

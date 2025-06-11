@@ -7,6 +7,17 @@ import {
 } from '../utils/periodicTableCalculations'
 import { generateElementName } from '../utils/nameGenerator'
 
+// --- State should be defined outside the function to be a singleton ---
+const activeHeatmap = ref('none'); // none, magnitude, entropy, stability
+const dataRanges = ref({
+  magnitude: { min: 0, max: 1 },
+  entropy: { min: 0, max: 1 },
+  stability: { min: 0, max: 1 }
+});
+const showPlaceholders = ref(true);
+const highlightedElementIds = ref(new Set());
+// --- End of singleton state ---
+
 export function usePeriodicTable() {
   const vectorStore = useVectorStore()
   const configStore = useConfigStore()
@@ -85,8 +96,18 @@ export function usePeriodicTable() {
 
       if (vectorsForElement && vectorsForElement.length > 0) {
         const firstVector = vectorsForElement[0];
-        const stats = calculateVectorStatistics(firstVector);
         const quantumData = getInformationQuantums(firstVector);
+        let stats;
+
+        if (vectorsForElement.length > 1) {
+          // Calculate average stats for stacked vectors
+          const avgMagnitude = vectorsForElement.reduce((sum, v) => sum + calculateVectorStatistics(v).magnitude, 0) / vectorsForElement.length;
+          const avgEntropy = vectorsForElement.reduce((sum, v) => sum + calculateVectorStatistics(v).entropy, 0) / vectorsForElement.length;
+          const avgStability = vectorsForElement.reduce((sum, v) => sum + calculateVectorStatistics(v).stability, 0) / vectorsForElement.length;
+          stats = { magnitude: avgMagnitude, entropy: avgEntropy, stability: avgStability };
+        } else {
+          stats = calculateVectorStatistics(firstVector);
+        }
 
         element.id = firstVector.id; 
         element.isPlaceholder = false;
@@ -114,9 +135,43 @@ export function usePeriodicTable() {
     }
   }
 
+  const calculateDataRanges = (table) => {
+    const presentElements = table.filter(el => el.present);
+    if (presentElements.length === 0) return;
+
+    const magnitudes = presentElements.map(el => el.atomicMass);
+    const entropies = presentElements.map(el => el.entropy);
+    const stabilities = presentElements.map(el => el.stability);
+
+    dataRanges.value = {
+      magnitude: { min: Math.min(...magnitudes), max: Math.max(...magnitudes) },
+      entropy: { min: Math.min(...entropies), max: Math.max(...entropies) },
+      stability: { min: Math.min(...stabilities), max: Math.max(...stabilities) },
+    }
+  }
+
+  const setHighlight = (property, direction = 'desc', count = 5) => {
+    const sorted = [...periodicData.value]
+      .filter(el => el.present)
+      .sort((a, b) => {
+        const valA = property === 'excitatory' || property === 'inhibitory' ? a[property] : a.atomicMass;
+        const valB = property === 'excitatory' || property === 'inhibitory' ? b[property] : b.atomicMass;
+        return direction === 'desc' ? valB - valA : valA - valB;
+      });
+    
+    const topIds = new Set(sorted.slice(0, count).map(el => el.id));
+    highlightedElementIds.value = topIds;
+  };
+
+  const clearHighlight = () => {
+    highlightedElementIds.value.clear();
+  };
+
   const updatePeriodicData = () => {
     const fullTable = generateFullPeriodicTable();
-    periodicData.value = mapVectorsToTable(fullTable);
+    const mappedTable = mapVectorsToTable(fullTable);
+    calculateDataRanges(mappedTable);
+    periodicData.value = mappedTable;
   }
 
   const getElementData = (vectorId) => {
@@ -127,12 +182,32 @@ export function usePeriodicTable() {
     return periodicData.value.find(element => !element.isPlaceholder && element.id === vectorId)
   }
 
-  watch(() => [vectorStore.vectors, configStore.dimensions], updatePeriodicData, { deep: true, immediate: true })
+  watch(
+    () => vectorStore.vectors,
+    () => {
+      updatePeriodicData();
+    },
+    { deep: true, immediate: true }
+  );
+
+  watch(
+    () => configStore.dimensions,
+    () => {
+      updatePeriodicData();
+    },
+    { immediate: true }
+  );
 
   return {
     periodicData,
     config,
     getElementData,
-    tableDimensions
+    tableDimensions,
+    activeHeatmap,
+    dataRanges,
+    showPlaceholders,
+    highlightedElementIds,
+    setHighlight,
+    clearHighlight
   }
 } 
