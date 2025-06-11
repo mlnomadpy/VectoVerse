@@ -1,0 +1,82 @@
+/* src/assets/styles/theme.css */
+
+.theme-switcher {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.theme-switcher:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+body.light-theme {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #333;
+}
+
+.light-theme .app-header h1 {
+  color: #2c3e50;
+}
+
+.light-theme .header-info span {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.1);
+}
+
+.light-theme .controls-toolbar {
+  background: rgba(255,255,255,0.6);
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.light-theme .control-compact {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.1);
+}
+
+.light-theme .btn-compact {
+  color: #333;
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.1);
+}
+
+.light-theme .btn-compact:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+.light-theme .btn-primary {
+    color: white;
+}
+
+.light-theme .btn-help {
+    color: #333;
+}
+
+.light-theme .info-sidebar {
+    background: rgba(255,255,255,0.4);
+}
+
+.light-theme .sidebar-panel {
+    background: rgba(255,255,255,0.5);
+}
+
+.light-theme #main-viz {
+  background: #e9ecef;
+}
+
+.light-theme .modal-content {
+    background: #fdfdfd;
+} 

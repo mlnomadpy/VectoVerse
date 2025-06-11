@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [
+    vue(),
     legacy({
       targets: ['defaults', 'not IE 11']
     })
@@ -22,17 +25,19 @@ export default defineConfig({
       },
       output: {
         manualChunks: {
-          vendor: ['katex', 'd3'],
+          vendor: ['katex', 'd3', 'vue'],
         }
       }
     }
   },
   resolve: {
     alias: {
-      '@': new URL('./modules', import.meta.url).pathname
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@modules': fileURLToPath(new URL('./modules', import.meta.url)),
+      '@styles': fileURLToPath(new URL('./styles', import.meta.url))
     }
   },
   optimizeDeps: {
-    include: ['katex', 'd3']
+    include: ['katex', 'd3', 'vue']
   }
 });
