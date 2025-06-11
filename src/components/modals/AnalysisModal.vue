@@ -417,44 +417,47 @@ const emit = defineEmits(['close'])
 }
 
 .modal-header h3 {
-  color: #667eea;
+  color: var(--accent-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .modal-header p {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .type-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .analysis-card {
   padding: 1.5rem;
-  border: 2px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
   position: relative;
+  background-color: var(--bg-secondary);
 }
 
 .analysis-card:hover:not(.disabled) {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.05);
+  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
 }
 
 .analysis-card.selected {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
+  box-shadow: 0 0 15px rgba(10, 132, 255, 0.3);
 }
 
 .analysis-card.disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -464,14 +467,14 @@ const emit = defineEmits(['close'])
 }
 
 .card-title {
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .card-description {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .card-badge {
@@ -483,10 +486,11 @@ const emit = defineEmits(['close'])
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .analysis-config {
-  background: rgba(102, 126, 234, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -494,7 +498,7 @@ const emit = defineEmits(['close'])
 
 .analysis-config h4 {
   margin: 0 0 1rem 0;
-  color: #667eea;
+  color: var(--accent-primary);
 }
 
 .config-section {
@@ -509,33 +513,37 @@ const emit = defineEmits(['close'])
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .number-input, .select-input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e2e8f0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 6px;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .number-input:focus, .select-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 5px rgba(10, 132, 255, 0.5);
 }
 
 .config-info {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(10, 132, 255, 0.1);
   padding: 0.75rem;
   border-radius: 6px;
   margin-top: 1rem;
+  border-left: 3px solid var(--accent-primary);
 }
 
 .config-info p {
   margin: 0;
   font-size: 0.875rem;
-  color: #1e40af;
+  color: var(--text-secondary);
 }
 
 .config-options {
@@ -549,15 +557,17 @@ const emit = defineEmits(['close'])
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .checkbox-label input[type="checkbox"] {
+  accent-color: var(--accent-primary);
   margin: 0;
 }
 
 .results-section {
-  background: rgba(16, 185, 129, 0.05);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -568,16 +578,18 @@ const emit = defineEmits(['close'])
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .results-header h4 {
   margin: 0;
-  color: #10b981;
+  color: var(--accent-primary);
 }
 
 .results-meta {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .result-stats {
@@ -589,28 +601,32 @@ const emit = defineEmits(['close'])
 
 .stat-item {
   text-align: center;
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 6px;
 }
 
 .stat-label {
   display: block;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
 }
 
 .stat-value {
   display: block;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.2em;
 }
 
 .eigenvalues, .cluster-info, .outliers-info {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .eigenvalues h5, .cluster-info h5, .outliers-info h5 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
 }
 
 .eigenvalue-list, .cluster-list, .outlier-list {
@@ -620,21 +636,23 @@ const emit = defineEmits(['close'])
 }
 
 .eigenvalue-item, .outlier-item {
-  background: rgba(102, 126, 234, 0.1);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  background: rgba(10, 132, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
   font-size: 0.875rem;
-  color: #667eea;
+  color: var(--accent-primary);
+  font-weight: 500;
 }
 
 .cluster-item {
-  background: rgba(16, 185, 129, 0.1);
-  padding: 0.5rem;
-  border-radius: 4px;
+  background: var(--bg-secondary);
+  padding: 0.75rem;
+  border-radius: 6px;
   font-size: 0.875rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  border-left: 3px solid #10b981;
 }
 
 .cluster-label {
@@ -643,11 +661,11 @@ const emit = defineEmits(['close'])
 }
 
 .cluster-size, .cluster-distance {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .more-outliers {
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 0.25rem 0.5rem;
 }
@@ -655,14 +673,14 @@ const emit = defineEmits(['close'])
 .analysis-progress {
   margin-bottom: 2rem;
   padding: 1rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 8px;
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--bg-secondary);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -670,20 +688,21 @@ const emit = defineEmits(['close'])
 
 .progress-fill {
   height: 100%;
-  background: #667eea;
+  background: var(--accent-primary);
   transition: width 0.3s ease;
 }
 
 .progress-text {
   text-align: center;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .error-section {
   margin-bottom: 2rem;
   padding: 1rem;
-  background: rgba(239, 68, 68, 0.05);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
 }
 
@@ -691,7 +710,8 @@ const emit = defineEmits(['close'])
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #dc2626;
+  color: #ef4444;
+  font-weight: 500;
 }
 
 .error-icon {
@@ -702,6 +722,9 @@ const emit = defineEmits(['close'])
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .btn-secondary, .btn-primary, .btn-utility {
@@ -714,12 +737,12 @@ const emit = defineEmits(['close'])
 }
 
 .btn-secondary {
-  background: #6b7280;
+  background: #555;
   color: white;
 }
 
 .btn-secondary:hover {
-  background: #4b5563;
+  background: #777;
 }
 
 .btn-utility {
@@ -732,16 +755,18 @@ const emit = defineEmits(['close'])
 }
 
 .btn-primary {
-  background: #667eea;
+  background: var(--accent-primary);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #5a67d8;
+  background: var(--accent-secondary);
 }
 
 .btn-primary:disabled {
-  background: #9ca3af;
+  background: #555;
+  color: #999;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 </style> 

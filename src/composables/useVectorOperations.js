@@ -69,7 +69,7 @@ export function useVectorOperations() {
       const vector = vectorGeneration.random(dims, -10, 10)
       return {
         id: `random_${Date.now()}`,
-        values: vector,
+        components: vector,
         magnitude: vectorOperations.magnitude(vector),
         created: new Date(),
         type: 'random'
@@ -83,7 +83,7 @@ export function useVectorOperations() {
       const vector = vectorGeneration.zero(dims)
       return {
         id: `zero_${Date.now()}`,
-        values: vector,
+        components: vector,
         magnitude: 0,
         created: new Date(),
         type: 'zero'
@@ -97,7 +97,7 @@ export function useVectorOperations() {
       const vector = vectorGeneration.unit(dims, activeIndex)
       return {
         id: `unit_${activeIndex}_${Date.now()}`,
-        values: vector,
+        components: vector,
         magnitude: 1,
         created: new Date(),
         type: 'unit',
@@ -112,7 +112,7 @@ export function useVectorOperations() {
       const vector = vectorGeneration.normal(dims, mean, stdDev)
       return {
         id: `normal_${Date.now()}`,
-        values: vector,
+        components: vector,
         magnitude: vectorOperations.magnitude(vector),
         created: new Date(),
         type: 'normal',
@@ -128,10 +128,10 @@ export function useVectorOperations() {
         throw new Error('Two vectors are required for addition')
       }
       
-      const result = vectorOperations.add(vectorA.values, vectorB.values)
+      const result = vectorOperations.add(vectorA.components, vectorB.components)
       return {
         id: `add_${Date.now()}`,
-        values: result,
+        components: result,
         magnitude: vectorOperations.magnitude(result),
         created: new Date(),
         type: 'addition',
@@ -146,10 +146,10 @@ export function useVectorOperations() {
         throw new Error('Two vectors are required for subtraction')
       }
       
-      const result = vectorOperations.subtract(vectorA.values, vectorB.values)
+      const result = vectorOperations.subtract(vectorA.components, vectorB.components)
       return {
         id: `subtract_${Date.now()}`,
-        values: result,
+        components: result,
         magnitude: vectorOperations.magnitude(result),
         created: new Date(),
         type: 'subtraction',
@@ -164,10 +164,10 @@ export function useVectorOperations() {
         throw new Error('Vector is required for scaling')
       }
       
-      const result = vectorOperations.scale(vector.values, scalar)
+      const result = vectorOperations.scale(vector.components, scalar)
       return {
         id: `scale_${Date.now()}`,
-        values: result,
+        components: result,
         magnitude: vectorOperations.magnitude(result),
         created: new Date(),
         type: 'scaling',
@@ -183,10 +183,10 @@ export function useVectorOperations() {
         throw new Error('Vector is required for normalization')
       }
       
-      const result = vectorOperations.normalize(vector.values)
+      const result = vectorOperations.normalize(vector.components)
       return {
         id: `normalize_${Date.now()}`,
-        values: result,
+        components: result,
         magnitude: 1,
         created: new Date(),
         type: 'normalization',
@@ -202,7 +202,7 @@ export function useVectorOperations() {
         throw new Error('Two vectors are required for dot product')
       }
       
-      return vectorOperations.dotProduct(vectorA.values, vectorB.values)
+      return vectorOperations.dotProduct(vectorA.components, vectorB.components)
     }, 'Calculate Dot Product')
   }
   
@@ -212,7 +212,7 @@ export function useVectorOperations() {
         throw new Error('Two vectors are required for cosine similarity')
       }
       
-      return vectorOperations.cosineSimilarity(vectorA.values, vectorB.values)
+      return vectorOperations.cosineSimilarity(vectorA.components, vectorB.components)
     }, 'Calculate Cosine Similarity')
   }
   
@@ -224,9 +224,9 @@ export function useVectorOperations() {
       
       switch (metric.toLowerCase()) {
         case 'euclidean':
-          return vectorOperations.euclideanDistance(vectorA.values, vectorB.values)
+          return vectorOperations.euclideanDistance(vectorA.components, vectorB.components)
         case 'manhattan':
-          return vectorOperations.manhattanDistance(vectorA.values, vectorB.values)
+          return vectorOperations.manhattanDistance(vectorA.components, vectorB.components)
         default:
           throw new Error(`Unknown distance metric: ${metric}`)
       }
@@ -239,21 +239,13 @@ export function useVectorOperations() {
         throw new Error('Vector is required for analysis')
       }
       
-      const stats = vectorStatistics.calculate(vector.values)
-      const magnitude = vectorOperations.magnitude(vector.values)
+      const stats = vectorStatistics.calculate(vector.components)
       
       return {
         vectorId: vector.id,
-        statistics: stats,
-        magnitude,
-        dimensions: vector.values.length,
+        ...stats,
+        dimensions: vector.components.length,
         timestamp: new Date(),
-        components: vector.values.map((value, index) => ({
-          index,
-          value,
-          absoluteValue: Math.abs(value),
-          percentage: magnitude > 0 ? (Math.abs(value) / magnitude) * 100 : 0
-        }))
       }
     }, 'Analyze Vector')
   }
@@ -270,7 +262,7 @@ export function useVectorOperations() {
       )
       
       // Calculate batch statistics
-      const magnitudes = vectors.map(v => vectorOperations.magnitude(v.values))
+      const magnitudes = vectors.map(v => vectorOperations.magnitude(v.components))
       const avgMagnitude = magnitudes.reduce((sum, mag) => sum + mag, 0) / magnitudes.length
       const maxMagnitude = Math.max(...magnitudes)
       const minMagnitude = Math.min(...magnitudes)
@@ -304,8 +296,8 @@ export function useVectorOperations() {
             matrix[i][j] = 1 // Self-similarity is 1
           } else {
             matrix[i][j] = vectorOperations.cosineSimilarity(
-              vectors[i].values,
-              vectors[j].values
+              vectors[i].components,
+              vectors[j].components
             )
           }
         }

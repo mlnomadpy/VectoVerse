@@ -1,6 +1,6 @@
 // A minimal implementation of t-SNE, moved from AnalysisEngine.js
 
-export class TSNEImplementation {
+export class TSNE {
     constructor(options = {}) {
         this.options = {
             dim: 2,

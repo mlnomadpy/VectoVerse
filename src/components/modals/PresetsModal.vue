@@ -1,30 +1,24 @@
 <template>
-  <div class="presets-modal">
-    <header class="modal-header">
-      <h3>Manage Presets</h3>
-      <button class="close-button" @click="$emit('close')">&times;</button>
-    </header>
-    <div class="modal-content">
-      <div class="new-preset-form">
-        <input v-model="newPresetName" placeholder="New preset name..." />
-        <button @click="saveCurrentPreset" :disabled="!newPresetName">Save Current</button>
-      </div>
+  <div>
+    <div class="new-preset-form">
+      <input v-model="newPresetName" placeholder="New preset name..." class="form-input" />
+      <button @click="saveCurrentPreset" :disabled="!newPresetName" class="btn btn-primary">Save Current</button>
+    </div>
 
-      <div class="presets-list">
-        <h4>Saved Presets</h4>
-        <div v-if="controls.presets.value.length === 0" class="no-presets">
-          No presets saved yet.
-        </div>
-        <ul>
-          <li v-for="preset in controls.presets.value" :key="preset.name">
-            <span class="preset-name">{{ preset.name }}</span>
-            <div class="preset-actions">
-              <button class="btn-compact" @click="loadSelectedPreset(preset.name)">Load</button>
-              <button class="btn-compact btn-danger" @click="deleteSelectedPreset(preset.name)">Delete</button>
-            </div>
-          </li>
-        </ul>
+    <div class="presets-list">
+      <h4 class="list-header">Saved Presets</h4>
+      <div v-if="!controls.presets.value || controls.presets.value.length === 0" class="no-presets">
+        No presets saved yet.
       </div>
+      <ul v-else>
+        <li v-for="preset in controls.presets.value" :key="preset.name">
+          <span class="preset-name">{{ preset.name }}</span>
+          <div class="preset-actions">
+            <button class="btn btn-secondary" @click="loadSelectedPreset(preset.name)">Load</button>
+            <button class="btn btn-danger" @click="deleteSelectedPreset(preset.name)">Delete</button>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -41,83 +35,78 @@ const newPresetName = ref('')
 defineEmits(['close'])
 
 const saveCurrentPreset = () => {
-  controls.savePreset(newPresetName.value)
+  if (!newPresetName.value) return;
+  const presetName = newPresetName.value;
+  controls.savePreset(presetName)
   newPresetName.value = ''
-  uiStore.showSuccess(`Preset "${newPresetName.value}" saved!`)
+  uiStore.showSuccess(`Preset "${presetName}" saved!`)
 }
 
 const loadSelectedPreset = (name) => {
   controls.loadPreset(name)
   uiStore.showSuccess(`Preset "${name}" loaded!`)
-  uiStore.hideModal('presets')
+  emit('close');
 }
 
 const deleteSelectedPreset = (name) => {
     controls.deletePreset(name);
     uiStore.showSuccess(`Preset "${name}" deleted!`);
 }
-
 </script>
 
 <style scoped>
-.presets-modal {
-  width: 400px;
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-.modal-header h3 {
-  margin: 0;
-  color: var(--text-primary);
-}
-.close-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.modal-content {
-  padding-top: 1rem;
-}
-
 .new-preset-form {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
-.new-preset-form input {
+
+.form-input {
   flex-grow: 1;
-  padding: 0.5rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-primary);
+  padding: 0.75rem;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #f5f5f7;
+  font-size: 1rem;
 }
-.new-preset-form button {
-  padding: 0.5rem 1rem;
-  background-color: var(--primary);
-  color: white;
+
+.form-input::placeholder {
+  color: #888;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
-.new-preset-form button:disabled {
-  background-color: var(--bg-secondary);
+
+.btn-primary {
+  background-color: #007aff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn:disabled {
+  background-color: #555;
+  color: #999;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.presets-list h4 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-secondary);
+.list-header {
+  margin: 0 0 0.75rem 0;
+  color: #a0a0a5;
   text-transform: uppercase;
-  font-size: 0.8em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 .presets-list ul {
@@ -126,20 +115,29 @@ const deleteSelectedPreset = (name) => {
   margin: 0;
   max-height: 250px;
   overflow-y: auto;
+  border: 1px solid #444;
+  border-radius: 6px;
 }
+
 .presets-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #444;
 }
-.presets-list li:nth-child(odd) {
-  background-color: var(--bg-secondary);
+
+.presets-list li:last-child {
+  border-bottom: none;
+}
+
+.presets-list li:hover {
+  background-color: #3a3a3c;
 }
 
 .preset-name {
   font-weight: 500;
+  color: #f5f5f7;
 }
 
 .preset-actions {
@@ -147,14 +145,32 @@ const deleteSelectedPreset = (name) => {
   gap: 0.5rem;
 }
 
-.btn-danger {
-  background-color: #e53935;
+.btn-secondary {
+  background-color: #555;
   color: white;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
 }
+.btn-secondary:hover {
+  background-color: #777;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
 .no-presets {
   text-align: center;
   padding: 2rem;
-  color: var(--text-secondary);
+  color: #888;
   font-style: italic;
+  border: 1px dashed #555;
+  border-radius: 6px;
 }
 </style> 

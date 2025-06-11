@@ -42,7 +42,7 @@
           />
           <StatCard 
             icon="📐" 
-            :value="vectorStore.dimensions" 
+            :value="configStore.dimensions" 
             label="Dimensions" 
           />
           <StatCard 
@@ -80,6 +80,11 @@
               :class="{ active: uiStore.activeTab === tab.id }"
               :id="`${tab.id}-tab`"
             >
+              <IndividualAnalysisTab v-if="tab.id === 'individual'" />
+              <RelationshipsTab v-if="tab.id === 'relationships'" />
+              <ClusteringTab v-if="tab.id === 'clusters'" />
+              <StatisticsTab v-if="tab.id === 'statistics'" />
+              <PeriodicTableTab v-if="tab.id === 'periodic-table'" />
               <!-- Content populated by existing modules -->
             </div>
           </div>
@@ -102,18 +107,30 @@
 import { ref, computed, onMounted, inject } from 'vue'
 import { useVectorStore } from '../stores/vectorStore'
 import { useUIStore } from '../stores/uiStore'
+import { useConfigStore } from '../stores/configStore'
+import { useExportManager } from '../composables/useExportManager'
+import { useVectorOperations } from '../composables/useVectorOperations'
 import StatCard from './StatCard.vue'
+import IndividualAnalysisTab from './tabs/IndividualAnalysisTab.vue'
+import RelationshipsTab from './tabs/RelationshipsTab.vue'
+import ClusteringTab from './tabs/ClusteringTab.vue'
+import StatisticsTab from './tabs/StatisticsTab.vue'
+import PeriodicTableTab from './tabs/PeriodicTableTab.vue'
 
 const vectorStore = useVectorStore()
 const uiStore = useUIStore()
-const framework = inject('framework')
+const configStore = useConfigStore()
+const framework = computed(() => vectorStore.framework)
 const analysisRef = ref(null)
+const exportManager = useExportManager()
+const vectorOps = useVectorOperations()
 
 const tabs = ref([
   { id: 'individual', label: 'Individual Analysis' },
   { id: 'relationships', label: 'Relationships' },
   { id: 'clusters', label: 'Clustering' },
-  { id: 'statistics', label: 'Statistics' }
+  { id: 'statistics', label: 'Statistics' },
+  { id: 'periodic-table', label: 'Periodic Table' }
 ])
 
 const canCompareVectors = computed(() => {
@@ -129,24 +146,32 @@ const setActiveTab = (tabId) => {
   uiStore.setActiveTab(tabId)
 }
 
-const compareVectors = () => {
-  if (framework.value && canCompareVectors.value) {
-    // This will trigger the existing comparison functionality
-    const compareButton = document.getElementById('compare-vectors')
-    if (compareButton) {
-      compareButton.click()
+const compareVectors = async () => {
+  if (canCompareVectors.value) {
+    const vectorA = vectorStore.selectedVector
+    // For now, just compare with the first other vector
+    const vectorB = vectorStore.vectors.find(v => v.id !== vectorA.id)
+
+    if (vectorA && vectorB) {
+      const dotProduct = await vectorOps.calculateDotProduct({ values: vectorA.components }, { values: vectorB.components })
+      const cosineSimilarity = await vectorOps.calculateCosineSimilarity({ values: vectorA.components }, { values: vectorB.components })
+      const euclideanDistance = await vectorOps.calculateDistance({ values: vectorA.components }, { values: vectorB.components })
+      
+      uiStore.showModal('vectorComparison', {
+        vectorA: { id: vectorA.id },
+        vectorB: { id: vectorB.id },
+        dotProduct,
+        cosineSimilarity,
+        euclideanDistance
+      })
+    } else {
+      uiStore.showError('Please select a vector and ensure at least one other vector exists.')
     }
   }
 }
 
 const exportAnalysis = () => {
-  if (framework.value) {
-    // This will trigger the existing export functionality
-    const exportButton = document.getElementById('export-analysis')
-    if (exportButton) {
-      exportButton.click()
-    }
-  }
+  exportManager.exportSession()
 }
 
 onMounted(() => {

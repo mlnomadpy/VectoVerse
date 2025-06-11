@@ -72,7 +72,7 @@ const fabActions = computed(() => [
     icon: '🧠',
     label: 'Neural Mode',
     class: 'fab-neural',
-    action: () => toggleNeuralMode()
+    action: () => vectorStore.toggleNeuralMode()
   },
   {
     id: 'analysis',
@@ -138,14 +138,6 @@ const handleAction = (actionId) => {
     
     // Show feedback
     uiStore.showSuccess(`${action.label} activated`)
-  }
-}
-
-const toggleNeuralMode = () => {
-  if (uiStore.neuralModeActive) {
-    vectorStore.deactivateNeuralMode()
-  } else {
-    vectorStore.activateNeuralMode()
   }
 }
 

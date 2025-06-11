@@ -1,18 +1,12 @@
 <template>
   <div id="app" class="vectoverse-app">
-    <!-- Theme Switcher -->
-    <div class="theme-switcher" @click="toggleTheme">🌙</div>
-
     <div class="container">
       <!-- Header Component -->
-      <AppHeader />
+      <AppHeader class="app-header" />
 
       <main class="app-main">
         <!-- Controls Toolbar -->
         <ControlsToolbar />
-
-        <!-- Enhanced Tab Container -->
-        <TabContainer />
 
         <!-- Main Visualization Container -->
         <VisualizationContainer />
@@ -22,7 +16,7 @@
       </main>
 
       <!-- Sidebar -->
-      <InfoSidebar />
+      <InfoSidebar class="info-sidebar" />
     </div>
 
     <!-- Modals -->
@@ -34,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, provide, nextTick } from 'vue'
+import { onMounted, provide, nextTick } from 'vue'
 import { useVectorStore } from './stores/vectorStore'
 import { useUIStore } from './stores/uiStore'
 import { useKeyboardShortcuts } from './composables/useKeyboardShortcuts'
@@ -46,7 +40,6 @@ import { useExportManager } from './composables/useExportManager'
 import { useErrorHandler } from './composables/useErrorHandler'
 import { useMathRenderer } from './composables/useMathRenderer'
 import { useControls } from './composables/useControls'
-import { VectorAtomicFramework } from '@modules/VectorAtomicFramework.js'
 
 // Components
 import AppHeader from './components/AppHeader.vue'
@@ -73,42 +66,17 @@ const errorHandler = useErrorHandler()
 const mathRenderer = useMathRenderer()
 const controls = useControls()
 
-// Framework instance
-const framework = ref(null)
-
-// Theme management
-const isDarkTheme = ref(false)
-
-const toggleTheme = () => {
-  isDarkTheme.value = !isDarkTheme.value
-  document.body.classList.toggle('dark-theme', isDarkTheme.value)
-}
-
-// Initialize the framework
 onMounted(async () => {
   try {
-    // Wait a bit for DOM to be ready
     await nextTick()
     
-    // Initialize the VectorAtomicFramework
-    framework.value = new VectorAtomicFramework()
-    
-    // Store the framework reference in the vector store
-    vectorStore.setFramework(framework.value)
+    // Initialize the vectors in the store
+    vectorStore.generateVectors()
     
     // Initialize accessibility features
     accessibility.initialize()
     
-    // Initialize periodic table if container exists
-    const visualizationContainer = document.querySelector('.visualization-container')
-    if (visualizationContainer) {
-      periodicTable.initializePeriodicTable(visualizationContainer)
-    }
-    
-    console.log('VectoVerse Vue app initialized successfully with enhanced features!')
-    
-    // Setup enhanced controls
-    setupEnhancedControls()
+    console.log('VectoVerse Vue app initialized successfully.')
     
     // Re-render math after framework initialization
     setTimeout(() => {
@@ -123,36 +91,7 @@ onMounted(async () => {
   }
 })
 
-// Setup enhanced controls (converted from original script.js)
-const setupEnhancedControls = () => {
-  if (!framework.value) return
-
-  // Listen for neural mode events
-  framework.value.eventBus.on('neuralModeActivated', (data) => {
-    console.log('Neural network mode activated with input vector:', data.inputVectorId)
-    uiStore.setNeuralModeActive(true)
-  })
-
-  framework.value.eventBus.on('neuralModeDeactivated', () => {
-    console.log('Neural network mode deactivated')
-    uiStore.setNeuralModeActive(false)
-  })
-
-  // Listen for activation function changes
-  framework.value.eventBus.on('activationFunctionChanged', (data) => {
-    console.log('Activation function changed to:', data.function)
-    vectorStore.setActivationFunction(data.function)
-  })
-
-  // Listen for learning rate changes
-  framework.value.eventBus.on('learningRateChanged', (data) => {
-    console.log('Learning rate changed to:', data.rate)
-    vectorStore.setLearningRate(data.rate)
-  })
-}
-
-// Provide the framework and composables to child components
-provide('framework', framework)
+// Provide composables to child components
 provide('tutorialManager', tutorialManager)
 provide('accessibility', accessibility)
 provide('performanceOptimizer', performanceOptimizer)
@@ -161,14 +100,4 @@ provide('exportManager', exportManager)
 provide('errorHandler', errorHandler)
 provide('mathRenderer', mathRenderer)
 provide('controls', controls)
-</script>
-
-<style>
-.vectoverse-app {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Import existing styles - they will be scoped appropriately by child components */
-</style> 
+</script> 

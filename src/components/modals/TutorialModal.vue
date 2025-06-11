@@ -121,7 +121,7 @@ const tutorialManager = useTutorialManager()
 
 .tutorial-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -174,7 +174,7 @@ const tutorialManager = useTutorialManager()
 }
 
 .step-dot.active {
-  background: var(--primary);
+  background: var(--accent-primary);
   transform: scale(1.3);
 }
 
@@ -210,7 +210,7 @@ const tutorialManager = useTutorialManager()
   padding: 12px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  border-left: 3px solid var(--primary);
+  border-left: 3px solid var(--accent-primary);
 }
 
 .feature-icon {
@@ -223,7 +223,7 @@ const tutorialManager = useTutorialManager()
 }
 
 .feature-text strong {
-  color: var(--primary);
+  color: var(--accent-primary);
   display: block;
   margin-bottom: 4px;
 }
@@ -231,14 +231,14 @@ const tutorialManager = useTutorialManager()
 .tutorial-tips {
   margin-top: 20px;
   padding: 15px;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(10, 132, 255, 0.1);
   border-radius: 8px;
-  border-left: 3px solid var(--primary);
+  border-left: 3px solid var(--accent-primary);
 }
 
 .tutorial-tips h5 {
   margin: 0 0 10px 0;
-  color: var(--primary);
+  color: var(--accent-primary);
   font-size: 1.1em;
 }
 

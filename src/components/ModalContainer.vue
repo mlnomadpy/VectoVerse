@@ -84,6 +84,10 @@
     :notification="uiStore.errorDetails"
     @close="uiStore.hideError"
   />
+
+  <!-- Other Modals -->
+  <SettingsModal />
+  <VectorComparisonModal />
 </template>
 
 <script setup>
@@ -99,6 +103,8 @@ import ExportModal from './modals/ExportModal.vue'
 import PresetsModal from './modals/PresetsModal.vue'
 import Notification from './Notification.vue'
 import ErrorNotification from './ErrorNotification.vue'
+import SettingsModal from './modals/SettingsModal.vue'
+import VectorComparisonModal from './modals/VectorComparisonModal.vue'
 
 const uiStore = useUIStore()
 </script> 

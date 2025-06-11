@@ -67,7 +67,8 @@ onUnmounted(() => {
 }
 
 .modal-container {
-  background: white;
+  background: #2c2c2e;
+  color: #f5f5f7;
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 90vw;
@@ -75,19 +76,22 @@ onUnmounted(() => {
   width: 600px;
   overflow: hidden;
   animation: slideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 1rem 1.5rem;
+  background: #1e1e1e;
   color: white;
+  flex-shrink: 0;
 }
 
 .modal-title {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin: 0;
 }
@@ -95,8 +99,8 @@ onUnmounted(() => {
 .modal-close-btn {
   background: none;
   border: none;
-  color: white;
-  font-size: 2rem;
+  color: #a0a0a5;
+  font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
   width: 30px;
@@ -109,23 +113,25 @@ onUnmounted(() => {
 }
 
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   transform: scale(1.1);
 }
 
 .modal-body {
-  padding: 2rem;
-  max-height: 70vh;
+  padding: 1.5rem;
   overflow-y: auto;
+  flex-grow: 1;
 }
 
 .modal-footer {
-  padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.02);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 1.5rem;
+  background: #1e1e1e;
+  border-top: 1px solid #444;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 @keyframes fadeIn {
@@ -136,7 +142,7 @@ onUnmounted(() => {
 @keyframes slideIn {
   from { 
     opacity: 0;
-    transform: scale(0.9) translateY(-20px);
+    transform: scale(0.95) translateY(-20px);
   }
   to { 
     opacity: 1;
@@ -150,23 +156,24 @@ onUnmounted(() => {
 }
 
 .modal-body::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: #2c2c2e;
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
+  background: #555;
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5);
+  background: #777;
 }
 
 @media (max-width: 768px) {
   .modal-container {
     width: 95vw;
     margin: 1rem;
+    max-height: calc(100vh - 2rem);
   }
   
   .modal-header,

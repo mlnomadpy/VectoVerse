@@ -47,7 +47,7 @@ import { computed, watch, ref } from 'vue'
 import { useVectorStore } from '../stores/vectorStore'
 import { useUIStore } from '../stores/uiStore'
 import { useMathRenderer } from '../composables/useMathRenderer'
-import { vectorStatistics } from '../utils/vectorUtils'
+import { vectorStatistics, vectorOperations } from '../utils/vectorUtils'
 
 const vectorStore = useVectorStore()
 const uiStore = useUIStore()
@@ -58,7 +58,7 @@ const selectedVector = computed(() => vectorStore.selectedVector)
 const vectorStats = computed(() => {
   if (!selectedVector.value) return {}
   return {
-      magnitude: vectorStatistics.magnitude(selectedVector.value.components),
+      magnitude: vectorOperations.magnitude(selectedVector.value.components),
       entropy: vectorStatistics.entropy(selectedVector.value.components),
   }
 })
@@ -68,7 +68,7 @@ const similarities = computed(() => {
   return vectorStore.vectors
     .filter(v => v.id !== selectedVector.value.id)
     .map(v => {
-      const sim = vectorStatistics.cosineSimilarity(selectedVector.value.components, v.components)
+      const sim = vectorOperations.cosineSimilarity(selectedVector.value.components, v.components)
       return {
         id: v.id,
         similarity: sim,

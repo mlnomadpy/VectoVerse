@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useConfigStore } from './configStore'
+import { vectorOperations } from '../utils/vectorUtils'
 
 export const useVectorStore = defineStore('vector', () => {
   // State
-  const framework = ref(null)
   const vectors = ref([])
   const selectedVectorId = ref(null)
-  const dimensions = ref(4)
-  const numVectors = ref(6)
+  const inputVector = ref(null)
   const forcesEnabled = ref(false)
   const forceType = ref('resonance')
   const neuralModeActive = ref(false)
@@ -16,192 +16,192 @@ export const useVectorStore = defineStore('vector', () => {
 
   // Getters
   const selectedVector = computed(() => {
-    if (!selectedVectorId.value || !vectors.value.length) return null
+    if (selectedVectorId.value === null) return null
     return vectors.value.find(v => v.id === selectedVectorId.value)
   })
 
   const vectorCount = computed(() => vectors.value.length)
 
   const averageMagnitude = computed(() => {
-    if (!vectors.value.length) return 0
-    const sum = vectors.value.reduce((acc, v) => acc + (v.magnitude || 0), 0)
-    return sum / vectors.value.length
-  })
+    if (!vectors.value.length) return 0;
+    const sum = vectors.value.reduce((acc, v) => {
+        const magnitude = Math.sqrt(v.components.reduce((sum, c) => sum + c*c, 0));
+        return acc + (magnitude || 0);
+    }, 0);
+    return sum / vectors.value.length;
+  });
+
+  const availableForceTypes = computed(() => ['resonance', 'gravity', 'repulsion'])
+
+  const availableActivationFunctions = computed(() => [
+    'sigmoid', 'tanh', 'relu', 'leaky_relu', 'softplus', 'swish', 'softmax', 'softermax', 'soft_sigmoid'
+  ])
 
   const maxSimilarity = computed(() => {
-    if (!vectors.value.length || !framework.value) return 0
+    if (vectors.value.length < 2) return 0
     let max = 0
-    
     for (let i = 0; i < vectors.value.length; i++) {
       for (let j = i + 1; j < vectors.value.length; j++) {
-        const similarity = framework.value.modules.vectorOperations.cosineSimilarity(
-          vectors.value[i].values,
-          vectors.value[j].values
+        const sim = vectorOperations.cosineSimilarity(
+          vectors.value[i].components,
+          vectors.value[j].components
         )
-        max = Math.max(max, Math.abs(similarity))
+        if (sim > max) max = sim
       }
     }
-    
     return max
   })
 
-  const availableForceTypes = computed(() => {
-    return framework.value ? framework.value.getAvailableForceTypes() : []
-  })
-
-  const availableActivationFunctions = computed(() => {
-    return framework.value ? framework.value.getAvailableActivationFunctions() : []
-  })
-
   // Actions
-  const setFramework = (frameworkInstance) => {
-    framework.value = frameworkInstance
-    
-    // Subscribe to framework events
-    if (frameworkInstance) {
-      frameworkInstance.eventBus.on('vectorsUpdated', (data) => {
-        vectors.value = data.vectors || []
-      })
-      
-      frameworkInstance.eventBus.on('vectorSelected', (data) => {
-        selectedVectorId.value = data.vectorId
-      })
-      
-      frameworkInstance.eventBus.on('configChanged', () => {
-        const config = frameworkInstance.getConfig()
-        dimensions.value = config.dimensions
-        numVectors.value = config.numVectors
-      })
-    }
-  }
+  function generateVectors() {
+    const configStore = useConfigStore()
+    const newVectors = []
+    const margin = 80
 
-  const updateDimensions = (newDimensions) => {
-    dimensions.value = newDimensions
-    if (framework.value) {
-      framework.value.updateConfig('dimensions', newDimensions)
-    }
-  }
-
-  const updateNumVectors = (newNumVectors) => {
-    numVectors.value = newNumVectors
-    if (framework.value) {
-      framework.value.updateConfig('numVectors', newNumVectors)
-    }
-  }
-
-  const selectVector = (vectorId) => {
-    selectedVectorId.value = vectorId
-    if (framework.value) {
-      framework.value.selectVector(vectorId)
-    }
-  }
-
-  const generateVectors = () => {
-    if (framework.value) {
-      framework.value.stateManager.generateVectors()
-    }
-  }
-
-  const toggleForces = () => {
-    forcesEnabled.value = !forcesEnabled.value
-    if (framework.value) {
-      framework.value.updateConfig('showForces', forcesEnabled.value);
-    }
-  }
-
-  const setForceType = (type) => {
-    forceType.value = type
-    if (framework.value) {
-      framework.value.setForceType(type)
-    }
-  }
-
-  const toggleNeuralMode = () => {
-    if (framework.value) {
-      const isActive = framework.value.isNeuralModeActive()
-      
-      if (isActive) {
-        framework.value.deactivateNeuralNetworkMode()
-      } else {
-        framework.value.activateNeuralNetworkMode(selectedVectorId.value)
+    for (let i = 0; i < configStore.numVectors; i++) {
+      const vector = {
+        id: i,
+        components: [],
+        x: Math.random() * (configStore.width - 2 * margin) + margin,
+        y: Math.random() * (configStore.height - 2 * margin) + margin,
       }
+
+      for (let d = 0; d < configStore.dimensions; d++) {
+        vector.components.push((Math.random() - 0.5) * 2)
+      }
+      newVectors.push(vector)
+    }
+    vectors.value = newVectors
+    selectedVectorId.value = null
+    inputVector.value = null
+  }
+
+  function selectVector(vectorId) {
+    if (selectedVectorId.value === vectorId) {
+      selectedVectorId.value = null // Toggle off
+    } else {
+      selectedVectorId.value = vectorId
     }
   }
 
-  const setActivationFunction = (func) => {
+  function addInputVector() {
+    const configStore = useConfigStore()
+    const newIV = {
+      id: 'input',
+      components: [],
+      x: Math.random() * (configStore.width - 100) + 50,
+      y: Math.random() * (configStore.height - 100) + 50,
+      isInput: true,
+    }
+    for (let d = 0; d < configStore.dimensions; d++) {
+      newIV.components.push((Math.random() - 0.5) * 2)
+    }
+    inputVector.value = newIV
+  }
+
+  function removeInputVector() {
+    inputVector.value = null
+  }
+
+  function randomizeInputVector() {
+    if (!inputVector.value) return
+    for (let i = 0; i < inputVector.value.components.length; i++) {
+      inputVector.value.components[i] = (Math.random() - 0.5) * 2
+    }
+  }
+
+  function updateInputVectorComponent(index, value) {
+    if (!inputVector.value) return
+    inputVector.value.components[index] = value
+  }
+
+  function removeVector(vectorId) {
+    vectors.value = vectors.value.filter(v => v.id !== vectorId)
+    if (selectedVectorId.value === vectorId) {
+      selectedVectorId.value = null
+    }
+  }
+
+  function addCustomVector(components) {
+    const configStore = useConfigStore()
+    const margin = 80
+    const vector = {
+      id: vectors.value.length > 0 ? Math.max(...vectors.value.map(v => v.id)) + 1 : 0,
+      components: components,
+      x: Math.random() * (configStore.width - 2 * margin) + margin,
+      y: Math.random() * (configStore.height - 2 * margin) + margin,
+      isCustom: true
+    }
+    vectors.value.push(vector)
+    configStore.updateConfig('numVectors', vectors.value.length)
+  }
+
+  function setVectorCustomColor(vectorId, color) {
+    const vector = vectors.value.find(v => v.id === vectorId)
+    if (vector) {
+      vector.customColor = color
+    }
+  }
+
+  function setVectorScale(vectorId, scale) {
+    const vector = vectors.value.find(v => v.id === vectorId)
+    if (vector) {
+      vector.scale = scale
+    }
+  }
+
+  function toggleForces() {
+    forcesEnabled.value = !forcesEnabled.value
+  }
+
+  function setForceType(type) {
+    forceType.value = type
+  }
+
+  function toggleNeuralMode() {
+    neuralModeActive.value = !neuralModeActive.value
+  }
+
+  function setActivationFunction(func) {
     activationFunction.value = func
-    if (framework.value) {
-      framework.value.setActivationFunction(func)
-    }
   }
 
-  const setLearningRate = (rate) => {
+  function setLearningRate(rate) {
     learningRate.value = rate
-    if (framework.value) {
-      framework.value.setLearningRate(rate)
-    }
-  }
-
-  const addInputVector = () => {
-    if (framework.value) {
-      framework.value.addInputVector()
-    }
-  }
-
-  const runAnalysis = () => {
-    if (framework.value) {
-      framework.value.modules.uiController.showAnalysisModal()
-    }
-  }
-
-  const exportData = () => {
-    if (framework.value) {
-      return framework.value.exportEnhancedData()
-    }
-    return null
-  }
-
-  const loadVectorFile = (file) => {
-    if (framework.value) {
-      framework.value.modules.fileHandler.handleFileUpload({ target: { files: [file] } })
-    }
   }
 
   return {
     // State
-    framework,
     vectors,
     selectedVectorId,
-    dimensions,
-    numVectors,
+    inputVector,
     forcesEnabled,
     forceType,
     neuralModeActive,
     activationFunction,
     learningRate,
-    
     // Getters
     selectedVector,
     vectorCount,
     averageMagnitude,
-    maxSimilarity,
     availableForceTypes,
     availableActivationFunctions,
-    
+    maxSimilarity,
     // Actions
-    setFramework,
-    updateDimensions,
-    updateNumVectors,
-    selectVector,
     generateVectors,
+    selectVector,
+    addInputVector,
+    removeInputVector,
+    randomizeInputVector,
+    updateInputVectorComponent,
+    removeVector,
+    addCustomVector,
+    setVectorCustomColor,
+    setVectorScale,
     toggleForces,
     setForceType,
     toggleNeuralMode,
     setActivationFunction,
-    setLearningRate,
-    addInputVector,
-    runAnalysis,
-    exportData,
-    loadVectorFile
+    setLearningRate
   }
 }) 
