@@ -35,9 +35,9 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: 600px;
-  background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, var(--accent-primary-transparent) 0%, transparent 70%);
   border-radius: 12px;
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  border: 2px solid var(--accent-primary-transparent-dark);
   overflow: hidden;
   margin-bottom: 2rem;
 }

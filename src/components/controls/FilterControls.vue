@@ -25,7 +25,7 @@ const { showPlaceholders } = usePeriodicTable();
 .toggle-label-text {
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   cursor: pointer;
 }
 .toggle-switch {
@@ -44,7 +44,7 @@ const { showPlaceholders } = usePeriodicTable();
   overflow: hidden;
   cursor: pointer;
   height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
 }
 .toggle-switch-inner {
@@ -61,18 +61,18 @@ const { showPlaceholders } = usePeriodicTable();
   padding: 0;
   line-height: 28px;
   font-size: 12px;
-  color: white;
+  color: var(--text-primary);
   box-sizing: border-box;
 }
 .toggle-switch-inner:before {
   content: "";
   padding-left: 10px;
-  background-color: #374151;
+  background-color: var(--bg-tertiary);
 }
 .toggle-switch-inner:after {
   content: "";
   padding-right: 10px;
-  background-color: #667eea;
+  background-color: var(--accent-primary);
   text-align: right;
 }
 .toggle-switch-switch {
@@ -80,7 +80,7 @@ const { showPlaceholders } = usePeriodicTable();
   width: 20px;
   height: 20px;
   margin: 4px;
-  background: white;
+  background: var(--text-primary);
   position: absolute;
   top: 0;
   bottom: 0;

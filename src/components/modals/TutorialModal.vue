@@ -105,15 +105,16 @@ const tutorialManager = useTutorialManager()
 
 <style scoped>
 .tutorial-content {
-  padding: 0;
+  padding: 1rem;
   max-width: 500px;
   margin: 0 auto;
+  background-color: var(--bg-primary);
 }
 
 .tutorial-progress-container {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--bg-tertiary);
   border-radius: 2px;
   margin-bottom: 20px;
   overflow: hidden;
@@ -121,7 +122,7 @@ const tutorialManager = useTutorialManager()
 
 .tutorial-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+  background: var(--accent-primary);
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -129,16 +130,15 @@ const tutorialManager = useTutorialManager()
 .tutorial-step-indicator {
   text-align: center;
   font-size: 0.9em;
-  opacity: 0.8;
-  margin-bottom: 15px;
   color: var(--text-secondary);
+  margin-bottom: 15px;
 }
 
 .tutorial-step h3 {
   margin: 0 0 15px 0;
   font-size: 1.4em;
   text-align: center;
-  color: var(--text-primary);
+  color: var(--accent-primary);
 }
 
 .tutorial-step p {
@@ -168,7 +168,7 @@ const tutorialManager = useTutorialManager()
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--bg-tertiary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -179,18 +179,18 @@ const tutorialManager = useTutorialManager()
 }
 
 .step-dot.completed {
-  background: var(--success);
+  background: var(--status-success);
 }
 
 .step-dot:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--accent-secondary);
   transform: scale(1.2);
 }
 
 .tutorial-help {
   text-align: center;
   padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-color);
 }
 
 .tutorial-help small {
@@ -208,7 +208,7 @@ const tutorialManager = useTutorialManager()
   gap: 12px;
   margin-bottom: 16px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
   border-radius: 8px;
   border-left: 3px solid var(--accent-primary);
 }
@@ -231,7 +231,7 @@ const tutorialManager = useTutorialManager()
 .tutorial-tips {
   margin-top: 20px;
   padding: 15px;
-  background: rgba(10, 132, 255, 0.1);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   border-left: 3px solid var(--accent-primary);
 }

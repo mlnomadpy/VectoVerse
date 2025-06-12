@@ -48,7 +48,7 @@ const appActions = useAppActions()
   align-items: center;
   justify-content: space-between;
   padding: 0 0.75rem;
-  background-color: var(--sidebar-bg);
+  background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   height: 50px;
 }
@@ -100,7 +100,7 @@ const appActions = useAppActions()
 
 .action-buttons button:hover,
 .history-controls button:hover:not(:disabled) {
-  color: var(--primary);
+  color: var(--accent-primary);
   background-color: var(--bg-secondary);
 }
 

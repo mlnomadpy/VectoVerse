@@ -202,216 +202,141 @@ const selectRelatedVector = (vectorId) => {
 
 <style scoped>
 .vector-info {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  background-color: var(--sidebar-bg);
   padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  height: 100%;
+  overflow-y: auto;
 }
 
 .vector-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .vector-name {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #667eea;
-  margin: 0;
+  color: var(--accent-primary);
 }
 
 .charge-indicator {
-  padding: 0.3rem 0.8rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
 }
-
 .charge-indicator.positive {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: white;
+  background-color: var(--status-success-bg);
+  color: var(--status-success);
 }
-
 .charge-indicator.negative {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  color: white;
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger);
 }
-
 .charge-indicator.neutral {
-  background: linear-gradient(135deg, #ffecd2, #fcb69f);
-  color: #8b4513;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
 }
 
 .vector-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-secondary);
+  padding: 0.75rem;
+  border-radius: 6px;
 }
-
 .stat-label {
+  display: block;
   font-size: 0.8rem;
-  color: #888;
-  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
 }
-
 .stat-value {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #667eea;
 }
 
 .vector-components {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
-
 .vector-components h5 {
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
 }
-
 .components-chart {
   display: flex;
   gap: 2px;
-  height: 60px;
-  align-items: flex-end;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 0.5rem;
+  height: 80px;
+  background-color: var(--bg-secondary);
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 5px;
+  align-items: flex-end;
 }
-
 .component-bar {
-  flex: 1;
-  min-height: 2px;
+  flex-grow: 1;
+  background-color: var(--accent-primary);
   border-radius: 1px;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  transition: all 0.2s;
 }
-
 .component-bar:hover {
-  filter: brightness(1.2);
-  transform: scaleY(1.1);
-}
-
-.vector-stats-detailed {
-  margin-bottom: 1rem;
+  opacity: 0.8;
 }
 
 .vector-stats-detailed h5 {
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
 }
-
 .stats-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.3rem;
+  background-color: var(--bg-secondary);
+  padding: 0.75rem;
+  border-radius: 6px;
 }
-
 .stat-detail {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.3rem 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 3px;
-  font-size: 0.8rem;
-}
-
-.stat-name {
-  color: #888;
-  font-weight: 500;
-}
-
-.stat-val {
-  font-weight: 600;
-  color: #667eea;
-}
-
-.vector-relationships h5 {
   font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.stat-name {
+  color: var(--text-secondary);
 }
 
+.vector-relationships {
+  margin-top: 1.5rem;
+}
+.vector-relationships h5 {
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
 .relationships-list {
-  max-height: 120px;
-  overflow-y: auto;
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
 }
-
 .relationship-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 4px;
-  margin-bottom: 0.3rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s;
 }
-
+.relationship-item:last-child {
+  border: none;
+}
 .relationship-item:hover {
-  background: rgba(102, 126, 234, 0.1);
-  transform: translateX(2px);
+  background-color: var(--bg-tertiary);
 }
-
 .rel-vector {
-  font-size: 0.8rem;
-  color: #666;
-  font-weight: 500;
-}
-
-.rel-similarity {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #667eea;
-}
-
-/* Scrollbar for relationships */
-.relationships-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.relationships-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-}
-
-.relationships-list::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
-  border-radius: 2px;
-}
-
-@media (max-width: 768px) {
-  .vector-stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-list {
-    grid-template-columns: 1fr;
-  }
+  color: var(--accent-secondary);
 }
 </style> 

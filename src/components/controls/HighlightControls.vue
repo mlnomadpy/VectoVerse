@@ -25,34 +25,34 @@ const { setHighlight, clearHighlight } = usePeriodicTable();
 .highlight-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 .button-group {
   display: flex;
-  background-color: rgba(0,0,0,0.3);
+  background-color: var(--bg-tertiary);
   border-radius: 6px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid var(--border-color);
 }
 .button-group button {
   background-color: transparent;
-  color: white;
+  color: var(--text-primary);
   border: none;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s;
-  border-left: 1px solid rgba(255,255,255,0.1);
+  border-left: 1px solid var(--border-color);
 }
 .button-group button:first-child {
   border-left: none;
 }
 .button-group button:hover {
-  background-color: #667eea;
+  background-color: var(--accent-primary);
 }
 .button-group button.clear-btn {
-  background-color: #ef4444;
+  background-color: var(--status-danger);
 }
 .button-group button.clear-btn:hover {
-  background-color: #dc2626;
+  background-color: #dc2626; /* This could be a new variable for danger-hover */
 }
 </style> 

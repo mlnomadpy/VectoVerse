@@ -31,16 +31,16 @@ defineProps({
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px var(--shadow-color);
+  background: var(--bg-quaternary);
 }
 
 .stat-icon {
@@ -55,13 +55,13 @@ defineProps({
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--accent-primary);
   margin-bottom: 0.2rem;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 

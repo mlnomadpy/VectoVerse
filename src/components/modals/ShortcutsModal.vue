@@ -128,7 +128,7 @@ defineEmits(['close'])
 
 .shortcuts-section h4 {
   margin: 0 0 1rem 0;
-  color: var(--primary);
+  color: var(--accent-primary);
   font-size: 1.1em;
   display: flex;
   align-items: center;
@@ -141,18 +141,18 @@ defineEmits(['close'])
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
   border-radius: 6px;
   transition: background-color 0.2s ease;
 }
 
 .shortcut-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
 }
 
 kbd {
-  background: var(--primary);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-primary-inverse);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -161,7 +161,7 @@ kbd {
   min-width: 60px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
 }
 
 .shortcut-item span {
@@ -172,7 +172,7 @@ kbd {
 .shortcuts-footer {
   text-align: center;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-color);
 }
 
 .shortcuts-tip {
@@ -182,7 +182,23 @@ kbd {
 }
 
 .shortcuts-tip strong {
-  color: var(--primary);
+  color: var(--accent-primary);
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-secondary);
 }
 
 @media (max-width: 768px) {

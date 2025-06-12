@@ -27,7 +27,7 @@ export function usePeriodicTable() {
   const config = ref({
     elementWidth: 70, // Increased width
     elementHeight: 70, // Increased height
-    padding: 4,
+    padding: 2,
     fontSize: 9,
     symbolFontSize: 16
   })
@@ -49,8 +49,8 @@ export function usePeriodicTable() {
         const neutralCount = dimensions - row - col;
         if (neutralCount < 0) continue;
 
-        const x = 50 + col * (config.value.elementWidth + config.value.padding + 15);
-        const y = 40 + row * (config.value.elementHeight + config.value.padding + 15);
+        const x = 50 + col * (config.value.elementWidth + config.value.padding);
+        const y = 40 + row * (config.value.elementHeight + config.value.padding);
 
         const element = {
           id: `p_${row}_${col}`,

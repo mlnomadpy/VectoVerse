@@ -110,8 +110,8 @@ function renderVectors() {
 
     vectorGroups.append("circle")
         .attr("r", d => getVectorRadius(d))
-        .attr("fill", "rgba(255,255,255,0.1)")
-        .attr("stroke", "rgba(255,255,255,0.5)")
+        .attr("fill", "var(--vis-bg-transparent)")
+        .attr("stroke", "var(--vis-text-color-transparent)")
         .attr("stroke-width", 2)
         .attr("filter", "url(#glow)");
 
@@ -122,7 +122,7 @@ function renderVectors() {
     vectorGroups.append("text")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
-        .attr("fill", "white")
+        .attr("fill", "var(--vis-text-color)")
         .attr("font-weight", "bold")
         .attr("font-size", "14px")
         .text(d => `V${d.id}`);
@@ -166,15 +166,15 @@ function renderInputVector() {
     inputGroup.append("circle")
         .attr("r", radius + 10)
         .attr("fill", "none")
-        .attr("stroke", Constants.COLORS.INPUT)
+        .attr("stroke", "var(--vis-vector-input)")
         .attr("stroke-width", 2)
         .attr("opacity", 0.5)
         .attr("class", "input-pulse");
     
     inputGroup.append("circle")
         .attr("r", radius)
-        .attr("fill", "rgba(255,215,0,0.3)")
-        .attr("stroke", Constants.COLORS.INPUT)
+        .attr("fill", "var(--vis-vector-input-transparent)")
+        .attr("stroke", "var(--vis-vector-input)")
         .attr("stroke-width", 3);
 
     renderDimensionArcs(inputGroup, iv);
@@ -182,7 +182,7 @@ function renderInputVector() {
     inputGroup.append("text")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
-        .attr("fill", Constants.COLORS.INPUT)
+        .attr("fill", "var(--vis-vector-input)")
         .attr("font-weight", "bold")
         .attr("font-size", "16px")
         .text("INPUT");
@@ -195,8 +195,8 @@ function getVectorRadius(vector) {
 }
 
 function getComponentColor(value) {
-    if (Math.abs(value) < 0.1) return Constants.COLORS.NEUTRAL;
-    return value > 0 ? Constants.COLORS.POSITIVE : Constants.COLORS.NEGATIVE;
+    if (Math.abs(value) < 0.1) return "var(--vis-vector-neutral)";
+    return value > 0 ? "var(--vis-vector-positive)" : "var(--vis-vector-negative)";
 }
 
 function updateVectorSelection() {
@@ -335,56 +335,93 @@ function handleAnalysisResults(result) {
 
 </script>
 
-<style>
-.renderer-tooltip {
-    position: absolute;
-    background-color: rgba(0,0,0,0.9);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
+<style scoped>
+/* From _vector.css */
 .vector-atom {
   cursor: pointer;
-  transition: all 0.2s ease;
-  pointer-events: all;
+  transition: transform 0.2s ease-out;
 }
 
 .vector-atom:hover {
-  filter: brightness(1.2);
+  transform: scale(1.1);
 }
 
-.vector-atom.selected {
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+.vector-atom:focus {
+  outline: none;
 }
 
-.vector-atom.selected circle {
-  stroke: rgba(255, 255, 255, 0.9) !important;
-  stroke-width: 3 !important;
+.vector-atom.selected > circle {
+  stroke: var(--vis-vector-selected);
+  stroke-width: 4px;
+}
+
+.vector-atom:focus > circle {
+  stroke: var(--vis-vector-selected);
+  stroke-width: 4px;
+  stroke-dasharray: 4;
+  animation: focus-ring 1s linear infinite;
+}
+
+.vector-renderer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--vis-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+svg {
+  cursor: grab;
+}
+svg:active {
+  cursor: grabbing;
+}
+
+.renderer-tooltip {
+  position: absolute;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.bg-particle {
+  opacity: 0.3;
+  animation: float 20s infinite alternate ease-in-out;
 }
 
 .input-pulse {
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  70% {
-    transform: scale(2);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
+.force-line {
+  stroke-linecap: round;
+  transition: all 0.3s ease;
+}
+
+@keyframes focus-ring {
+  to {
+    stroke-dashoffset: 8;
   }
 }
-</style> 
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  70% { transform: scale(1.2); opacity: 0.2; }
+  100% { transform: scale(0.9); opacity: 0.5; }
+}
+
+@keyframes float {
+  from { transform: translate(var(--tx-start), var(--ty-start)); }
+  to { transform: translate(var(--tx-end), var(--ty-end)); }
+}
+</style>

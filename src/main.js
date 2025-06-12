@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import './assets/styles/studio-theme.css'
-import './assets/styles/layout.css'
+import './assets/styles/main.scss'
+import './assets/styles/theme.css'
 
 // Import KaTeX and D3 globally
 import * as d3 from 'd3'

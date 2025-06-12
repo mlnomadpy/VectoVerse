@@ -95,7 +95,7 @@ const nearestNeighbors = computed(() => {
 }
 
 .analysis-card {
-  background: rgba(0,0,0,0.1);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1.25rem;
 }
@@ -132,14 +132,14 @@ h4 {
 }
 
 .neighbor-controls label {
-  color: #bbb;
+  color: var(--text-secondary);
   font-size: 0.9em;
 }
 
 .neighbor-controls select {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-quaternary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.4rem 0.6rem;
 }
@@ -154,7 +154,7 @@ h4 {
   display: flex;
   justify-content: space-between;
   padding: 0.6rem 0.2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .neighbor-list li:last-child {
@@ -162,7 +162,7 @@ h4 {
 }
 
 .neighbor-id {
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 .neighbor-score {
@@ -171,7 +171,7 @@ h4 {
 }
 
 .metric-label {
-  color: #888;
+  color: var(--text-tertiary);
   font-weight: normal;
   margin-right: 0.5rem;
 }

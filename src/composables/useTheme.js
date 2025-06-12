@@ -1,4 +1,4 @@
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useLocalStorage } from './useLocalStorage.js'
 
 /**
@@ -7,7 +7,7 @@ import { useLocalStorage } from './useLocalStorage.js'
  */
 export function useTheme() {
   // Theme storage
-  const themeStorage = useLocalStorage('vectoverse_theme', 'system')
+  const themeStorage = useLocalStorage('vectoverse_theme', 'dark')
   
   // Reactive state
   const isDark = ref(false)
@@ -66,55 +66,15 @@ export function useTheme() {
     const body = document.body
     
     // Remove existing theme classes
-    body.classList.remove('light-theme', 'dark-theme')
-    root.classList.remove('light-theme', 'dark-theme')
+    body.classList.remove('light-theme', 'dark-theme', 'neon-theme')
+    root.classList.remove('light-theme', 'dark-theme', 'neon-theme')
     
     // Add new theme class
     const themeClass = `${theme}-theme`
     body.classList.add(themeClass)
     root.classList.add(themeClass)
     
-    // Update CSS custom properties
-    updateThemeVariables(theme)
-    
     isDark.value = theme === 'dark'
-  }
-  
-  /**
-   * Update CSS custom properties for theme
-   */
-  const updateThemeVariables = (theme) => {
-    const root = document.documentElement
-    
-    if (theme === 'dark') {
-      root.style.setProperty('--bg-primary', '#1a1a1a')
-      root.style.setProperty('--bg-secondary', '#2d2d2d')
-      root.style.setProperty('--bg-tertiary', '#404040')
-      root.style.setProperty('--text-primary', '#ffffff')
-      root.style.setProperty('--text-secondary', '#cccccc')
-      root.style.setProperty('--text-tertiary', '#999999')
-      root.style.setProperty('--border-color', '#404040')
-      root.style.setProperty('--accent-color', '#667eea')
-      root.style.setProperty('--accent-hover', '#5a67d8')
-      root.style.setProperty('--success-color', '#10b981')
-      root.style.setProperty('--error-color', '#ef4444')
-      root.style.setProperty('--warning-color', '#f59e0b')
-      root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)')
-    } else {
-      root.style.setProperty('--bg-primary', '#ffffff')
-      root.style.setProperty('--bg-secondary', '#f8fafc')
-      root.style.setProperty('--bg-tertiary', '#e2e8f0')
-      root.style.setProperty('--text-primary', '#1a202c')
-      root.style.setProperty('--text-secondary', '#2d3748')
-      root.style.setProperty('--text-tertiary', '#4a5568')
-      root.style.setProperty('--border-color', '#e2e8f0')
-      root.style.setProperty('--accent-color', '#667eea')
-      root.style.setProperty('--accent-hover', '#5a67d8')
-      root.style.setProperty('--success-color', '#10b981')
-      root.style.setProperty('--error-color', '#ef4444')
-      root.style.setProperty('--warning-color', '#f59e0b')
-      root.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.1)')
-    }
   }
   
   /**
@@ -160,7 +120,7 @@ export function useTheme() {
     const cleanup = detectSystemTheme()
     
     // Apply initial theme
-    applyTheme(effectiveTheme.value)
+    applyTheme('dark')
     
     // Return cleanup function
     return cleanup
@@ -186,102 +146,83 @@ export function useTheme() {
  * Specialized composable for visualization theme
  */
 export function useVisualizationTheme() {
-  const { isDark, effectiveTheme } = useTheme()
+  const { effectiveTheme } = useTheme()
   
-  // Visualization-specific theme properties
-  const visualizationTheme = computed(() => {
-    const theme = effectiveTheme.value
-    
-    if (theme === 'dark') {
-      return {
-        background: '#1a1a1a',
-        vectorColors: {
-          positive: '#ef4444',
-          negative: '#3b82f6',
-          neutral: '#6b7280',
-          selected: '#fbbf24',
-          input: '#10b981'
-        },
-        forceColors: {
-          attraction: '#10b981',
-          repulsion: '#ef4444',
-          neutral: '#6b7280'
-        },
-        gridColor: '#404040',
-        textColor: '#ffffff',
-        axisColor: '#666666',
-        shadowColor: 'rgba(0, 0, 0, 0.5)'
-      }
-    } else {
-      return {
-        background: '#ffffff',
-        vectorColors: {
-          positive: '#dc2626',
-          negative: '#2563eb',
-          neutral: '#4b5563',
-          selected: '#f59e0b',
-          input: '#059669'
-        },
-        forceColors: {
-          attraction: '#059669',
-          repulsion: '#dc2626',
-          neutral: '#4b5563'
-        },
-        gridColor: '#e5e7eb',
-        textColor: '#1f2937',
-        axisColor: '#9ca3af',
-        shadowColor: 'rgba(0, 0, 0, 0.1)'
-      }
+  const visualizationTheme = ref({})
+
+  const getCssVariable = (name) => {
+    if (typeof window === 'undefined') return ''
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  }
+
+  const updateVisualizationTheme = () => {
+    visualizationTheme.value = {
+      background: getCssVariable('--vis-bg'),
+      vectorColors: {
+        positive: getCssVariable('--vis-vector-positive'),
+        negative: getCssVariable('--vis-vector-negative'),
+        neutral: getCssVariable('--vis-vector-neutral'),
+        selected: getCssVariable('--vis-vector-selected'),
+        input: getCssVariable('--vis-vector-input'),
+      },
+      forceColors: {
+        attraction: getCssVariable('--vis-force-attraction'),
+        repulsion: getCssVariable('--vis-force-repulsion'),
+        neutral: getCssVariable('--vis-force-neutral'),
+      },
+      gridColor: getCssVariable('--vis-grid-color'),
+      textColor: getCssVariable('--vis-text-color'),
+      axisColor: getCssVariable('--vis-axis-color'),
+      shadowColor: getCssVariable('--shadow-color'),
     }
+  }
+
+  watch(effectiveTheme, () => {
+    // We need to wait for the DOM to update with the new theme classes
+    nextTick(() => {
+      updateVisualizationTheme()
+    })
+  }, { immediate: true })
+
+  onMounted(() => {
+    updateVisualizationTheme()
   })
   
-  /**
-   * Get color for vector based on type and value
-   */
   const getVectorColor = (vector, alpha = 1) => {
     const colors = visualizationTheme.value.vectorColors
-    
+    if (!colors) return `rgba(128, 128, 128, ${alpha})`
+
     if (vector.type === 'input') return colors.input
     if (vector.isSelected) return colors.selected
     
-    // Color based on magnitude or charge
     const magnitude = Math.sqrt(vector.values.reduce((sum, v) => sum + v * v, 0))
     if (magnitude > 0.1) return colors.positive
     if (magnitude < -0.1) return colors.negative
     return colors.neutral
   }
   
-  /**
-   * Get force line color based on strength and type
-   */
   const getForceColor = (strength, type = 'attraction') => {
     const colors = visualizationTheme.value.forceColors
-    const baseColor = colors[type] || colors.neutral
-    
-    // Adjust opacity based on strength
-    const opacity = Math.min(Math.abs(strength), 1)
-    return `${baseColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`
+    if (!colors) return `rgba(128, 128, 128, 0.5)`
+
+    if (type === 'attraction') {
+      return strength > 0 ? colors.attraction : colors.neutral
+    } else {
+      return strength > 0 ? colors.repulsion : colors.neutral
+    }
   }
-  
-  /**
-   * Apply theme to D3 visualization
-   */
+
   const applyToD3Selection = (selection) => {
     const theme = visualizationTheme.value
+    if (!theme || !theme.background) return
+
+    selection.style('background-color', theme.background)
     
-    selection
-      .style('background-color', theme.background)
-      .style('color', theme.textColor)
-    
-    // Apply to axes
-    selection.selectAll('.axis')
-      .style('color', theme.axisColor)
-    
-    // Apply to grid
     selection.selectAll('.grid-line')
       .style('stroke', theme.gridColor)
-    
-    return selection
+      
+    selection.selectAll('.axis-label')
+      .style('fill', theme.textColor)
   }
   
   return {
@@ -289,7 +230,7 @@ export function useVisualizationTheme() {
     getVectorColor,
     getForceColor,
     applyToD3Selection,
-    isDark
+    effectiveTheme
   }
 }
 

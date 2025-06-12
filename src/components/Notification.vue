@@ -38,7 +38,7 @@ defineEmits(['close'])
   gap: 1rem;
   padding: 1rem 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px var(--shadow-color);
   backdrop-filter: blur(10px);
   z-index: 1100;
   cursor: pointer;
@@ -47,15 +47,15 @@ defineEmits(['close'])
 }
 
 .notification.success {
-  background: rgba(76, 175, 80, 0.9);
-  color: white;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background: var(--status-success);
+  color: var(--text-primary-inverse, #fff);
+  border: 1px solid var(--status-success);
 }
 
 .notification.error {
-  background: rgba(244, 67, 54, 0.9);
-  color: white;
-  border: 1px solid rgba(244, 67, 54, 0.3);
+  background: var(--status-danger);
+  color: var(--text-primary-inverse, #fff);
+  border: 1px solid var(--status-danger);
 }
 
 .notification-icon {
@@ -87,7 +87,7 @@ defineEmits(['close'])
 
 .notification-close:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-tertiary);
 }
 
 @keyframes slideIn {

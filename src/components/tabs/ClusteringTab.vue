@@ -49,7 +49,7 @@ const runClustering = () => {
 .cluster {
   margin-bottom: 1rem;
   padding: 0.5rem;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 ul {

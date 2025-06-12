@@ -73,11 +73,11 @@ table {
   border-collapse: collapse;
 }
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   padding: 8px;
+  text-align: left;
 }
 th {
-  background-color: #f2f2f2;
-  text-align: left;
+  background-color: var(--bg-tertiary);
 }
 </style> 

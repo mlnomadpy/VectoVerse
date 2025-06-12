@@ -46,7 +46,7 @@ defineProps({
 .component-list-container {
   max-height: 300px;
   overflow-y: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -59,14 +59,14 @@ defineProps({
   display: flex;
   justify-content: space-between;
   padding: 0.3rem 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 .component-list li:last-child {
   border-bottom: none;
 }
 .component-index {
   font-weight: bold;
-  color: #888;
+  color: var(--text-secondary);
 }
 .component-value {
   font-family: 'Courier New', Courier, monospace;

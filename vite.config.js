@@ -30,11 +30,19 @@ export default defineConfig({
       }
     }
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/assets/styles/theme.css";`
+      }
+    },
+    devSourcemap: true
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@modules': fileURLToPath(new URL('./modules', import.meta.url)),
-      '@styles': fileURLToPath(new URL('./styles', import.meta.url))
+      '@styles': fileURLToPath(new URL('./src/assets/styles', import.meta.url))
     }
   },
   optimizeDeps: {

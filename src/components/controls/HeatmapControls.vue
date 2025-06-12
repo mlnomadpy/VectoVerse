@@ -26,12 +26,12 @@ const { activeHeatmap } = usePeriodicTable();
 label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 .styled-select {
-  background-color: rgba(0,0,0,0.3);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;
@@ -39,7 +39,7 @@ label {
   transition: all 0.2s ease;
 }
 .styled-select:hover {
-  background-color: rgba(0,0,0,0.5);
-  border-color: #667eea;
+  background-color: var(--bg-quaternary);
+  border-color: var(--accent-primary);
 }
 </style> 

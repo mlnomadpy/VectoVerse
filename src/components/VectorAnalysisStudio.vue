@@ -195,11 +195,11 @@ onMounted(() => {
 
 <style scoped>
 .vector-analysis-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
 }
 
@@ -211,14 +211,14 @@ onMounted(() => {
 .analysis-header h2 {
   font-size: 2rem;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .analysis-header p {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -237,86 +237,65 @@ onMounted(() => {
 }
 
 .analysis-tabs {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 .tab-buttons {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .tab-btn {
-  padding: 0.8rem 1.2rem;
+  padding: 0.75rem 1.25rem;
+  background: transparent;
   border: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: #666;
-  border-radius: 6px;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 2px solid transparent;
   font-weight: 500;
 }
 
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
 .tab-btn.active {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-.tab-btn:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #333;
-}
-
-.tab-content {
-  min-height: 300px;
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
 }
 
 .tab-panel {
   display: none;
+  padding: 1rem;
+  background-color: var(--bg-primary);
+  border-radius: 6px;
 }
 
 .tab-panel.active {
   display: block;
 }
 
+/* Base button styles from variables */
 .btn-compact {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  border: none;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
+  border: 1px solid transparent;
   font-weight: 500;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #333;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-accent {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  color: white;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-}
-
-.btn-compact:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.btn-icon {
+  font-size: 1.2rem;
 }
 
 .btn-compact:disabled {
@@ -324,8 +303,34 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-.btn-icon {
-  font-size: 1rem;
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse, #fff);
+  border-color: var(--accent-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-secondary);
+}
+
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-quaternary);
+}
+
+.btn-accent {
+  background-color: var(--accent-secondary);
+  color: var(--text-primary-inverse, #fff);
+  border-color: var(--accent-secondary);
+}
+
+.btn-accent:hover:not(:disabled) {
+  background-color: var(--accent-primary);
 }
 
 @media (max-width: 768px) {

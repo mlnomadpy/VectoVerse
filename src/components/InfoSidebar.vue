@@ -97,7 +97,7 @@ const vMath = {
 <style scoped>
 .info-sidebar {
   width: 300px;
-  background-color: var(--sidebar-bg);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: width 0.3s ease;
   flex-shrink: 0;
@@ -118,7 +118,7 @@ const vMath = {
   transform: translateY(-50%);
   width: 30px;
   height: 50px;
-  background-color: var(--sidebar-bg);
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-right: none;
   border-radius: 8px 0 0 8px;
@@ -128,7 +128,7 @@ const vMath = {
   align-items: center;
 }
 .sidebar-toggle:hover {
-  background-color: var(--primary);
+  background-color: var(--accent-primary);
 }
 .arrow {
   border: solid var(--text-primary);
@@ -153,7 +153,7 @@ const vMath = {
 
 .vector-details h4 {
   margin-top: 0;
-  color: var(--primary);
+  color: var(--accent-primary);
 }
 .vector-details h5 {
   margin-top: 1.5rem;

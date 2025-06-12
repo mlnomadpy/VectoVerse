@@ -64,45 +64,20 @@ const deleteSelectedPreset = (name) => {
 .form-input {
   flex-grow: 1;
   padding: 0.75rem;
-  background: #1e1e1e;
-  border: 1px solid #444;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  color: #f5f5f7;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .form-input::placeholder {
-  color: #888;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.btn-primary {
-  background-color: #007aff;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn:disabled {
-  background-color: #555;
-  color: #999;
-  cursor: not-allowed;
-  opacity: 0.6;
+  color: var(--text-secondary);
 }
 
 .list-header {
   margin: 0 0 0.75rem 0;
-  color: #a0a0a5;
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-size: 0.8rem;
   font-weight: 600;
@@ -115,7 +90,7 @@ const deleteSelectedPreset = (name) => {
   margin: 0;
   max-height: 250px;
   overflow-y: auto;
-  border: 1px solid #444;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
@@ -124,7 +99,7 @@ const deleteSelectedPreset = (name) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .presets-list li:last-child {
@@ -132,12 +107,12 @@ const deleteSelectedPreset = (name) => {
 }
 
 .presets-list li:hover {
-  background-color: #3a3a3c;
+  background-color: var(--bg-tertiary);
 }
 
 .preset-name {
   font-weight: 500;
-  color: #f5f5f7;
+  color: var(--text-primary);
 }
 
 .preset-actions {
@@ -145,32 +120,57 @@ const deleteSelectedPreset = (name) => {
   gap: 0.5rem;
 }
 
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-secondary);
+}
+
+.btn:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .btn-secondary {
-  background-color: #555;
-  color: white;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;
 }
 .btn-secondary:hover {
-  background-color: #777;
+  background-color: var(--bg-tertiary);
 }
 
 .btn-danger {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--status-danger);
+  color: var(--text-primary-inverse);
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;
 }
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: var(--status-danger-hover);
 }
 
 .no-presets {
   text-align: center;
   padding: 2rem;
-  color: #888;
+  color: var(--text-secondary);
   font-style: italic;
-  border: 1px dashed #555;
+  border: 1px dashed var(--border-color);
   border-radius: 6px;
 }
 </style> 

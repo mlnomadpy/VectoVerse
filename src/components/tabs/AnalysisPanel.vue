@@ -402,293 +402,205 @@ onMounted(() => {
 .analysis-panel {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
 }
-
 .panel-header h3 {
-  margin: 0;
-  color: white;
-  font-size: 20px;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  color: var(--accent-primary);
 }
-
 .analysis-controls {
   display: flex;
-  gap: 12px;
+  gap: 1rem;
   align-items: center;
 }
-
 .analysis-select {
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  min-width: 200px;
-}
-
-.btn-primary {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  transform: translateY(-1px);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  flex-grow: 1;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 .analysis-content {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 24px;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  flex-grow: 1;
 }
 
-.analysis-config,
-.analysis-results {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.analysis-config {
+  background-color: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
-
-.analysis-config h4,
-.analysis-results h4 {
-  margin: 0 0 16px 0;
-  color: white;
-  font-size: 16px;
+.analysis-config h4 {
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent-secondary);
 }
-
 .config-section {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
-
 .config-section label {
   display: block;
-  margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.config-input, .config-select {
+  width: 100%;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
-.config-input,
-.config-select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  margin-bottom: 12px;
+.analysis-results {
+  background-color: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.analysis-results h4 {
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent-secondary);
 }
 
 .analysis-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 40px;
-  color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  height: 200px;
+  color: var(--text-secondary);
 }
-
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid #667eea;
+  border: 4px solid var(--bg-tertiary);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
 }
-
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
-.result-content {
-  color: white;
+.result-summary {
+  margin-bottom: 1.5rem;
+  background-color: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 6px;
 }
 
-.result-summary h5 {
-  margin: 0 0 8px 0;
-  color: #667eea;
-}
-
-.result-summary p {
-  margin: 0 0 16px 0;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.component-table,
-.similarity-table {
-  overflow-x: auto;
-  margin-top: 16px;
-}
-
-.component-table table,
-.similarity-table table {
+table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
 }
-
-.component-table th,
-.component-table td,
-.similarity-table th,
-.similarity-table td {
-  padding: 8px 12px;
+th, td {
+  padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
 }
-
-.component-table th,
-.similarity-table th {
-  background: rgba(255, 255, 255, 0.1);
+th {
+  background-color: var(--bg-tertiary);
   font-weight: 600;
 }
-
-.high-similarity {
-  background: rgba(102, 126, 234, 0.2);
-}
-
-.cluster-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+tbody tr:hover {
+  background-color: var(--bg-tertiary);
 }
 
 .cluster-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 16px;
+  background-color: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
 }
-
-.cluster-card h6 {
-  margin: 0 0 8px 0;
-  color: #667eea;
-  font-size: 14px;
-}
-
-.cluster-card p {
-  margin: 0 0 8px 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
-}
-
-.cluster-center,
-.cluster-vectors {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  font-family: monospace;
-  margin-bottom: 4px;
+.cluster-center, .cluster-vectors {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  word-break: break-all;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
-
 .stat-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 16px;
+  background-color: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 6px;
 }
-
-.stat-card h6 {
-  margin: 0 0 8px 0;
-  color: #667eea;
-  font-size: 14px;
-}
-
 .stat-card p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: monospace;
-  font-size: 12px;
   word-break: break-all;
+  font-family: var(--font-mono);
 }
 
 .no-results {
   text-align: center;
-  padding: 40px;
-  color: rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+  color: var(--text-secondary);
 }
 
 .export-section {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
 }
-
-.export-section h4 {
-  margin: 0 0 16px 0;
-  color: white;
-  font-size: 16px;
-}
-
 .export-buttons {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse, #fff);
+  border: none;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-secondary);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 768px) {
-  .analysis-content {
-    grid-template-columns: 1fr;
-  }
-  
-  .panel-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .analysis-controls {
-    flex-direction: column;
-  }
-  
-  .cluster-info,
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .export-buttons {
-    flex-direction: column;
-  }
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-quaternary);
+  border-color: var(--accent-primary);
 }
 </style> 

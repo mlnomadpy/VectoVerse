@@ -1,1 +1,4 @@
 add system entropy of all vectors based on the  forces we calculate, use thermo laws
+transform hte  header into muti  line header, some  buttons are  hidden
+add suport back to activation functions
+add support to neural network mode

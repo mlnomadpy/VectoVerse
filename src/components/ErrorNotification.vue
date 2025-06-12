@@ -85,21 +85,21 @@ onUnmounted(() => {
   bottom: 20px;
   right: 20px;
   width: 350px;
-  background: #333;
-  color: white;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px var(--shadow-color);
   overflow: hidden;
   z-index: 2000;
-  border-left: 4px solid #f44336;
+  border-left: 4px solid var(--status-danger);
   animation: slideInUp 0.5s ease-out;
 }
 
-.error-notification.error-network { border-left-color: #2196F3; }
-.error-notification.error-permission { border-left-color: #FFC107; }
-.error-notification.error-memory { border-left-color: #9C27B0; }
-.error-notification.error-validation { border-left-color: #FF9800; }
-.error-notification.error-timeout { border-left-color: #607D8B; }
+.error-notification.error-network { border-left-color: var(--accent-primary); }
+.error-notification.error-permission { border-left-color: var(--status-warning); }
+.error-notification.error-memory { border-left-color: var(--accent-secondary); }
+.error-notification.error-validation { border-left-color: var(--status-warning); }
+.error-notification.error-timeout { border-left-color: var(--text-tertiary); }
 
 .error-content {
   display: flex;
@@ -131,7 +131,7 @@ onUnmounted(() => {
 .error-close {
   background: none;
   border: none;
-  color: white;
+  color: var(--text-secondary);
   font-size: 1.5rem;
   cursor: pointer;
   opacity: 0.7;
@@ -139,6 +139,7 @@ onUnmounted(() => {
 }
 .error-close:hover {
   opacity: 1;
+  color: var(--text-primary);
 }
 
 .error-actions {
@@ -149,12 +150,12 @@ onUnmounted(() => {
 }
 
 .error-action {
-  background-color: rgba(255,255,255,0.1);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  background-color: var(--bg-quaternary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 .error-action:hover {
-  background-color: rgba(255,255,255,0.2);
+  background-color: var(--bg-primary);
 }
 
 .error-progress {
@@ -162,7 +163,7 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   height: 4px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: var(--text-tertiary);
   transition: width 0.1s linear;
 }
 

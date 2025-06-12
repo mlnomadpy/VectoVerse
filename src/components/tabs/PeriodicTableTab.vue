@@ -5,10 +5,7 @@
       <FilterControls />
       <HighlightControls />
     </div>
-    <PeriodicTable 
-      v-if="vectorStore.vectors.length > 0" 
-      :key="vectorStore.vectors.length"
-    />
+    <PeriodicTable v-show="vectorStore.vectors.length > 0" />
     <div class="info-panel-wrapper">
       <transition name="fade" mode="out-in">
         <!-- Single Selection View -->
@@ -153,7 +150,7 @@ const getComparisonClass = (property, index1, index2) => {
   position: relative;
   width: 100%;
   height: 100%;
-  background: rgba(10, 20, 30, 0.5);
+  background: var(--bg-primary);
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -163,7 +160,7 @@ const getComparisonClass = (property, index1, index2) => {
 
 .table-controls {
   padding: 0.5rem 1rem;
-  background: rgba(0,0,0,0.2);
+  background: var(--bg-tertiary);
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 2rem;
@@ -175,28 +172,28 @@ const getComparisonClass = (property, index1, index2) => {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background: rgba(0,0,0,0.3);
-  border-top: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
   min-height: 220px;
 }
 
 .selected-element-info-panel, .placeholder-panel {
-  background: rgba(0, 0, 0, 0.75);
-  color: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   padding: 1.5rem 2rem;
   border-radius: 12px;
   width: 100%;
   max-width: 800px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px var(--shadow-color);
   transition: all 0.3s ease-in-out;
 }
 
 .placeholder-panel {
   text-align: center;
   font-size: 1.2rem;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-secondary);
   border-bottom: none;
 }
 
@@ -205,7 +202,7 @@ const getComparisonClass = (property, index1, index2) => {
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .element-symbol {
@@ -217,7 +214,7 @@ const getComparisonClass = (property, index1, index2) => {
 
 .panel-header h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 500;
 }
@@ -338,13 +335,14 @@ h4 {
 }
 .comparison-column {
   flex: 1;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-primary);
   padding: 1rem;
   border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
-.is-higher { color: #34d399; font-weight: bold; }
-.is-lower { color: #f87171; }
-.is-same { color: #60a5fa; }
+.is-higher { color: var(--status-success); }
+.is-lower { color: var(--status-danger); }
+.is-same { color: var(--text-secondary); }
 
 .multi-select-panel {
   width: 100%;
@@ -358,9 +356,9 @@ h4 {
   margin-top: 1rem;
 }
 .multi-select-item {
-  background: rgba(255,255,255,0.1);
-  padding: 0.3rem 0.7rem;
-  border-radius: 4px;
-  border-left: 3px solid;
+  background: var(--bg-tertiary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border-left: 4px solid;
 }
 </style> 

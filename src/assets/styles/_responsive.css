@@ -1,0 +1,65 @@
+/* src/assets/styles/_responsive.css */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 8px;
+  }
+  
+  .controls-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .control-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .info-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    transition: right 0.3s ease;
+    background: rgba(0, 0, 0, 0.95);
+  }
+  
+  .info-sidebar.open {
+    right: 0;
+  }
+  
+  .visualization-container {
+    height: 60vh;
+  }
+  
+  .vector-tooltip {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .header-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-compact {
+    min-width: auto;
+    padding: 8px 12px;
+  }
+  
+  .btn-text {
+    display: none;
+  }
+  
+  .sidebar-panel {
+    padding: 12px;
+  }
+} 

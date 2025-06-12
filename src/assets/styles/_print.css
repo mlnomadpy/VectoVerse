@@ -1,0 +1,15 @@
+/* src/assets/styles/_print.css */
+
+@media print {
+  .controls-toolbar,
+  .info-sidebar,
+  .modal-overlay,
+  .vector-tooltip {
+    display: none !important;
+  }
+  
+  .visualization-container {
+    width: 100% !important;
+    height: 100% !important;
+  }
+} 

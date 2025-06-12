@@ -67,10 +67,10 @@ onUnmounted(() => {
 }
 
 .modal-container {
-  background: #2c2c2e;
-  color: #f5f5f7;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px var(--shadow-color);
   max-width: 90vw;
   max-height: 90vh;
   width: 600px;
@@ -78,6 +78,7 @@ onUnmounted(() => {
   animation: slideIn 0.3s ease;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--border-color);
 }
 
 .modal-header {
@@ -85,9 +86,10 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background: #1e1e1e;
-  color: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
@@ -99,7 +101,7 @@ onUnmounted(() => {
 .modal-close-btn {
   background: none;
   border: none;
-  color: #a0a0a5;
+  color: var(--text-secondary);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
@@ -113,8 +115,8 @@ onUnmounted(() => {
 }
 
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   transform: scale(1.1);
 }
 
@@ -126,8 +128,8 @@ onUnmounted(() => {
 
 .modal-footer {
   padding: 1rem 1.5rem;
-  background: #1e1e1e;
-  border-top: 1px solid #444;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -156,17 +158,17 @@ onUnmounted(() => {
 }
 
 .modal-body::-webkit-scrollbar-track {
-  background: #2c2c2e;
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: #555;
+  background: var(--bg-quaternary);
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-  background: #777;
+  background: var(--text-tertiary);
 }
 
 @media (max-width: 768px) {

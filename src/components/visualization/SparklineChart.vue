@@ -57,7 +57,7 @@ const zeroAxis = computed(() => props.height / 2);
 }
 
 .sparkline-path {
-  stroke: #667eea;
+  stroke: var(--accent-primary);
   stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
@@ -65,7 +65,7 @@ const zeroAxis = computed(() => props.height / 2);
 }
 
 .zero-axis {
-  stroke: rgba(255, 255, 255, 0.2);
+  stroke: var(--border-color);
   stroke-width: 1;
   stroke-dasharray: 2, 2;
 }

@@ -580,213 +580,183 @@ const emit = defineEmits(['close'])
 
 <style scoped>
 .export-modal {
-  max-width: 650px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: var(--bg-primary);
+  padding: 1rem;
 }
 
 .modal-header {
   text-align: center;
-  margin-bottom: 2rem;
 }
-
 .modal-header h3 {
-  color: #667eea;
+  font-size: 1.5rem;
+  color: var(--accent-primary);
   margin: 0 0 0.5rem 0;
 }
-
 .modal-header p {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
+}
+
+.export-sections {
+  display: flex;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .section-tabs {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 0.25rem;
+  flex-direction: column;
+  background-color: var(--bg-tertiary);
+  border-right: 1px solid var(--border-color);
+  padding: 0.5rem;
 }
 
 .tab-btn {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: #666;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
 .tab-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #333;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .tab-btn.active {
-  background: #667eea;
-  color: white;
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse);
+  font-weight: 600;
 }
 
 .export-section {
-  margin-bottom: 2rem;
+  padding: 1.5rem;
+  flex-grow: 1;
 }
 
 .section-header {
   margin-bottom: 1.5rem;
 }
-
 .section-header h4 {
-  color: #333;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
 }
-
 .section-header p {
-  color: #666;
-  margin: 0;
   font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .export-options {
   margin-bottom: 1.5rem;
 }
-
 .option-group {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
-  cursor: pointer;
-  color: #333;
 }
 
-.checkbox-label input[type="checkbox"] {
-  margin: 0;
+.format-selection,
+.resolution-group {
+  margin-top: 1rem;
 }
 
-.format-selection, .resolution-group {
-  margin-bottom: 1rem;
-}
-
-.format-selection label, .resolution-group label {
+.format-selection label,
+.resolution-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
 }
 
-.format-select, .resolution-select {
+.format-select,
+.resolution-select {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e2e8f0;
+  padding: 0.6rem 0.8rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  transition: border-color 0.2s;
-}
-
-.format-select:focus, .resolution-select:focus {
-  outline: none;
-  border-color: #667eea;
 }
 
 .preview-info {
-  background: rgba(102, 126, 234, 0.05);
-  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
   padding: 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
+  border-left: 3px solid var(--accent-secondary);
 }
-
 .info-item {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
-
 .info-label {
-  display: block;
-  font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 0.25rem;
+  color: var(--text-secondary);
 }
-
 .info-value {
-  display: block;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
 }
 
 .modal-actions {
   display: flex;
-  gap: 1rem;
   justify-content: flex-end;
-  margin-top: 2rem;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
 }
 
-.btn-secondary, .btn-primary {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
+.btn-primary,
 .btn-secondary {
-  background: #6b7280;
-  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-
-.btn-secondary:hover {
-  background: #4b5563;
-}
-
 .btn-primary {
-  background: #667eea;
-  color: white;
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse, #fff);
 }
-
-.btn-primary:hover:not(:disabled) {
-  background: #5a67d8;
-}
-
-.btn-primary:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .export-progress {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(102, 126, 234, 0.05);
-  border-radius: 8px;
+  text-align: center;
 }
-
 .progress-bar {
-  width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.3);
+  background-color: var(--bg-tertiary);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
-
 .progress-fill {
   height: 100%;
-  background: #667eea;
-  transition: width 0.3s ease;
+  background-color: var(--accent-primary);
+  transition: width 0.3s;
 }
-
 .progress-text {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #666;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 </style> 

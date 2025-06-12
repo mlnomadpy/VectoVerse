@@ -72,18 +72,18 @@ const neuPct = computed(() => quantumTotal.value > 0 ? (props.element.neutral / 
 <style scoped>
 .periodic-tooltip {
   position: absolute;
-  background: rgba(20, 20, 30, 0.95);
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 12px;
   border-radius: 8px;
   font-size: 13px;
   pointer-events: none;
   z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 5px 15px var(--shadow-color);
   max-width: 240px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
   transition: opacity 0.2s;
 }
 .tooltip-header {
@@ -91,7 +91,7 @@ const neuPct = computed(() => quantumTotal.value > 0 ? (props.element.neutral / 
   align-items: center;
   margin-bottom: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--border-color);
 }
 .tooltip-symbol {
   font-size: 24px;
@@ -101,10 +101,12 @@ const neuPct = computed(() => quantumTotal.value > 0 ? (props.element.neutral / 
 }
 .tooltip-name {
   font-weight: 600;
+  color: var(--text-primary);
 }
 .tooltip-quantum-key {
   font-size: 11px;
   opacity: 0.7;
+  color: var(--text-secondary);
 }
 .tooltip-body {
   margin-bottom: 8px;
@@ -115,11 +117,11 @@ const neuPct = computed(() => quantumTotal.value > 0 ? (props.element.neutral / 
 .tooltip-footer {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid var(--border-color);
 }
 .tooltip-footer strong {
   font-size: 12px;
-  color: #a0aec0;
+  color: var(--text-secondary);
 }
 .vector-id-list {
   font-size: 11px;
@@ -132,13 +134,29 @@ const neuPct = computed(() => quantumTotal.value > 0 ? (props.element.neutral / 
 .quantum-makeup-label {
   font-weight: 600;
   margin-bottom: 4px;
+  color: var(--text-primary);
 }
 .quantum-bar {
   width: 100%;
   height: 10px;
-  background: #333;
+  background: var(--bg-tertiary);
   border-radius: 5px;
   display: flex;
   overflow: hidden;
+}
+
+.quantum-bar-item {
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+}
+
+.quantum-bar-item[title^="Excitatory"] {
+  background: var(--vis-force-attraction);
+}
+.quantum-bar-item[title^="Inhibitory"] {
+  background: var(--vis-force-repulsion);
+}
+.quantum-bar-item[title^="Neutral"] {
+  background: var(--vis-force-neutral);
 }
 </style> 

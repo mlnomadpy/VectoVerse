@@ -124,13 +124,13 @@ label {
   font-size: 1.1rem;
 }
 .icon-toggle:hover {
-  border-color: var(--border-color-soft);
+  border-color: var(--bg-tertiary);
   color: var(--text-primary);
 }
 .icon-toggle.active {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  box-shadow: 0 0 10px 0 var(--primary-light);
+  background-color: var(--accent-tertiary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 10px 0 var(--accent-tertiary);
 }
 
 /* Slider */
@@ -142,6 +142,7 @@ label {
   font-size: 0.85em;
   width: 28px;
   text-align: right;
+  color: var(--text-primary);
 }
 
 /* Checkbox (Switch) */
@@ -163,7 +164,7 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #4a4a4a;
+  background-color: var(--bg-quaternary);
   transition: .4s;
 }
 .slider:before {
@@ -173,11 +174,11 @@ label {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--text-primary);
   transition: .4s;
 }
 input:checked + .slider {
-  background-color: var(--primary);
+  background-color: var(--accent-primary);
 }
 input:checked + .slider:before {
   transform: translateX(20px);
@@ -187,5 +188,20 @@ input:checked + .slider:before {
 }
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Dropdown */
+select {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 5px var(--accent-primary);
 }
 </style> 

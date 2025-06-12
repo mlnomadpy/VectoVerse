@@ -42,7 +42,7 @@ defineProps({
 .stats-list {
   list-style-type: none;
   padding: 0;
-  background: rgba(0,0,0,0.1);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -50,16 +50,16 @@ defineProps({
   display: flex;
   justify-content: space-between;
   padding: 0.75rem 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 .stats-list li:last-child {
   border-bottom: none;
 }
 .stat-label {
-  color: #bbb;
+  color: var(--text-secondary);
 }
 .stat-value {
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
 }
 </style> 

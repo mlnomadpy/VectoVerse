@@ -124,7 +124,7 @@ onMounted(() => {
   align-items: center;
   flex-grow: 1;
   text-align: center;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .no-vector-selected .icon {
@@ -133,7 +133,7 @@ onMounted(() => {
 }
 
 .no-vector-selected h3 {
-  color: #ccc;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -146,7 +146,7 @@ onMounted(() => {
 .vector-title {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .vector-title h3 {
@@ -168,8 +168,8 @@ onMounted(() => {
 .sub-tab-btn {
   padding: 0.7rem 1.2rem;
   border: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: #aaa;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -178,13 +178,13 @@ onMounted(() => {
 }
 
 .sub-tab-btn.active {
-  color: white;
-  background-color: #667eea;
+  color: var(--text-primary-inverse, #fff);
+  background-color: var(--accent-primary);
 }
 
 .sub-tab-btn:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--bg-quaternary);
+  color: var(--text-primary);
 }
 
 .sub-tab-content {

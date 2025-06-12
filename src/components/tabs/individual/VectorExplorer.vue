@@ -55,8 +55,8 @@ const chartData = computed(() => {
     datasets: [
       {
         label: 'Component Value',
-        backgroundColor: data.map(v => v >= 0 ? 'rgba(102, 126, 234, 0.8)' : 'rgba(239, 68, 68, 0.8)'),
-        borderColor: data.map(v => v >= 0 ? 'rgba(102, 126, 234, 1)' : 'rgba(239, 68, 68, 1)'),
+        backgroundColor: data.map(v => v >= 0 ? 'var(--vis-vector-positive)' : 'var(--vis-vector-negative)'),
+        borderColor: data.map(v => v >= 0 ? 'var(--vis-vector-positive)' : 'var(--vis-vector-negative)'),
         borderWidth: 1,
         data,
       },
@@ -81,18 +81,18 @@ const chartOptions = ref({
   scales: {
     x: {
       ticks: {
-        color: '#aaa'
+        color: 'var(--text-secondary)'
       },
       grid: {
-        color: 'rgba(255, 255, 255, 0.1)'
+        color: 'var(--border-color)'
       }
     },
     y: {
       ticks: {
-        color: '#aaa'
+        color: 'var(--text-secondary)'
       },
       grid: {
-        color: 'rgba(255, 255, 255, 0.1)'
+        color: 'var(--border-color)'
       }
     }
   }
@@ -114,13 +114,13 @@ const chartOptions = ref({
 }
 
 .controls label {
-  color: #bbb;
+  color: var(--text-secondary);
 }
 
 .controls select {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.4rem 0.6rem;
 }

@@ -74,5 +74,9 @@ onMounted(calculateGlobalStats)
 }
 .vector-display {
   word-break: break-all;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 6px;
 }
 </style> 

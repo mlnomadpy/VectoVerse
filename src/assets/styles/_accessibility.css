@@ -1,0 +1,23 @@
+/* src/assets/styles/_accessibility.css */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .vector-atom {
+    stroke-width: 3px !important;
+  }
+  
+  .vector-tooltip {
+    background: black;
+    border: 2px solid white;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .vector-atom,
+  .loading::after,
+  .info-sidebar {
+    transition: none !important;
+    animation: none !important;
+  }
+} 

@@ -40,7 +40,17 @@
 
 <style scoped>
 .upload-help-content {
-  color: #333;
+  color: var(--text-primary);
+}
+
+.upload-help-content h4 {
+  color: var(--accent-primary);
+  margin-bottom: 1rem;
+}
+
+.upload-help-content h5 {
+  color: var(--accent-secondary);
+  margin-bottom: 0.5rem;
 }
 
 .format-list {
@@ -50,7 +60,7 @@
 .format-item {
   padding: 0.5rem;
   margin: 0.5rem 0;
-  background: rgba(102, 126, 234, 0.05);
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
@@ -59,12 +69,12 @@
 }
 
 .code-example {
-  background: #f5f5f5;
+  background: var(--bg-tertiary);
   padding: 1rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   overflow-x: auto;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid var(--accent-secondary);
 }
 </style> 

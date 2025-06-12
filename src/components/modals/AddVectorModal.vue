@@ -188,22 +188,25 @@ const emit = defineEmits(['close'])
 
 <style scoped>
 .add-vector-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--bg-primary);
+  padding: 1rem;
   max-width: 500px;
   margin: 0 auto;
 }
 
 .modal-header {
   text-align: center;
-  margin-bottom: 2rem;
 }
-
 .modal-header h3 {
-  color: #667eea;
+  font-size: 1.5rem;
+  color: var(--accent-primary);
   margin: 0 0 0.5rem 0;
 }
-
 .modal-header p {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -214,76 +217,59 @@ const emit = defineEmits(['close'])
 .form-group {
   margin-bottom: 1.5rem;
 }
-
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .input-help {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin-bottom: 0.5rem;
 }
 
-.vector-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 6px;
-  font-family: monospace;
-  resize: vertical;
-  transition: border-color 0.2s;
-}
-
-.vector-input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.vector-input.error {
-  border-color: #ef4444;
-}
-
+.vector-input,
 .label-input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e2e8f0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
+  color: var(--text-primary);
   transition: border-color 0.2s;
 }
 
-.label-input:focus {
-  outline: none;
-  border-color: #667eea;
+.vector-input {
+  font-family: monospace;
+  resize: vertical;
+}
+
+.vector-input.error {
+  border-color: var(--status-danger);
 }
 
 .error-message {
-  color: #ef4444;
+  color: var(--status-danger);
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
 
 .preview-section {
-  background: rgba(102, 126, 234, 0.05);
-  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
   padding: 1rem;
-  margin-top: 1rem;
+  border-left: 3px solid var(--accent-secondary);
 }
-
 .preview-section h4 {
   margin: 0 0 1rem 0;
-  color: #667eea;
+  color: var(--text-primary);
 }
-
 .vector-stats {
   display: flex;
-  gap: 2rem;
+  justify-content: space-between;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .components-preview {
@@ -291,70 +277,51 @@ const emit = defineEmits(['close'])
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-
 .component {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.875rem;
 }
-
 .component.positive {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
+  background-color: var(--status-success-bg);
+  color: var(--status-success);
 }
-
 .component.negative {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger);
 }
-
 .component.zero {
-  background: rgba(156, 163, 175, 0.1);
-  color: #6b7280;
-}
-
-.more {
-  padding: 0.25rem 0.5rem;
-  color: #666;
-  font-style: italic;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
 }
 
 .modal-actions {
   display: flex;
-  gap: 1rem;
   justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
 }
 
-.btn-cancel, .btn-add {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.btn-cancel {
-  background: #6b7280;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background: #4b5563;
-}
-
+.btn-cancel,
 .btn-add {
-  background: #667eea;
-  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-
-.btn-add:hover:not(:disabled) {
-  background: #5a67d8;
+.btn-cancel {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
-
+.btn-add {
+  background-color: var(--accent-primary);
+  color: var(--text-primary-inverse);
+}
 .btn-add:disabled {
-  background: #9ca3af;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 </style> 

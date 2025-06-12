@@ -35,7 +35,12 @@
 
 <style scoped>
 .activation-help-content {
-  color: #333;
+  color: var(--text-primary);
+}
+
+.activation-help-content h4 {
+  color: var(--accent-primary);
+  margin-bottom: 1.5rem;
 }
 
 .activation-list {
@@ -45,26 +50,26 @@
 .activation-item {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: var(--bg-secondary);
   border-radius: 8px;
 }
 
 .activation-item h5 {
-  color: #667eea;
+  color: var(--accent-secondary);
   margin: 0 0 0.5rem 0;
 }
 
 .activation-item p {
   margin: 0 0 0.5rem 0;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .formula {
-  background: #f5f5f5;
+  background: var(--bg-tertiary);
   padding: 0.5rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid var(--accent-secondary);
 }
 </style> 

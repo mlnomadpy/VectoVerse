@@ -164,19 +164,19 @@ const getComponentForType = (type) => {
 <style scoped>
 .tab-container {
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 0;
   margin: 16px 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
 .tab-header {
   display: flex;
-  background: rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
   position: relative;
   overflow-x: auto;
   scrollbar-width: none;
@@ -192,7 +192,7 @@ const getComponentForType = (type) => {
   padding: 16px 24px;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -207,13 +207,13 @@ const getComponentForType = (type) => {
 }
 
 .tab-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--bg-quaternary);
+  color: var(--text-primary);
 }
 
 .tab-button.active {
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  background: var(--bg-secondary);
 }
 
 .tab-button::after {
@@ -223,7 +223,7 @@ const getComponentForType = (type) => {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -244,7 +244,7 @@ const getComponentForType = (type) => {
   margin-left: 8px;
   padding: 2px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-quaternary);
   opacity: 0;
   transition: opacity 0.3s ease;
   cursor: pointer;
@@ -254,8 +254,9 @@ const getComponentForType = (type) => {
   align-items: center;
   justify-content: center;
   border: none;
-  color: inherit;
+  color: var(--text-secondary);
   font-size: 12px;
+  line-height: 1;
 }
 
 .tab-button:hover .tab-close {
@@ -263,23 +264,23 @@ const getComponentForType = (type) => {
 }
 
 .tab-close:hover {
-  background: rgba(255, 0, 0, 0.3);
+  background: var(--accent-primary);
+  color: var(--text-primary);
 }
 
 .add-tab-button {
-  padding: 16px;
+  padding: 0 16px;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 60px;
 }
 
 .add-tab-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  background: var(--bg-quaternary);
+  color: var(--accent-primary);
 }
 
 .tab-content {
@@ -290,7 +291,7 @@ const getComponentForType = (type) => {
 
 .tab-panel {
   display: none;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.5s ease;
 }
 
 .tab-panel.active {
@@ -315,7 +316,8 @@ const getComponentForType = (type) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -323,83 +325,83 @@ const getComponentForType = (type) => {
 }
 
 .add-tab-modal {
-  background: rgba(30, 30, 30, 0.95);
-  backdrop-filter: blur(10px);
+  background: var(--bg-secondary);
+  padding: 2rem;
   border-radius: 12px;
-  padding: 24px;
-  max-width: 400px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px var(--shadow-color);
   width: 90%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 400px;
 }
 
 .add-tab-modal h3 {
-  margin: 0 0 20px 0;
-  color: white;
-  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  text-align: center;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
   font-size: 14px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 14px;
+  padding: 0.75rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 1rem;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-primary-transparent, rgba(0, 122, 255, 0.25));
 }
 
 .form-actions {
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
-  margin-top: 24px;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 .form-actions button {
-  padding: 10px 20px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
   border: none;
-  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.form-actions button:first-child {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+.form-actions button[type="button"] {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
-.form-actions button:first-child:hover {
-  background: rgba(255, 255, 255, 0.2);
+.form-actions button[type="button"]:hover {
+  background: var(--bg-quaternary);
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+.form-actions .btn-primary {
+  background: var(--accent-primary);
+  color: var(--text-primary-inverse, #fff);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  transform: translateY(-1px);
+.form-actions .btn-primary:hover {
+  background: var(--accent-secondary);
 }
 
 /* Responsive design */

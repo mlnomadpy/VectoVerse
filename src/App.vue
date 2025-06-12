@@ -23,6 +23,7 @@
 
 <script setup>
 import { onMounted, provide, nextTick } from 'vue'
+import { useTheme } from './composables/useTheme'
 import { useVectorStore } from './stores/vectorStore'
 import { useUIStore } from './stores/uiStore'
 import { useKeyboardShortcuts } from './composables/useKeyboardShortcuts'
@@ -56,6 +57,10 @@ const exportManager = useExportManager()
 const errorHandler = useErrorHandler()
 const mathRenderer = useMathRenderer()
 const controls = useControls()
+
+// Set dark theme on startup
+const { setTheme } = useTheme()
+setTheme('dark')
 
 onMounted(async () => {
   try {

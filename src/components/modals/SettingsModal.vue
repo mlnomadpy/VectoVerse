@@ -1,5 +1,5 @@
 <template>
-  <ModalBase title="Settings" v-if="show" @close="closeModal">
+  <ModalBase v-if="show" title="Settings" @close="closeModal">
     <p>Settings will be available here soon.</p>
     <template #footer>
       <button @click="closeModal" class="btn btn-secondary">Close</button>
@@ -17,15 +17,18 @@ const uiStore = useUIStore();
 const show = computed(() => uiStore.isModalOpen && uiStore.modalName === 'settings');
 
 const closeModal = () => {
-  uiStore.closeModal();
+  uiStore.hideModal();
 };
 </script>
 
 <style scoped>
+p {
+  color: var(--text-secondary);
+}
 .btn-secondary {
-  background-color: #555;
-  color: white;
-  border: none;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -33,6 +36,6 @@ const closeModal = () => {
 }
 
 .btn-secondary:hover {
-  background-color: #777;
+  background-color: var(--bg-tertiary);
 }
 </style> 
