@@ -24,6 +24,11 @@ To run tests with UI:
 npm run test:ui
 ```
 
+To run tests with coverage report:
+```bash
+npm test -- --coverage
+```
+
 ## Test Coverage
 
 The test suite covers the following modules:
@@ -110,7 +115,73 @@ Tests for t-SNE dimensionality reduction:
 
 **Total tests**: 24
 
-## Total Test Count: 210 tests
+### ConfigManager.test.js
+Tests for configuration management:
+- **constructor**: Default config initialization
+- **getConfig**: Config retrieval
+- **updateConfig**: Config updates with various data types
+- Edge cases: null, undefined, zero, negative values, objects, arrays
+
+**Total tests**: 19
+
+### AnimationEngine.test.js
+Tests for animation system:
+- **constructor**: Initialization with SVG and framework
+- **start/stop**: Animation lifecycle management
+- **updateAnimations**: Update cycle coordination
+- **updateVectorPulse**: Vector pulse animation
+- **updateInputVectorFloat**: Input vector floating effect
+- **updateForceLineAnimation**: Force line animations
+- **restart**: Animation restart mechanism
+
+**Total tests**: 23
+
+### KeyboardShortcuts.test.js
+Tests for keyboard shortcut handling:
+- **constructor**: Initialization with framework
+- **initialize**: Event listener setup
+- **handleKeyPress**: Key event handling
+- Space key: Generate vectors
+- F key: Toggle force display
+- I key: Add input vector
+- Modal blocking: Prevent shortcuts when modal is open
+
+**Total tests**: 10
+
+### VectorAnalysisStudio.test.js
+Tests for vector analysis functionality:
+- **constructor**: Framework and state initialization
+- **initializeState**: State structure validation
+- **initializeComponents**: Component management
+- **createBoundHandlers**: Event handler binding
+- **initializeEventListeners**: Event registration
+- **cacheElements**: DOM element caching
+- **initialize**: Initialization lifecycle
+- **getModules/getState**: Framework integration
+- **safeExecute**: Error handling wrapper
+- **onStateChanged**: State change event handling
+- Edge cases: Missing DOM elements, null events
+
+**Total tests**: 33
+
+### ErrorHandler.test.js
+Tests for comprehensive error handling system:
+- **constructor**: Initialization and global error setup
+- **classifyError**: Error type classification (network, permission, memory, validation, timeout)
+- **handleError**: Error capture and logging
+- **getFriendlyMessage**: User-friendly error messages
+- **getSuggestedActions**: Context-aware recovery actions
+- **getErrorIcon**: Visual error representation
+- **attemptRecovery**: Automatic error recovery
+- **generateErrorId**: Unique error identification
+- **getErrorReport**: Error reporting and system info
+- **clearErrorLog**: Error log management
+- **wrapAsyncOperation**: Async operation error handling
+- **validateInput**: Input validation with error handling
+
+**Total tests**: 39
+
+## Total Test Count: 334 tests
 
 ## Testing Framework
 
@@ -133,17 +204,23 @@ When adding new tests, follow these conventions:
 4. Group related tests using `describe` blocks
 5. Use `beforeEach` for test setup when needed
 6. Test both happy paths and edge cases
+7. Mock external dependencies (framework, DOM, etc.)
 
 Example:
 ```javascript
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MyModule } from '../modules/MyModule.js';
 
 describe('MyModule', () => {
   let instance;
+  let mockFramework;
 
   beforeEach(() => {
-    instance = new MyModule();
+    mockFramework = {
+      getState: vi.fn(() => ({})),
+      eventBus: { on: vi.fn(), emit: vi.fn() }
+    };
+    instance = new MyModule(mockFramework);
   });
 
   describe('myFunction', () => {
