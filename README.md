@@ -298,7 +298,7 @@ We welcome contributions that enhance the atomic-inspired visualization paradigm
 
 ## 🧪 Testing
 
-VectoVerse includes a comprehensive test suite with 210+ unit tests covering all core modules.
+VectoVerse includes a comprehensive test suite with 334 unit tests covering all core modules.
 
 ### Running Tests
 
@@ -325,8 +325,13 @@ The test suite covers:
 - **StateManager** (48 tests): State management
 - **FileHandler** (40 tests): File parsing and handling
 - **TSNE** (24 tests): Dimensionality reduction
+- **ConfigManager** (19 tests): Configuration management
+- **AnimationEngine** (23 tests): Animation system
+- **KeyboardShortcuts** (10 tests): Keyboard handling
+- **VectorAnalysisStudio** (33 tests): Analysis features
+- **ErrorHandler** (39 tests): Error handling and recovery
 
-**Total: 210 tests**
+**Total: 334 tests**
 
 For more details, see [tests/README.md](tests/README.md).
 
