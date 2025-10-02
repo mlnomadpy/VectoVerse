@@ -298,7 +298,46 @@ We welcome contributions that enhance the atomic-inspired visualization paradigm
 
 ## 🧪 Testing
 
-To run the test suite, simply open the `SpecRunner.html` file in your web browser. The tests will run automatically and display the results.
+VectoVerse includes a comprehensive test suite with 210+ unit tests covering all core modules.
+
+### Running Tests
+
+```bash
+# Run all tests once
+npm run test:run
+
+# Run tests in watch mode (for development)
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Generate coverage report
+npm test -- --coverage
+```
+
+### Test Coverage
+
+The test suite covers:
+- **VectorOperations** (31 tests): Core vector math operations
+- **ForceCalculator** (53 tests): Physics-inspired force calculations
+- **EventBus** (14 tests): Event system
+- **StateManager** (48 tests): State management
+- **FileHandler** (40 tests): File parsing and handling
+- **TSNE** (24 tests): Dimensionality reduction
+
+**Total: 210 tests**
+
+For more details, see [tests/README.md](tests/README.md).
+
+### Testing Framework
+
+Tests are built with [Vitest](https://vitest.dev/), providing:
+- ✅ Fast execution with ES6 module support
+- ✅ Watch mode for development
+- ✅ Code coverage reporting
+- ✅ Happy DOM for DOM testing
+
 
 ## 🔄 Version Roadmap
 
